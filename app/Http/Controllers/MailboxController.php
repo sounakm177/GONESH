@@ -9,22 +9,12 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
-/**
- * All responses use Cache-Control: no-store to prevent browser caching of
- * personal inbox data.
- */
 class MailboxController extends Controller
 {
     public function __construct(
         private readonly MailboxService $mailboxService,
     ) {}
 
-    // ── Page ─────────────────────────────────────────────────────────
-
-    /**
-     * GET /
-     * Main SPA shell — rendered once, then driven by JS + Reverb.
-     */
     public function index(Request $request)
     {
         $sessionId = $this->getSessionId($request);
@@ -39,12 +29,7 @@ class MailboxController extends Controller
             ->header('Cache-Control', 'no-store, no-cache, must-revalidate');
     }
 
-    // ── AJAX: Generate new address ────────────────────────────────────
-
-    /**
-     * POST /mailbox/generate
-     * Creates a fresh mailbox, invalidating the old one.
-     */
+  
     public function generate(Request $request): JsonResponse
     {
         $validated = $request->validate([
@@ -62,11 +47,7 @@ class MailboxController extends Controller
         ])->withHeaders(['Cache-Control' => 'no-store']);
     }
 
-    // ── AJAX: Inbox polling (fallback if Reverb disconnects) ─────────
-
-    /**
-     * GET /mailbox/inbox?search=&page=
-     */
+ 
     public function inbox(Request $request): JsonResponse
     {
         $mailbox = $this->resolveActiveMailbox($request);
@@ -83,11 +64,7 @@ class MailboxController extends Controller
         return response()->json($inbox)->withHeaders(['Cache-Control' => 'no-store']);
     }
 
-    // ── AJAX: Email detail ────────────────────────────────────────────
 
-    /**
-     * GET /mailbox/email/{id}
-     */
     public function show(Request $request, int $id): JsonResponse
     {
         $mailbox = $this->resolveActiveMailbox($request);
@@ -120,9 +97,6 @@ class MailboxController extends Controller
         ])->withHeaders(['Cache-Control' => 'no-store']);
     }
 
-    // ── AJAX: Actions ─────────────────────────────────────────────────
-
-    /** DELETE /mailbox/email/{id} */
     public function destroy(Request $request, int $id): JsonResponse
     {
         $mailbox = $this->resolveActiveMailbox($request);
@@ -132,7 +106,6 @@ class MailboxController extends Controller
         return response()->json(['ok' => $ok, 'unread_count' => $mailbox->fresh()->unreadCount()]);
     }
 
-    /** PATCH /mailbox/email/{id}/unread */
     public function markUnread(Request $request, int $id): JsonResponse
     {
         $mailbox = $this->resolveActiveMailbox($request);
@@ -142,7 +115,6 @@ class MailboxController extends Controller
         return response()->json(['ok' => $ok, 'unread_count' => $mailbox->fresh()->unreadCount()]);
     }
 
-    /** POST /mailbox/mark-all-read */
     public function markAllRead(Request $request): JsonResponse
     {
         $mailbox = $this->resolveActiveMailbox($request);
@@ -152,7 +124,6 @@ class MailboxController extends Controller
         return response()->json(['ok' => true, 'updated' => $count]);
     }
 
-    /** DELETE /mailbox/all */
     public function destroyAll(Request $request): JsonResponse
     {
         $mailbox = $this->resolveActiveMailbox($request);
@@ -162,11 +133,8 @@ class MailboxController extends Controller
         return response()->json(['ok' => true, 'deleted' => $count]);
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────
-
     private function getSessionId(Request $request): string
     {
-        // Use Laravel session ID (starts session if not started yet)
         return hash('sha256', $request->session()->getId());
     }
 
@@ -176,6 +144,7 @@ class MailboxController extends Controller
 
         return PublicMailbox::active()
             ->forSession($sessionId)
+            ->latest()
             ->first();
     }
 }

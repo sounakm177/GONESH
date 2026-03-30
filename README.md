@@ -1,59 +1,181 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# inboxOro — Laravel Implementation Guide
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Architecture Overview
 
-## About Laravel
+```
+Browser (Blade SSR)
+  │  FIRST LOAD: full HTML with pre-rendered inbox
+  │
+  ├─ WebSocket (Reverb/Pusher protocol)
+  │    channel: mailbox.{id}
+  │    events:  new.email | mailbox.expired
+  │
+  └─ AJAX (fetch + CSRF)
+       POST /mailbox/generate
+       GET  /mailbox/inbox
+       GET  /mailbox/email/{id}
+       DELETE /mailbox/email/{id}
+       PATCH  /mailbox/email/{id}/unread
+       POST   /mailbox/mark-all-read
+       DELETE /mailbox/all
+       GET    /attachment/{id}/download
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Mail Server → POST /inbound/email (webhook)
+              InboundEmailController → DB → NewEmailReceived event → Reverb → Browser
+```
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## File Map
 
-## Learning Laravel
+```
+app/
+  Console/Kernel.php                    ← scheduler (prune every minute)
+  Events/
+    NewEmailReceived.php                ← Reverb broadcast event
+    MailboxExpired.php                  ← expiry broadcast event
+  Http/Controllers/
+    MailboxController.php               ← main controller (index, generate, inbox, CRUD)
+    AttachmentController.php            ← secure attachment download
+    InboundEmailController.php          ← mail server webhook receiver
+  Jobs/
+    PruneExpiredMailboxes.php           ← scheduled cleanup job
+  Models/
+    EmailDomain.php                     ← domains with cache
+    PublicMailbox.php                   ← mailbox model
+    PublicEmail.php                     ← email model with helpers
+    PublicEmailAttachment.php           ← attachment model
+  Services/
+    MailboxService.php                  ← all business logic
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+config/
+  inboxoro.php                          ← app-specific config
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+database/migrations/
+  ..._create_email_domains_table.php
+  ..._create_public_mailboxes_table.php
+  ..._create_public_emails_table.php
+  ..._create_public_email_attachments_table.php
+  EmailDomainSeeder.php                 ← move to database/seeders/
 
-## Laravel Sponsors
+resources/views/inboxoro/
+  index.blade.php                       ← main page (SSR + JS)
+  partials/email-row.blade.php          ← reusable row partial
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+routes/
+  web.php                               ← all routes
+  channels.php                          ← Reverb channel auth
+```
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Installation Steps
 
-## Contributing
+### 1. Install Reverb
+```bash
+composer require laravel/reverb
+php artisan reverb:install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 2. Run Migrations
+```bash
+php artisan migrate
+php artisan db:seed --class=EmailDomainSeeder
+```
 
-## Code of Conduct
+### 3. Register Service Provider Bindings
+In `AppServiceProvider::register()`:
+```php
+$this->app->singleton(\App\Services\MailboxService::class);
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 4. Register Inbound Webhook Route
+In `routes/api.php`:
+```php
+Route::post('inbound/email', [\App\Http\Controllers\InboundEmailController::class, 'receive'])
+    ->name('inbound.email');
+```
 
-## Security Vulnerabilities
+In `app/Http/Middleware/VerifyCsrfToken.php`:
+```php
+protected $except = ['api/inbound/email'];
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 5. Add to `config/app.php` providers (if not auto-discovered):
+```php
+App\Providers\BroadcastServiceProvider::class,
+```
 
-## License
+### 6. Update `config/broadcasting.php`
+Add the Reverb connection as shown in `.env.example`.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 7. Copy `config/inboxoro.php` to your config/ directory
+
+### 8. Start everything
+```bash
+# Terminal 1: Reverb WebSocket server
+php artisan reverb:start
+
+# Terminal 2: Queue worker (for broadcast jobs)  
+php artisan queue:work redis --queue=default
+
+# Terminal 3: Scheduler (or add to crontab)
+php artisan schedule:work
+```
+
+For production, add to crontab:
+```
+* * * * * cd /path/to/project && php artisan schedule:run >> /dev/null 2>&1
+```
+
+---
+
+## Performance Decisions
+
+| Concern | Solution |
+|---|---|
+| First paint speed | Server-renders inbox HTML (SSR) — zero waiting for JS |
+| Font loading | `preload` + async `onload` — fonts never block render |
+| Domain list | Cached forever with Redis tags — 1 DB hit per deploy |
+| Email search | MySQL FULLTEXT index on subject+sender — no LIKE scan |
+| Session matching | SHA-256 hash of session ID stored in DB — no plaintext |
+| Inbox preview | `LEFT(body, 120)` at DB level — no PHP string ops |
+| Attachment count | `withCount('attachments')` — single JOIN, no N+1 |
+| Expiry cleanup | Chunked 100/batch, `onOneServer()` — safe for clusters |
+| Real-time | Reverb WebSocket — no polling in happy path |
+| Polling fallback | Triggers on WS disconnect — 10s interval |
+| CSRF | All AJAX includes token from inline JSON bootstrap |
+
+---
+
+## Mail Server Integration
+
+### Option A: Postal (self-hosted, recommended)
+1. Create a route in Postal for your domains
+2. Set webhook URL: `https://yourdomain.com/api/inbound/email`
+3. Set `X-Webhook-Secret` header in Postal route config
+
+### Option B: Mailgun Inbound Routes
+1. In Mailgun dashboard → Receiving → Create Route
+2. Filter: `match_recipient(".*@inboxoro\.com")`
+3. Action: `forward("https://yourdomain.com/api/inbound/email")`
+4. Note: Mailgun sends multipart form, not JSON — adjust `InboundEmailController::receive()` accordingly
+
+### Option C: Haraka MX Server
+Run Haraka on the same server, configure `outbound/smtp_forward` plugin to POST to the webhook.
+
+---
+
+## Security Notes
+
+- **Session binding**: Every mailbox is tied to a SHA-256 of the Laravel session ID
+- **Attachment ownership**: Download route verifies session owns the mailbox before streaming
+- **Webhook secret**: Inbound endpoint checks `X-Webhook-Secret` header
+- **XSS**: Email bodies pass through `strip_tags()` whitelist; JS uses `escHtml()` for dynamic content
+- **Rate limiting**: All routes use `throttle:60,1` middleware
+- **No PII logged**: No IP addresses stored per the zero-trace promise
+
+
+ netstat -ano | findstr :3306
+
+ taskkill /PID 20740 /F

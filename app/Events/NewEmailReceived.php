@@ -10,10 +10,6 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-/**
- * Broadcast immediately (ShouldBroadcastNow) so the inbox updates
- * in real-time without waiting for the queue worker.
- */
 class NewEmailReceived implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
@@ -23,13 +19,10 @@ class NewEmailReceived implements ShouldBroadcastNow
         public readonly PublicMailbox $mailbox,
     ) {}
 
-    /**
-     * Private channel per mailbox — only the browser session owning
-     * that mailbox will receive the event.
-     * Channel name: mailbox.{id}
-     */
+
     public function broadcastOn(): array
     {
+        echo $this->mailbox->id;
         return [
             new Channel("mailbox.{$this->mailbox->id}"),
         ];
@@ -40,9 +33,6 @@ class NewEmailReceived implements ShouldBroadcastNow
         return 'new.email';
     }
 
-    /**
-     * Minimal payload — client fetches full email on demand.
-     */
     public function broadcastWith(): array
     {
         return [

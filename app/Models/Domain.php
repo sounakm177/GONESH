@@ -1,8 +1,9 @@
 <?php
-
 namespace App\Models;
 
-class Domains extends BaseModel
+use Illuminate\Database\Eloquent\Model;
+
+class Domain extends Model
 {
     protected $fillable = [
         'domain',

@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\Log;
 
 class MailboxService
 {
-    private const TTL_MINUTES   = 10;
+    private const TTL_MINUTES = 10;
+
     private const LOCAL_ADJECTIVES = [
         'silent','ghost','turbo','vapor','swift','lunar','neon','flux',
         'rogue','stealth','onyx','blaze','mist','echo','zero','vivid',
@@ -23,33 +24,23 @@ class MailboxService
         'claw','haze','gust','fern',
     ];
 
-    // ── Public API ───────────────────────────────────────────────────
-
-    /**
-     * Find an existing active mailbox for the session or create a new one.
-     * Uses a SELECT + pessimistic lock to avoid race conditions.
-     */
     public function resolveForSession(string $sessionId, ?string $preferDomain = null): PublicMailbox
     {
         return DB::transaction(function () use ($sessionId, $preferDomain) {
-            // 1. Try to find existing non-expired mailbox
             $mailbox = PublicMailbox::active()
                 ->forSession($sessionId)
                 ->lockForUpdate()
+                ->latest()
                 ->first();
 
             if ($mailbox) {
                 return $mailbox;
             }
 
-            // 2. Create fresh one
             return $this->createMailbox($sessionId, $preferDomain);
         });
     }
 
-    /**
-     * Generate a brand-new mailbox (replaces the current one for the session).
-     */
     public function createMailbox(string $sessionId, ?string $preferDomain = null): PublicMailbox
     {
         $domain = $this->resolveDomain($preferDomain);
@@ -63,17 +54,12 @@ class MailboxService
         ]);
     }
 
-    /**
-     * Paginated inbox retrieval — eager-loads attachment count.
-     * Supports optional full-text search term.
-     */
     public function getInbox(PublicMailbox $mailbox, ?string $search = null, int $page = 1, int $perPage = 30): array
     {
         $query = $mailbox->emails()
             ->select([
                 'id', 'mailbox_id', 'sender', 'subject',
                 'is_read', 'received_at', 'content_type',
-                // Preview: first 120 chars of body at DB level — avoids PHP overhead
                 DB::raw("LEFT(body, 120) AS preview"),
             ])
             ->withCount('attachments')
@@ -95,10 +81,6 @@ class MailboxService
         ];
     }
 
-    /**
-     * Full email detail with attachments.
-     * Marks as read and returns email.
-     */
     public function openEmail(PublicMailbox $mailbox, int $emailId): PublicEmail
     {
         $email = $mailbox->emails()
@@ -132,8 +114,6 @@ class MailboxService
         return (bool) $mailbox->emails()->where('id', $emailId)->update(['is_read' => false]);
     }
 
-    // ── Internals ────────────────────────────────────────────────────
-
     private function resolveDomain(?string $preferDomain): EmailDomain
     {
         if ($preferDomain) {
@@ -141,7 +121,6 @@ class MailboxService
             if ($domain) return $domain;
         }
 
-        // Default: first active free domain
         return EmailDomain::active()->free()->orderBy('sort_order')->firstOrFail();
     }
 
@@ -160,7 +139,6 @@ class MailboxService
         } while ($exists && $attempts < 20);
 
         if ($exists) {
-            // Ultimate fallback: UUID prefix
             $email = Str::random(12) . "@{$domain}";
             Log::warning("MailboxService: collision fallback used for domain {$domain}");
         }

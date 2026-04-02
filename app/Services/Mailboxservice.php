@@ -33,8 +33,6 @@ class MailboxService
                 ->latest()
                 ->first();
 
-            dump($mailbox);
-
             if ($mailbox) {
                 return $mailbox;
             }

@@ -17,14 +17,17 @@ class MailboxController extends Controller
 
     public function index(Request $request)
     {
-        return 'sounak';
         $sessionId = $this->getSessionId($request);
+        dump($sessionId);
         $mailbox   = $this->mailboxService->resolveForSession($sessionId);
 
+        dump($mailbox);
         $domains = EmailDomain::cachedActive();
 
+        dump($domains);
         $inbox = $this->mailboxService->getInbox($mailbox, perPage: 10);
 
+        dump($inbox);
         return response()
             ->view('inboxoro.index', compact('mailbox', 'domains', 'inbox'))
             ->header('Cache-Control', 'no-store, no-cache, must-revalidate');

@@ -17,6 +17,7 @@ class MailboxController extends Controller
 
     public function index(Request $request)
     {
+        return 'sounak';
         $sessionId = $this->getSessionId($request);
         $mailbox   = $this->mailboxService->resolveForSession($sessionId);
 

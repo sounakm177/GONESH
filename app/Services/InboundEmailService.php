@@ -34,7 +34,7 @@ class InboundEmailService
             ->first();
 
         if (! $mailbox) {
-            Log::channel('inbound')->info("No active mailbox for: {$toEmail} — discarding");
+            Log::channel('inbound')->info("No active mailbox for sounak: {$toEmail} — discarding");
             return ['to' => $toEmail, 'status' => 'no_mailbox'];
         }
 

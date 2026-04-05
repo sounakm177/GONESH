@@ -129,4 +129,11 @@ return [
 
     ],
 
+    'inbound' => [
+        'driver' => 'daily',
+        'path'   => storage_path('logs/inbound.log'),
+        'level'  => 'debug',
+        'days'   => 7,
+    ],
+
 ];

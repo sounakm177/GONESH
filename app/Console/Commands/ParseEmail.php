@@ -23,7 +23,7 @@ class ParseEmail extends Command
 
             $service = app(InboundEmailService::class);
 
-            Log::info("sounak",$rawEmail);
+            Log::info(["sounak",$rawEmail]);
 
             $result = $service->processRawEmail($rawEmail);
 

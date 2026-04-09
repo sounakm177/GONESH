@@ -225,9 +225,8 @@ class InboundEmailService
     private function storeAttachment(int $emailId, array $att): void
     {
         $maxSize = config('inboxoro.max_attachment_size', 10 * 1024 * 1024);
-
-        $content  = $this->decodeBody($att['content'], $att['encoding']);
-        $size     = strlen($content);
+        $content = $this->decodeBody($att['content'], $att['encoding']);
+        $size    = strlen($content);
 
         if ($size > $maxSize) {
             Log::channel('inbound')->info("Attachment too large ({$size} bytes) — skipped: {$att['filename']}");
@@ -237,12 +236,19 @@ class InboundEmailService
         $filename = preg_replace('/[^a-zA-Z0-9._\-]/', '_', $att['filename']);
         $directory = storage_path("app/attachments/{$emailId}");
 
-        if (!file_exists($directory)) {
-            mkdir($directory, 0755, true);
+        if (!is_dir($directory) && !mkdir($directory, 0755, true) && !is_dir($directory)) {
+            Log::error("Failed to create directory: {$directory}");
+            return;
         }
 
         $path = "{$directory}/{$filename}";
-        file_put_contents($path, $content);
+
+        if (file_put_contents($path, $content) === false) {
+            Log::error("Failed to write attachment to {$path}");
+            return;
+        }
+
+        Log::info("Attachment saved: {$path}, size: {$size}");
 
         PublicEmailAttachment::create([
             'email_id'  => $emailId,
@@ -253,3 +259,4 @@ class InboundEmailService
         ]);
     }
 }
+

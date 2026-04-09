@@ -1,11 +1,14 @@
-{{-- Used both by SSR (Blade loop) and JS renderEmailRow() helper --}}
 <div class="erow {{ !$em->is_read ? 'unread' : '' }}"
      data-id="{{ $em->id }}"
      onclick="openEmail({{ $em->id }})">
 
   <div class="erow-left">
-    <div class="erow-avatar" style="background:{{ $em->avatar_color ?? '#4B5563' }};">
-      {{ $em->avatar_letter ?? '?' }}
+    @php
+      $avatar = avatar_data($em->senderName() ?? 'unknown');
+    @endphp
+    <div class="erow-avatar" 
+        style="background:{{ $em->avatar_color ?? $avatar['color'] }};">
+        {{ $em->avatar_letter ?? $avatar['letter'] }}
     </div>
     <div class="{{ !$em->is_read ? 'udot-sm' : 'rdot-sm' }}"></div>
   </div>
@@ -13,10 +16,10 @@
   <div class="erow-body">
     <div class="erow-top-row">
       <span class="e-sender">{{ $em->sender }}</span>
-      <span class="e-time">{{ $em->time_ago ?? $em->received_at }}</span>
+      <span class="e-time">{{ $em->time_ago ?? \Carbon\Carbon::parse($em->received_at)->diffForHumans() }}</span>
     </div>
     <div class="e-subject">{{ $em->subject }}</div>
-    <div class="e-preview">{{ $em->preview ?? '' }}</div>
+    <!-- <div class="e-preview">{{ $em->preview ?? '' }}</div> -->
 
     @if($em->attachments_count > 0)
       <div class="e-attach-badge">

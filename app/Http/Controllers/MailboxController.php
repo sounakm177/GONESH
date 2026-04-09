@@ -68,30 +68,33 @@ class MailboxController extends Controller
     public function show(Request $request, int $id): JsonResponse
     {
         $mailbox = $this->resolveActiveMailbox($request);
+
         if (! $mailbox) {
             return response()->json(['error' => 'mailbox_expired'], 410);
         }
 
         $email = $this->mailboxService->openEmail($mailbox, $id);
+        $senderName = $email->senderName();
+        $avatar = avatar_data($senderName);
 
         return response()->json([
             'id'          => $email->id,
-            'sender'      => $email->senderName(),
+            'sender'      => $senderName,
             'sender_email'=> $email->senderEmail(),
             'subject'     => $email->subject,
             'body'        => $email->safeBody(),
             'content_type'=> $email->content_type,
             'received_at' => $email->received_at->toISOString(),
             'time_ago'    => $email->timeAgo(),
-            'avatar_letter' => $email->avatarLetter(),
-            'avatar_color'  => $email->avatarColor(),
+            'avatar_letter' => $avatar["letter"],
+            'avatar_color'  => $avatar["color"],
             'attachments' => $email->attachments->map(fn ($a) => [
                 'id'        => $a->id,
                 'file_name' => $a->file_name,
-                'size'      => $a->humanSize(),
-                'extension' => $a->extension(),
-                'icon_style'=> $a->iconStyle(),
-                'download_url' => $a->downloadUrl(),
+                'size'      => $a->humanSize() ?? '',
+                'extension' => $a->extension() ?? '',
+                'icon_style'=> $a->iconStyle() ?? '',
+                'download_url' => $a->downloadUrl() ?? '',
             ]),
             'unread_count' => $mailbox->fresh()->unreadCount(),
         ])->withHeaders(['Cache-Control' => 'no-store']);

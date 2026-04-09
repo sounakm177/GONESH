@@ -237,7 +237,8 @@ class InboundEmailService
         $filename = preg_replace('/[^a-zA-Z0-9._\-]/', '_', $att['filename']);
         $path     = "attachments/{$emailId}/{$filename}";
 
-        Storage::put($path, $content);
+        Storage::disk('public')->makeDirectory("attachments/{$emailId}");
+        Storage::disk('public')->put($path, $content);
 
         PublicEmailAttachment::create([
             'email_id'  => $emailId,

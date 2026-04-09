@@ -233,7 +233,6 @@ function renderEmailRow(em) {
           <span class="e-time">${escHtml(em.time_ago ?? em.received_at ?? '')}</span>
         </div>
         <div class="e-subject">${escHtml(em.subject)}</div>
-        <div class="e-preview">${escHtml(em.preview ?? '')}</div>
         ${hasAttach ? `
           <div class="e-attach-badge">
             <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

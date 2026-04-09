@@ -44,10 +44,10 @@ Route::middleware(['web', 'throttle:60,1'])->prefix('mailbox')->name('mailbox.')
 });
 
 // ── Attachment download ───────────────────────────────────────────────────────
-// Route::get('attachment/{attachment}/download', [AttachmentController::class, 'download'])
-//     ->name('attachment.download')
-//     ->whereNumber('attachment')
-//     ->middleware(['web', 'throttle:30,1']);
+Route::get('attachment/{attachment}/download', [MailboxController::class, 'inbox'])
+    ->name('attachment.download')
+    ->whereNumber('attachment')
+    ->middleware(['web', 'throttle:30,1']);
 
 /////
 
@@ -67,7 +67,7 @@ Route::middleware(['web', 'throttle:60,1'])->prefix('mailbox')->name('mailbox.')
 if (app()->environment('local')) {
 
     Route::get('/test/send-email', function (Request $request) {
-        $sessionId = "5e19422701aef63964ed6690c3280174d615095384ddd405d834070ad5343770";
+        $sessionId = "be1552d3795015b5e7e99b060064f5dac538af29479552dafb648bf56c1b7d45";
 
         $mailbox = PublicMailbox::latest()
             ->firstOrFail();

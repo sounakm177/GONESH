@@ -127,12 +127,12 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
-    ],
+        'inbound' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/inbound.log'),
+            'level' => 'info',
+        ],
 
-    'inbound' => [
-        'driver' => 'single',
-        'path' => storage_path('logs/inbound.log'),
-        'level' => 'info',
     ],
 
 ];

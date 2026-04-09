@@ -15,9 +15,6 @@ class InboundEmailService
     {
         $parsed = $this->parseRawEmail($rawEmail);
 
-        dd($parsed);
-
-
         Log::channel('inbound')->info('Inbound email received', [
             'to'      => $parsed['to'],
             'from'    => $parsed['from'],

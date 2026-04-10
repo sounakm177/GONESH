@@ -21,11 +21,10 @@
           href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
   </noscript>
 
-<link rel="stylesheet" href="{{ asset('css/inboxoro-mobile-patch.css') }}">
+  @vite(['resources/js/app.js'])
+  <link rel="stylesheet" href="{{ asset('css/inboxoro-mobile-patch.css') }}">
 
 <script src="{{ asset('js/inboxoro-mobile.js') }}" defer></script>
-
-  @vite(['resources/js/app.js'])
 
   {{-- Inline critical CSS — eliminates render-blocking stylesheet --}}
   <link rel="stylesheet" href="{{ asset('css/inboxoro.css') }}">

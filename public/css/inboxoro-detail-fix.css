@@ -1,0 +1,141 @@
+/* =============================================================
+   inboxOro — Mobile Detail Panel Visibility Fix
+   Add this at the END of your existing CSS or as a new file
+   loaded after inboxoro.css and inboxoro-mobile-patch.css
+   ============================================================= */
+
+@media (max-width: 768px) {
+
+  /* ── INBOX SHELL: no fixed height, just fit the list ──────── */
+  .inbox-shell {
+    flex-direction: column;
+    max-height:     none;
+    min-height:     0;
+    overflow:       visible;     /* let children control their own overflow */
+  }
+
+  /* ── LIST PANEL: visible by default, auto height ──────────── */
+  .inbox-list-panel {
+    width:          100%;
+    border-right:   none;
+    border-bottom:  2px solid var(--INK);
+    /* let it grow to however many emails there are, up to a cap */
+    max-height:     none;
+    min-height:     0;
+    height:         auto;
+    flex-shrink:    0;
+    position:       relative;
+    z-index:        2;
+    transform:      translateX(0);
+    opacity:        1;
+    transition:     transform .28s cubic-bezier(.4,0,.2,1),
+                    opacity   .22s ease;
+  }
+
+  /* ── EMAIL LIST: limit scroll area to ~5 rows ─────────────── */
+  #email-list {
+    max-height: 300px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ── DETAIL PANEL: COMPLETELY HIDDEN by default on mobile ──── */
+  .inbox-detail-panel {
+    /* hidden until .mob-reading is applied to #inbox-shell */
+    display:    none;
+    position:   static;
+    width:      100%;
+    transform:  none;
+    opacity:    1;
+    min-height: 0;
+    z-index:    3;
+    background: #fff;
+  }
+
+  /* ── READING STATE: show detail, hide list ────────────────── */
+  .inbox-shell.mob-reading .inbox-list-panel {
+    /* slide out and collapse */
+    transform:      translateX(-100%);
+    opacity:        0;
+    max-height:     0;
+    min-height:     0;
+    overflow:       hidden;
+    border-bottom:  none;
+    pointer-events: none;
+  }
+
+  .inbox-shell.mob-reading .inbox-detail-panel {
+    /* slide in — use flex to restore column layout */
+    display:    flex;
+    flex-direction: column;
+    min-height: 520px;
+    /* slide-in animation via keyframe since we're toggling display */
+    animation:  mob-slide-in .25s cubic-bezier(.4,0,.2,1) both;
+  }
+
+  @keyframes mob-slide-in {
+    from { opacity: 0; transform: translateX(30px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  /* ── BACK BAR: only visible while reading ─────────────────── */
+  .mob-back-bar {
+    display:         flex;
+    align-items:     center;
+    gap:             8px;
+    padding:         11px 16px;
+    background:      var(--Y);
+    border-bottom:   2px solid var(--INK);
+    font-family:     'JetBrains Mono', monospace;
+    font-size:       .7rem;
+    font-weight:     700;
+    letter-spacing:  .1em;
+    text-transform:  uppercase;
+    color:           var(--INK);
+    cursor:          pointer;
+    user-select:     none;
+    -webkit-user-select: none;
+    flex-shrink:     0;
+    width:           100%;
+    border:          none;
+    -webkit-tap-highlight-color: rgba(0,0,0,.08);
+    transition:      background .12s;
+  }
+  .mob-back-bar:active { background: #e5b800; }
+
+  /* ── EMPTY STATE: never show on mobile ────────────────────── */
+  .detail-empty {
+    display: none !important;
+  }
+
+  /* ── DETAIL CONTENT: full width ──────────────────────────── */
+  .detail-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ── iOS input zoom fix ───────────────────────────────────── */
+  .inbox-search input {
+    font-size: 16px;
+  }
+
+}
+
+/* ── DESKTOP: always hide the back bar, always show detail ─── */
+@media (min-width: 769px) {
+  .mob-back-bar  { display: none !important; }
+  .detail-empty  { display: flex; }  /* restore desktop empty state */
+
+  /* Restore desktop detail panel to normal flex */
+  .inbox-detail-panel {
+    display:   flex !important;
+    flex:      1;
+    position:  static;
+    transform: none;
+    opacity:   1;
+    min-height: 0;
+    animation:  none;
+  }
+}

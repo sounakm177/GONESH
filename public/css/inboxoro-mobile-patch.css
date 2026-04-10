@@ -1,0 +1,213 @@
+/* =============================================================
+   inboxOro — Mobile Inbox Patch
+   public/css/inboxoro-mobile-patch.css
+
+   HOW TO USE:
+   Add this file AFTER your main inboxoro.css:
+   <link rel="stylesheet" href="{{ asset('css/inboxoro.css') }}">
+   <link rel="stylesheet" href="{{ asset('css/inboxoro-mobile-patch.css') }}">
+   ============================================================= */
+
+
+/* ─────────────────────────────────────────────────────────────
+   FIX 1 — DESKTOP: prevent any horizontal scrollbar from
+   appearing when content is slightly wider than its container.
+   Applies globally across all screen sizes.
+───────────────────────────────────────────────────────────── */
+
+html,
+body {
+  overflow-x: hidden;
+  max-width:  100%;
+}
+
+/* Inbox shell itself — clip overflow without scrollbar */
+.inbox-shell {
+  overflow-x: hidden;
+}
+
+/* Any element that might bleed out sideways */
+.email-row,
+.gen-block,
+.domain-tabs,
+.detail-body,
+.attach-grid {
+  overflow-x: hidden;
+}
+
+/* Domain tabs: allow finger-swipe scroll but hide the bar */
+.domain-tabs {
+  overflow-x:        auto;
+  overflow-y:        hidden;
+  scrollbar-width:   none;        /* Firefox */
+  -ms-overflow-style: none;       /* IE / Edge */
+}
+.domain-tabs::-webkit-scrollbar { display: none; } /* Chrome / Safari */
+
+/* Detail body: long URLs / pre-formatted text should wrap */
+.detail-body {
+  word-break:    break-word;
+  overflow-wrap: break-word;
+  overflow-x:    hidden;
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   FIX 2 — MOBILE GMAIL-STYLE INBOX
+   Only active on screens ≤ 768 px.
+
+   Concept:
+   • The inbox shell becomes a "card stack".
+   • The list panel is the default visible card (state = "list").
+   • When a user taps an email, the detail panel slides in from
+     the right and covers the list panel (state = "reading").
+   • A yellow "← Back" bar at the top of the detail lets the
+     user return to the list.
+   • Controlled purely by a class on the inbox shell:
+       .inbox-shell                → list visible
+       .inbox-shell.mob-reading   → detail visible
+───────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+
+  /* The shell is a positioning context, full viewport height */
+  .inbox-shell {
+    position:   relative;
+    flex-direction: column;    /* panels stack vertically */
+    max-height: none;
+    min-height: 0;
+    /* height is driven by whichever panel is showing */
+    overflow:   hidden;
+  }
+
+  /* ── LIST PANEL ──────────────────────────────────────────── */
+  .inbox-list-panel {
+    width:          100%;
+    border-right:   none;
+    border-bottom:  none;
+    /* show a comfortable number of rows before scroll */
+    height:         auto;
+    max-height:     440px;
+    min-height:     240px;
+    /* transition: slide out to left when reading */
+    transition:     transform .28s cubic-bezier(.4,0,.2,1),
+                    opacity   .22s ease;
+    transform:      translateX(0);
+    opacity:        1;
+    flex-shrink:    0;
+    /* keep it above detail when list is active */
+    position:       relative;
+    z-index:        2;
+  }
+
+  /* State: reading — list slides out left, becomes invisible */
+  .inbox-shell.mob-reading .inbox-list-panel {
+    transform:      translateX(-100%);
+    opacity:        0;
+    /* collapse height so the shell shrinks to detail height */
+    max-height:     0;
+    min-height:     0;
+    overflow:       hidden;
+    pointer-events: none;
+  }
+
+  /* ── DETAIL PANEL ────────────────────────────────────────── */
+  .inbox-detail-panel {
+    /* absolute so it sits on top of list; starts off-screen right */
+    position:   absolute;
+    top:        0;
+    left:       0;
+    right:      0;
+    bottom:     0;
+    width:      100%;
+    /* starts fully off-screen to the right */
+    transform:  translateX(100%);
+    opacity:    0;
+    transition: transform .28s cubic-bezier(.4,0,.2,1),
+                opacity   .22s ease;
+    /* never set a height here — it fills the shell */
+    min-height: 480px;
+    z-index:    3;
+    background: #fff;
+  }
+
+  /* State: reading — detail slides in from right */
+  .inbox-shell.mob-reading .inbox-detail-panel {
+    position:  relative;   /* flow back into the shell */
+    transform: translateX(0);
+    opacity:   1;
+  }
+
+  /* ── BACK BAR ─────────────────────────────────────────────
+     A full-width yellow bar at the very top of the detail
+     panel. Shown ONLY on mobile; hidden on desktop.
+  ─────────────────────────────────────────────────────────── */
+  .mob-back-bar {
+    display:         flex;
+    align-items:     center;
+    gap:             8px;
+    padding:         11px 16px;
+    background:      var(--Y);
+    border-bottom:   2px solid var(--INK);
+    font-family:     'JetBrains Mono', monospace;
+    font-size:       .7rem;
+    font-weight:     700;
+    letter-spacing:  .1em;
+    text-transform:  uppercase;
+    color:           var(--INK);
+    cursor:          pointer;
+    user-select:     none;
+    -webkit-user-select: none;
+    flex-shrink:     0;
+    /* tap feedback */
+    -webkit-tap-highlight-color: rgba(0,0,0,.08);
+    transition:      background .12s;
+  }
+  .mob-back-bar:active { background: #e5b800; }
+  .mob-back-bar svg    { flex-shrink: 0; }
+
+  /* ── EMPTY STATE ──────────────────────────────────────────
+     On mobile the detail panel is off-screen initially,
+     so we don't need the "select a message" placeholder to
+     take up height — just hide it until it's needed.
+  ─────────────────────────────────────────────────────────── */
+  .inbox-shell:not(.mob-reading) .inbox-detail-panel .detail-empty {
+    display: none;
+  }
+
+  /* ── SEARCH INPUT iOS zoom fix ───────────────────────────── */
+  .inbox-search input {
+    font-size: 16px;    /* prevents iOS from zooming on focus */
+  }
+
+  /* ── EMAIL ROW tap feedback ──────────────────────────────── */
+  .erow {
+    -webkit-tap-highlight-color: transparent;
+  }
+  .erow:active {
+    background: #FEF9C3;
+  }
+
+  /* ── TOOLBAR on detail: tighter on mobile ────────────────── */
+  .detail-toolbar      { padding: 8px 12px; flex-wrap: wrap; gap: 6px; }
+  .detail-toolbar-left { gap: 5px; flex-wrap: wrap; }
+  .dtl-btn             { font-size: .7rem; padding: 6px 10px; min-height: 34px; }
+
+  /* ── DETAIL BODY on mobile ────────────────────────────────── */
+  .detail-header { padding: 12px 14px 10px; }
+  .detail-subject { font-size: 1.15rem; }
+  .detail-body    { padding: 14px; font-size: .88rem; }
+
+  /* ── ATTACHMENTS: full width on mobile ───────────────────── */
+  .attach-grid    { flex-direction: column; }
+  .attach-card    { max-width: 100%; min-width: 0; }
+
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   DESKTOP: make sure the back bar is never visible on ≥ 769px
+───────────────────────────────────────────────────────────── */
+@media (min-width: 769px) {
+  .mob-back-bar { display: none !important; }
+}

@@ -41,7 +41,6 @@ class InboundEmailController extends Controller
      */
     public function receive(Request $request): Response
     {
-        // ── Security: verify shared webhook secret ────────────────────
         $secret = config('inboxoro.webhook_secret');
         if ($secret && $request->header('X-Webhook-Secret') !== $secret) {
             Log::warning('InboundEmail: invalid webhook secret from ' . $request->ip());
@@ -60,7 +59,6 @@ class InboundEmailController extends Controller
             ->first();
 
         if (! $mailbox) {
-            // Silently accept — mail server expects 200 to avoid retries
             return response('OK', 200);
         }
 
@@ -78,42 +76,20 @@ class InboundEmailController extends Controller
                 'received_at'  => now(),
             ]);
 
-            // ── Store attachments ─────────────────────────────────────
             foreach (($data['attachments'] ?? []) as $att) {
                 $this->storeAttachment($email->id, $att);
             }
 
-            // ── Broadcast via Reverb ──────────────────────────────────
             NewEmailReceived::dispatch($email, $mailbox);
 
         } catch (\Throwable $e) {
             Log::error('InboundEmail: failed to store email: ' . $e->getMessage(), [
                 'to' => $toEmail,
             ]);
-            // Still return 200 to prevent mail server retry storm
         }
 
         return response('OK', 200);
     }
-
-    // private function storeAttachment(int $emailId, array $att): void
-    // {
-    //     if (empty($att['content'])) return;
-
-    //     $content  = base64_decode($att['content']);
-    //     $filename = preg_replace('/[^a-zA-Z0-9._\-]/', '_', $att['filename'] ?? 'attachment');
-    //     $path     = "attachments/{$emailId}/{$filename}";
-
-    //     Storage::put($path, $content);
-
-    //     PublicEmailAttachment::create([
-    //         'email_id'  => $emailId,
-    //         'file_name' => $filename,
-    //         'file_path' => $path,
-    //         'file_size' => strlen($content),
-    //         'mime_type' => $att['content_type'] ?? 'application/octet-stream',
-    //     ]);
-    // }
 
     private function decodeBody($content, $encoding)
     {

@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 class MailboxService
 {
-    private const TTL_MINUTES = 10;
+    private const TTL_MINUTES = 30;
 
     private const LOCAL_ADJECTIVES = [
         'silent','ghost','turbo','vapor','swift','lunar','neon','flux',

@@ -146,6 +146,12 @@ class InboundEmailController extends Controller
 
         Storage::put($path, $content);
 
+        $fullPath = storage_path("app/public/" . $path);
+
+        chmod($fullPath, 0664);
+        chown($fullPath, 'www-data');
+        chgrp($fullPath, 'www-data');
+
         $mime = $att['content_type'] ?? null;
         if (!$mime || $mime === 'application/octet-stream') {
             $mime = finfo_buffer(finfo_open(FILEINFO_MIME_TYPE), $content);

@@ -44,7 +44,7 @@ Route::middleware(['web', 'throttle:60,1'])->prefix('mailbox')->name('mailbox.')
 });
 
 // ── Attachment download ───────────────────────────────────────────────────────
-Route::get('attachment/{attachment}/download', [MailboxController::class, 'inbox'])
+Route::get('attachment/{attachment}/download', [MailboxController::class, 'attachmentDownload'])
     ->name('attachment.download')
     ->whereNumber('attachment')
     ->middleware(['web', 'throttle:30,1']);

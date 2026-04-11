@@ -8,6 +8,7 @@ use App\Services\MailboxService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class MailboxController extends Controller
 {
@@ -149,5 +150,22 @@ class MailboxController extends Controller
             ->forSession($sessionId)
             ->latest()
             ->first();
+    }
+
+    public function attachmentDownload($attachmentId)
+    {
+        $attachment = PublicEmailAttachment::findOrFail($attachmentId);
+
+        $path = $attachment->file_path;
+
+        if (!Storage::exists($path)) {
+            abort(404, 'File not found');
+        }
+
+        return response()->streamDownload(function () use ($path) {
+            echo Storage::get($path);
+        }, $attachment->file_name, [
+            'Content-Type' => $attachment->mime_type ?? 'application/octet-stream',
+        ]);
     }
 }

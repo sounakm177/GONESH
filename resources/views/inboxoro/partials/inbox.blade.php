@@ -85,20 +85,9 @@
         </b>
       </div>
 
-    </div>{{-- /inbox-list-panel --}}
-
-    {{-- ── DETAIL PANEL
-         Desktop: always visible (flex), shows empty-state placeholder.
-         Mobile:  display:none via CSS until .mob-reading is added to
-                  #inbox-shell by inboxoro-mobile.js → openEmail().
-    ── --}}
+    </div>
     <div class="inbox-detail-panel">
 
-      {{--
-        MOBILE BACK BAR
-        Hidden on desktop (display:none for ≥769px via CSS).
-        Tap → mobBackToList() removes .mob-reading → list slides back.
-      --}}
       <button class="mob-back-bar"
               onclick="mobBackToList()"
               aria-label="Back to inbox">
@@ -125,7 +114,7 @@
       {{-- Email content injected here by openEmail() --}}
       <div class="detail-content" id="detail-content" style="display:none;"></div>
 
-    </div>{{-- /inbox-detail-panel --}}
+    </div>
 
   </div>{{-- /inbox-shell --}}
 </div>{{-- /inbox-wrap --}}

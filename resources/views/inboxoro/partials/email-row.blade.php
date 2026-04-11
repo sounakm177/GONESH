@@ -1,9 +1,3 @@
-{{-- resources/views/inboxoro/partials/email-row.blade.php --}}
-{{--
-   CHANGE: onclick calls openEmail() which is patched by
-   inboxoro-mobile.js to also trigger mobShowDetail() on mobile.
-   Everything else is identical to your existing file.
---}}
 <div class="erow {{ !$em->is_read ? 'unread' : '' }}"
      data-id="{{ $em->id }}"
      onclick="openEmail({{ $em->id }})">

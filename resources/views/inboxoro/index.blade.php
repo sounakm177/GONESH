@@ -22,14 +22,14 @@
   </noscript>
 
   @vite(['resources/js/app.js'])
+  {{-- Inline critical CSS — eliminates render-blocking stylesheet --}}
+  <link rel="stylesheet" href="{{ asset('css/inboxoro.css') }}">
   <link rel="stylesheet" href="{{ asset('css/inboxoro-mobile-patch.css') }}">
   <link rel="stylesheet" href="{{ asset('css/inboxoro-detail-fix.css') }}">  {{-- ADD THIS --}}
 
   <script src="{{ asset('js/inboxoro-mobile.js') }}" defer></script>
 
 
-  {{-- Inline critical CSS — eliminates render-blocking stylesheet --}}
-  <link rel="stylesheet" href="{{ asset('css/inboxoro.css') }}">
 </head>
 <body>
 

@@ -1,4 +1,3 @@
-{{-- resources/views/inboxoro/partials/inbox.blade.php --}}
 <div class="inbox-wrap">
 
   {{-- Section header --}}
@@ -10,7 +9,10 @@
           {{ $inbox['unread'] > 0 ? '('.$inbox['unread'].')' : '' }}
         </span>
       </span>
-      <span class="sec-meta">Live updates</span>
+      <div class="live-pill">
+        <div class="live-dot"></div>
+        Live updates
+      </div>
     </div>
 
     <div style="display:flex;gap:6px;">

@@ -10,7 +10,7 @@
           {{ $inbox['unread'] > 0 ? '('.$inbox['unread'].')' : '' }}
         </span>
       </span>
-      <span class="sec-meta">// live · Reverb realtime</span>
+      <span class="sec-meta">Live updates</span>
     </div>
 
     <div style="display:flex;gap:6px;">

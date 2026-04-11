@@ -14,6 +14,7 @@ class ParseEmail extends Command
     public function handle()
     {
         try {
+            umask(0000);
             $rawEmail = file_get_contents("php://stdin");
 
             if (!$rawEmail) {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\EmailDomain;
 use App\Models\PublicMailbox;
+use App\Models\PublicEmailAttachment;
 use App\Services\MailboxService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -156,16 +157,16 @@ class MailboxController extends Controller
     {
         $attachment = PublicEmailAttachment::findOrFail($attachmentId);
 
-        $path = $attachment->file_path;
-
-        if (!Storage::exists($path)) {
+        if (!Storage::disk('public')->exists($attachment->file_path)) {
             abort(404, 'File not found');
         }
 
-        return response()->streamDownload(function () use ($path) {
-            echo Storage::get($path);
-        }, $attachment->file_name, [
-            'Content-Type' => $attachment->mime_type ?? 'application/octet-stream',
-        ]);
+        return Storage::disk('public')->download(
+            $attachment->file_path,
+            $attachment->file_name,
+            [
+                'Content-Type' => $attachment->mime_type ?? 'application/octet-stream',
+            ]
+        );
     }
 }

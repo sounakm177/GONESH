@@ -96,22 +96,67 @@ class InboundEmailController extends Controller
         return response('OK', 200);
     }
 
+    // private function storeAttachment(int $emailId, array $att): void
+    // {
+    //     if (empty($att['content'])) return;
+
+    //     $content  = base64_decode($att['content']);
+    //     $filename = preg_replace('/[^a-zA-Z0-9._\-]/', '_', $att['filename'] ?? 'attachment');
+    //     $path     = "attachments/{$emailId}/{$filename}";
+
+    //     Storage::put($path, $content);
+
+    //     PublicEmailAttachment::create([
+    //         'email_id'  => $emailId,
+    //         'file_name' => $filename,
+    //         'file_path' => $path,
+    //         'file_size' => strlen($content),
+    //         'mime_type' => $att['content_type'] ?? 'application/octet-stream',
+    //     ]);
+    // }
+
+    private function decodeBody($content, $encoding)
+    {
+        return match (strtolower($encoding)) {
+            'base64' => base64_decode($content),
+            'quoted-printable' => quoted_printable_decode($content),
+            default => $content,
+        };
+    }
+
     private function storeAttachment(int $emailId, array $att): void
     {
         if (empty($att['content'])) return;
 
-        $content  = base64_decode($att['content']);
-        $filename = preg_replace('/[^a-zA-Z0-9._\-]/', '_', $att['filename'] ?? 'attachment');
-        $path     = "attachments/{$emailId}/{$filename}";
+        $content = $this->decodeBody($att['content'], $att['encoding'] ?? 'base64');
+
+        // filename fix
+        $originalName = $att['filename'] ?? 'attachment';
+        $cleanName = preg_replace('/[^a-zA-Z0-9._\-]/', '_', $originalName);
+
+        $parts = explode('.', $cleanName);
+        if (count($parts) > 2) {
+            $ext = array_pop($parts);
+            $name = implode('_', $parts);
+            $cleanName = $name . '.' . $ext;
+        }
+
+        $filename = $cleanName;
+        $path = "attachments/{$emailId}/{$filename}";
 
         Storage::put($path, $content);
+
+        $mime = $att['content_type'] ?? null;
+        if (!$mime || $mime === 'application/octet-stream') {
+            $mime = finfo_buffer(finfo_open(FILEINFO_MIME_TYPE), $content);
+        }
 
         PublicEmailAttachment::create([
             'email_id'  => $emailId,
             'file_name' => $filename,
             'file_path' => $path,
             'file_size' => strlen($content),
-            'mime_type' => $att['content_type'] ?? 'application/octet-stream',
+            'mime_type' => $mime,
         ]);
     }
 }

@@ -49,6 +49,17 @@
   @yield('content')
 
  
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SMT1LQHYBS"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-SMT1LQHYBS');
+  </script>
+
   @include('inboxoro.partials.js-bootstrap', ['mailbox' => $mailbox])
   <script src="{{ asset('js/inboxoro.js') }}" defer></script>
 

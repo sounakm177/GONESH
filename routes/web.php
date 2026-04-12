@@ -10,11 +10,53 @@ use App\Events\NewEmailReceived;
 use App\Models\PublicEmail;
 use App\Models\PublicMailbox;
 use Illuminate\Http\Request;
+use App\Models\SeoPage;
 
 Route::get('/', [MailboxController::class, 'index'])->name('home');
 
 Route::view('/privacy-policy', 'inboxoro.privacy-policy');
 Route::view('/terms', 'inboxoro.terms-service');
+
+
+Route::get('/sitemap.xml', function () {
+
+    $urls = [];
+
+    $staticPages = [
+        ['loc' => url('/'), 'priority' => '1.0'],
+        ['loc' => url('/privacy-policy'), 'priority' => '0.5'],
+        ['loc' => url('/terms'), 'priority' => '0.5'],
+    ];
+
+    foreach ($staticPages as $page) {
+        $urls[] = $page;
+    }
+
+    $seoPages = SeoPage::where('is_active', true)->get();
+
+    foreach ($seoPages as $page) {
+        $urls[] = [
+            'loc' => url('/' . $page->slug),
+            'priority' => '0.9'
+        ];
+    }
+
+    $xml = '<?xml version="1.0" encoding="UTF-8"?>';
+    $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+
+    foreach ($urls as $url) {
+        $xml .= '<url>';
+        $xml .= '<loc>' . $url['loc'] . '</loc>';
+        $xml .= '<lastmod>' . date('Y-m-d') . '</lastmod>';
+        $xml .= '<changefreq>daily</changefreq>';
+        $xml .= '<priority>' . $url['priority'] . '</priority>';
+        $xml .= '</url>';
+    }
+
+    $xml .= '</urlset>';
+
+    return response($xml, 200)->header('Content-Type', 'text/xml');
+});
 
 Route::get('/{slug}', [SeoController::class, 'show'])
      ->where('slug', '[a-z0-9-]+') 

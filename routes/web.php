@@ -12,13 +12,14 @@ use App\Models\PublicMailbox;
 use Illuminate\Http\Request;
 
 Route::get('/', [MailboxController::class, 'index'])->name('home');
+
+Route::view('/privacy-policy', 'inboxoro.privacy-policy');
+Route::view('/terms', 'inboxoro.terms-service');
+
 Route::get('/{slug}', [SeoController::class, 'show'])
      ->where('slug', '[a-z0-9-]+') 
      ->name('seo.page');
 
-
-Route::view('/privacy-policy', 'inboxoro.privacy-policy');
-Route::view('/terms', 'inboxoro.terms-service');
 
 // ── Mailbox AJAX (all require session) ───────────────────────────────────────
 Route::middleware(['web', 'throttle:60,1'])->prefix('mailbox')->name('mailbox.')->group(function () {

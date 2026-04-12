@@ -73,21 +73,54 @@
 
   <!-- What is a Temporary Email? -->
   <div style="border:2px solid var(--INK);background:#fff;padding:32px 28px;margin-bottom:32px;">
-    <h2 style="font-family:'Bebas Neue',sans-serif; font-size:1.65rem; letter-spacing:.03em; margin-bottom:14px; color:var(--INK); font-weight:600;">
+    <h2 style="
+        font-family:'Inter', sans-serif;
+        font-size:1.65rem;
+        letter-spacing:.02em;
+        margin-bottom:14px;
+        color:var(--INK);
+        font-weight:600;
+    ">
       What is a Temporary Email?
     </h2>
-    <p style="font-size:1.02rem; line-height:1.75; color:#374151; max-width:760px;">
+
+    <p style="
+        font-family:'Inter', sans-serif;
+        font-size:1.02rem;
+        line-height:1.75;
+        color:#374151;
+        max-width:760px;
+    ">
       A temporary email (also called disposable email or temp mail) lets you create a throwaway inbox in seconds. 
       Use it to sign up on any website without giving your real email address and getting flooded with spam.
     </p>
   </div>
 
+  
+
   <!-- Why Use inboxOro? -->
   <div style="border:2px solid var(--INK);background:#fff;padding:32px 28px;margin-bottom:32px;">
-    <h2 style="font-family:'Bebas Neue',sans-serif; font-size:1.65rem; letter-spacing:.03em; margin-bottom:18px; color:var(--INK); font-weight:600;">
+    
+    <h2 style="
+        font-family:'Inter', sans-serif;
+        font-size:1.65rem;
+        letter-spacing:.03em;
+        margin-bottom:18px;
+        color:var(--INK);
+        font-weight:600;
+    ">
       Why Use inboxOro?
     </h2>
-    <ul style="list-style:none; padding:0; display:grid; gap:14px; font-size:1.02rem; color:#111;">
+
+    <ul style="
+        font-family:'Inter', sans-serif;
+        list-style:none;
+        padding:0;
+        display:grid;
+        gap:14px;
+        font-size:1.02rem;
+        color:#111;
+    ">
 
     <!-- Speed -->
     <li style="display:flex; align-items:flex-start; gap:12px;">
@@ -134,44 +167,106 @@
     </li>
 
     </ul>
- 
-  </div>
+
+</div>
 
   <!-- Frequently Asked Questions -->
-  <div style="border:2px solid var(--INK);background:#fff;padding:32px 28px;">
-    <h2 style="font-family:'Bebas Neue',sans-serif; font-size:1.65rem; letter-spacing:.03em; margin-bottom:24px; color:var(--INK); font-weight:600;">
-      Frequently Asked Questions
-    </h2>
+<div style="border:2px solid var(--INK);background:#fff;padding:32px 28px;">
+  
+  <h2 style="
+    font-family:'Inter', sans-serif;
+    font-size:1.65rem;
+    letter-spacing:.03em;
+    margin-bottom:24px;
+    color:var(--INK);
+    font-weight:600;
+  ">
+    Frequently Asked Questions
+  </h2>
+  
+  <div style="display:grid; gap:28px;">
     
-    <div style="display:grid; gap:28px;">
-      <div>
-        <h3 style="font-family:'Bebas Neue',sans-serif; font-size:1.28rem; letter-spacing:.01em; margin-bottom:8px; color:var(--INK); font-weight:400;">
-          Is inboxOro really free?
-        </h3>
-        <p style="color:#4B5563; line-height:1.7;">Yes — completely free for temporary email use. No hidden charges and no signup required.</p>
-      </div>
-      
-      <div>
-        <h3 style="font-family:'Bebas Neue',sans-serif; font-size:1.28rem; letter-spacing:.01em; margin-bottom:8px; color:var(--INK); font-weight:400;">
-          How long do emails last?
-        </h3>
-        <p style="color:#4B5563; line-height:1.7;">Every address and its emails auto-delete after 10 minutes to keep your data private and our servers clean.</p>
-      </div>
-      
-      <div>
-        <h3 style="font-family:'Bebas Neue',sans-serif; font-size:1.28rem; letter-spacing:.01em; margin-bottom:8px; color:var(--INK); font-weight:400;">
-          Can I use it for important verifications?
-        </h3>
-        <p style="color:#4B5563; line-height:1.7;">Absolutely. Thousands of users successfully receive OTPs and verification links every single day.</p>
-      </div>
-      
-      <div>
-        <h3 style="font-family:'Bebas Neue',sans-serif; font-size:1.28rem; letter-spacing:.01em; margin-bottom:8px; color:var(--INK); font-weight:400;">
-          Is my data safe?
-        </h3>
-        <p style="color:#4B5563; line-height:1.7;">We don’t store anything permanently and never track users. Privacy is our top priority.</p>
-      </div>
+    <div>
+      <h3 style="
+        font-family:'Inter', sans-serif;
+        font-size:1.28rem;
+        letter-spacing:.01em;
+        margin-bottom:8px;
+        color:var(--INK);
+        font-weight:600;
+      ">
+        Is inboxOro really free?
+      </h3>
+      <p style="
+        font-family:'Inter', sans-serif;
+        color:#4B5563;
+        line-height:1.7;
+      ">
+        Yes — completely free for temporary email use. No hidden charges and no signup required.
+      </p>
     </div>
+    
+    <div>
+      <h3 style="
+        font-family:'Inter', sans-serif;
+        font-size:1.28rem;
+        letter-spacing:.01em;
+        margin-bottom:8px;
+        color:var(--INK);
+        font-weight:600;
+      ">
+        How long do emails last?
+      </h3>
+      <p style="
+        font-family:'Inter', sans-serif;
+        color:#4B5563;
+        line-height:1.7;
+      ">
+        Every address and its emails auto-delete after 10 minutes to keep your data private and our servers clean.
+      </p>
+    </div>
+    
+    <div>
+      <h3 style="
+        font-family:'Inter', sans-serif;
+        font-size:1.28rem;
+        letter-spacing:.01em;
+        margin-bottom:8px;
+        color:var(--INK);
+        font-weight:600;
+      ">
+        Can I use it for important verifications?
+      </h3>
+      <p style="
+        font-family:'Inter', sans-serif;
+        color:#4B5563;
+        line-height:1.7;
+      ">
+        Absolutely. Thousands of users successfully receive OTPs and verification links every single day.
+      </p>
+    </div>
+    
+    <div>
+      <h3 style="
+        font-family:'Inter', sans-serif;
+        font-size:1.28rem;
+        letter-spacing:.01em;
+        margin-bottom:8px;
+        color:var(--INK);
+        font-weight:600;
+      ">
+        Is my data safe?
+      </h3>
+      <p style="
+        font-family:'Inter', sans-serif;
+        color:#4B5563;
+        line-height:1.7;
+      ">
+        We don’t store anything permanently and never track users. Privacy is our top priority.
+      </p>
+    </div>
+
   </div>
+</div>
 
 </div>

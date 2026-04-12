@@ -935,3 +935,27 @@ footer {
 
   footer { flex-direction: column; gap: 14px; text-align: center; padding: 22px 16px; }
 }
+
+/* SEO Content — Matches inboxOro design */
+.seo-content .sec-title {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: .04em;
+  color: var(--INK);
+}
+
+.seo-content h3 {
+  color: var(--INK);
+  font-weight: 600;
+}
+
+.seo-content p {
+  font-size: 1.02rem;
+  line-height: 1.75;
+  color: #374151;
+}
+
+@media(max-width:900px){
+  .seo-content {
+    padding: 0 8px;
+  }
+}

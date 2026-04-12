@@ -1,8 +1,9 @@
 <nav>
-  <div class="nav-logo">
+  <a href="/" class="nav-logo">
     <img src="{{asset('/images/logo.svg')}}" alt="Inboxoro Logo" class="logo-img">
     <span class="badge">FREE</span>
-  </div>
+  </a>
+
   <div class="nav-links">
     <!-- <a href="#">How it works</a> -->
     <!-- <a href="#">Domains</a>

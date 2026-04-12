@@ -642,9 +642,9 @@
 
 <!-- ══ NAV ══════════════════════════════════════════════════════ -->
 <nav class="site-nav">
-  <div class="nav-logo">
+  <a href="/" class="nav-logo">
     <img src="{{asset('/images/logo.svg')}}" alt="Inboxoro Logo" class="logo-img">
-  </div>
+  </a>
   <a href="/" class="nav-back">
     <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
       <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>

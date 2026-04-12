@@ -68,6 +68,60 @@
             </p>
         </div>
 
+         <div style="border:2px solid var(--INK);background:#fff;padding:32px 28px;margin-bottom:32px;">
+    <h2 style="font-family:'Bebas Neue',sans-serif; font-size:1.65rem; letter-spacing:.03em; margin-bottom:18px; color:var(--INK); font-weight:600;">
+      Why Use inboxOro?
+    </h2>
+    <ul style="list-style:none; padding:0; display:grid; gap:14px; font-size:1.02rem; color:#111;">
+
+  <!-- Speed -->
+      <li style="display:flex; align-items:flex-start; gap:12px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M13 2L3 14h7l-1 8 12-14h-7l1-6z"/>
+        </svg>
+        <span>Generate new email in <strong>&lt;1 second</strong> — no registration needed</span>
+      </li>
+
+      <!-- Real-time inbox -->
+      <li style="display:flex; align-items:flex-start; gap:12px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12a9 9 0 1 1-3-6.7"/>
+          <path d="M21 3v6h-6"/>
+        </svg>
+        <span>Real-time inbox with live updates</span>
+      </li>
+
+      <!-- Auto delete -->
+      <li style="display:flex; align-items:flex-start; gap:12px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 6h18"/>
+          <path d="M8 6v14a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V6"/>
+          <path d="M10 11v6M14 11v6"/>
+        </svg>
+        <span>Automatic deletion after 10 minutes for maximum privacy</span>
+      </li>
+
+      <!-- Compatibility -->
+      <li style="display:flex; align-items:flex-start; gap:12px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M2 12h20M12 2a15 15 0 0 1 0 20"/>
+        </svg>
+        <span>Works perfectly for Discord, Instagram, Facebook, Gmail verification &amp; more</span>
+      </li>
+
+      <!-- Privacy -->
+      <li style="display:flex; align-items:flex-start; gap:12px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        <span>Zero tracking. Zero logs. Your real inbox stays clean.</span>
+      </li>
+
+    </ul>
+ 
+  </div>
+
         {{-- Dynamic FAQ if exists --}}
         {{-- Dynamic FAQ --}}
         @php

@@ -88,6 +88,8 @@ function selectDomain(btn, domain) {
    GENERATE NEW ADDRESS
 ══════════════════════════════════════════════════════════════ */
 async function generateNew(domain = null) {
+  gtag('event', 'generate_email');
+
   const btn = $('btn-new-addr');
   btn.disabled = true;
 
@@ -144,6 +146,7 @@ function resetInboxUI() {
    COPY EMAIL
 ══════════════════════════════════════════════════════════════ */
 function copyEmail() {
+  gtag('event', 'copy_email');
   navigator.clipboard.writeText(currentEmail).catch(() => {});
 
   const btn = $('cbtn');

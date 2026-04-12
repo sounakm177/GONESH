@@ -4,7 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Public\PublicMailboxController;
 use App\Http\Controllers\Public\PublicEmailController;
-// use App\Http\Controllers\AttachmentController;
+use App\Http\Controllers\Public\SeoController;
 use App\Http\Controllers\MailboxController;
 use App\Events\NewEmailReceived;
 use App\Models\PublicEmail;
@@ -12,6 +12,11 @@ use App\Models\PublicMailbox;
 use Illuminate\Http\Request;
 
 Route::get('/', [MailboxController::class, 'index'])->name('home');
+Route::get('/{slug}', [SeoController::class, 'show'])
+     ->where('slug', '[a-z0-9-]+') 
+     ->name('seo.page');
+
+
 Route::view('/privacy-policy', 'inboxoro.privacy-policy');
 Route::view('/terms', 'inboxoro.terms-service');
 

@@ -1,7 +1,8 @@
 @extends('inboxoro.partials.public-layout')
 
 @section('title', 'Free Temporary Email | inboxOro — Instant 10-Min Disposable Email Generator')
-@section('meta_description', 'Generate a free temporary email address instantly. Receive OTPs, verification emails for Discord, Instagram, Facebook & more. No signup, no tracking, auto-deletes in 10 minutes. Private & secure disposable mail.')
+@section('meta_description', 'Generate free temporary email addresses instantly. Receive OTPs, verification links for Discord, Instagram, Facebook, Gmail & more. No signup, no tracking, auto-deletes in 10 minutes. Private & secure disposable email.')
+
 
 @section('content')
   <div id="toast">

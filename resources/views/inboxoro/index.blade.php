@@ -34,11 +34,11 @@
       @include('inboxoro.partials.inbox', ['inbox' => $inbox])
 
       {{-- Ad — Leaderboard 728×90 --}}
-      <div class="ad-slot rv" style="height:96px;margin-top:28px;">
+      <!-- <div class="ad-slot rv" style="height:96px;margin-top:28px;">
         <div class="ad-lbl">Advertisement</div>
         <div class="ad-sz">728 × 90</div>
         <div class="ad-nt">Ad will appear here</div>
-      </div>
+      </div> -->
 
       {{-- Feature strip --}}
       @include('inboxoro.partials.features')

@@ -15,7 +15,7 @@
       @include('inboxoro.partials.inbox', ['inbox' => $inbox])
 
       {{-- Ad + Features --}}
-      <div class="ad-slot rv" style="height:96px;margin-top:28px;">...</div>
+      <!-- <div class="ad-slot rv" style="height:96px;margin-top:28px;">...</div> -->
      
 
         <div class="feat-strip rv">

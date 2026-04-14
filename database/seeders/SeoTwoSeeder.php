@@ -200,3 +200,41 @@ class SeoTwoSeeder extends Seeder
         $this->command->info('✅ 11 SEO Pages seeded successfully!');
     }
 }
+
+// https://inboxoro.com/10-minute-email
+// https://inboxoro.com/temp-mail-for-linkedin
+// https://inboxoro.com/temp-mail-for-telegram
+// https://inboxoro.com/temp-mail-for-snapchat
+// https://inboxoro.com/temp-mail-for-pinterest
+// https://inboxoro.com/temp-mail-for-quora
+// https://inboxoro.com/temp-mail-for-paypal
+// https://inboxoro.com/temp-mail-for-ebay
+// https://inboxoro.com/temp-mail-for-zoom
+// https://inboxoro.com/temp-mail-for-slack
+// https://inboxoro.com/temp-mail-for-dropbox
+// https://inboxoro.com/temporary-email
+// https://inboxoro.com/disposable-email
+// https://inboxoro.com/temp-mail
+// https://inboxoro.com/10-minute-mail
+// https://inboxoro.com/burner-email
+// https://inboxoro.com/fake-email
+// https://inboxoro.com/temp-mail-for-discord
+// https://inboxoro.com/temp-mail-for-instagram
+// https://inboxoro.com/temp-mail-for-facebook
+// https://inboxoro.com/temp-mail-for-tiktok
+// https://inboxoro.com/temp-mail-for-netflix
+// https://inboxoro.com/temp-mail-for-spotify
+// https://inboxoro.com/temp-mail-for-reddit
+// https://inboxoro.com/temp-mail-for-twitter
+// https://inboxoro.com/temp-mail-for-amazon
+// https://inboxoro.com/temp-mail-for-verification
+// https://inboxoro.com/temp-mail-for-signup
+// https://inboxoro.com/temp-mail-for-testing
+// https://inboxoro.com/anonymous-email
+// https://inboxoro.com/throwaway-email
+// https://inboxoro.com/temp-mail-for-youtube
+// https://inboxoro.com/temp-mail-for-github
+// https://inboxoro.com/no-signup-email
+// https://inboxoro.com/spam-free-email
+// https://inboxoro.com/privacy-email
+// https://inboxoro.com/email-for-otp

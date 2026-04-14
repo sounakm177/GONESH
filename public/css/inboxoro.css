@@ -1157,9 +1157,17 @@ footer {
 /* ═════════════════════════════════════════════════════════════
    SEO CONTENT SECTION
 ═════════════════════════════════════════════════════════════ */
-.seo-content h2 { font-family: 'Bebas Neue', sans-serif; letter-spacing: .04em; color: var(--INK); }
+/* .seo-content h2 { font-family: 'Bebas Neue', sans-serif; letter-spacing: .04em; color: var(--INK); } */
 .seo-content h3 { color: var(--INK); font-weight: 600; }
 .seo-content p  { font-size: 1rem; line-height: 1.75; color: #374151; }
+
+
+ .seo-content h2 {font-family:'Inter', sans-serif;
+                    font-size:1.65rem;
+                    letter-spacing:.03em;
+                    margin-bottom:14px;
+                    color:var(--INK);
+                    font-weight:600;}
 
 /* ═════════════════════════════════════════════════════════════
    TABLET  ≥ 600px

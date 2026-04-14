@@ -281,7 +281,7 @@ async function openEmail(id) {
     }
   });
 
-  $('detail-empty').style.display   = 'none';
+  $('detail-empty').style.setProperty('display', 'none', 'important');
   $('detail-content').style.display = 'flex';
   $('detail-content').innerHTML     = loadingPlaceholder();
 

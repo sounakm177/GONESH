@@ -164,6 +164,9 @@ nav {
   color:          #fff;
   letter-spacing: .04em;
   line-height:    1.05;
+
+  margin: 0;
+  font-weight: normal;
 }
 .hero-copy-title .gold { color: var(--Y); }
 

@@ -2,9 +2,9 @@
   <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
     <div class="h-tag">Instant · Private · Free</div>
     <div>
-      <div class="hero-copy-title">
+      <h1 class="hero-copy-title">
         Disposable <span class="gold">Temp Email</span> — No signup, no spam.
-      </div>
+      </h1>
       <div class="hero-copy-sub">
         Generate a temporary email instantly. Receive OTPs and verification emails without exposing your real inbox.
       </div>

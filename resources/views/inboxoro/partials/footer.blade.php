@@ -1,6 +1,8 @@
 <footer>
   <div class="nav-logo">
-    <img src="{{asset('/images/logo.svg')}}" alt="Inboxoro Logo" class="logo-img">
+    <a href="/temporary-email">
+      <img src="{{asset('/images/logo.svg')}}" alt="Inboxoro Logo" class="logo-img">
+    </a>
   </div>
   <div class="foot-links">
     <!-- <a href="#">Domains</a> -->

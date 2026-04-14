@@ -12,7 +12,6 @@
     <a href="mailto:support@inboxoro.com">Contact</a>
   </div>
   <div class="foot-st">
-    <div style="width:6px;height:6px;background:#22c55e;border-radius:50%;"></div>
-    All systems operational
+    © {{ date('Y') }} Inboxoro. All rights reserved.
   </div>
 </footer>

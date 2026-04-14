@@ -39,9 +39,9 @@
 
     @vite(['resources/js/app.js'])
     <link rel="stylesheet" href="{{ asset('css/inboxoro.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/inboxoro-mobile-patch.css') }}">
+    <!-- <link rel="stylesheet" href="{{ asset('css/inboxoro-mobile-patch.css') }}">
     <link rel="stylesheet" href="{{ asset('css/inboxoro-detail-fix.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/inboxoro-seo-sidebar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/inboxoro-seo-sidebar.css') }}"> -->
     <script src="{{ asset('js/inboxoro-mobile.js') }}" defer></script>
     @stack('styles')
 </head>

@@ -547,7 +547,7 @@ nav {
 #email-list {
   max-height:              300px;
   overflow-y:              auto;
-  overscroll-behavior:     contain;
+  overscroll-behavior:     auto;
   -webkit-overflow-scrolling: touch;
 }
 #email-list::-webkit-scrollbar       { width: 4px; }
@@ -836,7 +836,7 @@ nav {
   font-size:           .875rem;
   line-height:         1.75;
   color:               #374151;
-  overscroll-behavior: contain;
+  overscroll-behavior: auto;
   -webkit-overflow-scrolling: touch;
   word-break:          break-word;
   overflow-wrap:       break-word;

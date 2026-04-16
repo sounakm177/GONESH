@@ -11,11 +11,25 @@ use App\Models\PublicEmail;
 use App\Models\PublicMailbox;
 use Illuminate\Http\Request;
 use App\Models\SeoPage;
+use Carbon\Carbon;   // ← only needed if you prefer short syntax; otherwise we use full namespace below
+
 
 Route::get('/', [MailboxController::class, 'index'])->name('home');
 
 Route::view('/privacy-policy', 'inboxoro.privacy-policy');
 Route::view('/terms', 'inboxoro.terms-service');
+
+// ── BLOG LISTING PAGE (/blog) ──
+Route::get('/blog', function () {
+    return view('inboxoro.blog.blog');
+})->name('blog.index');
+
+Route::get('/blog-view', function () {
+    return view('inboxoro.blog.view');
+})->name('blog.index');
+
+
+
 
 
 Route::get('/sitemap.xml', function () {

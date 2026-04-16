@@ -23,7 +23,7 @@ class MailboxController extends Controller
         $mailbox   = $this->mailboxService->resolveForSession($sessionId);
 
         $domains = EmailDomain::cachedActive();
-
+        
         $inbox = $this->mailboxService->getInbox($mailbox, perPage: 10);
 
         return response()

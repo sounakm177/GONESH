@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use App\Events\MailboxExpired;
-use App\Models\PublicEmailAttachment;
 use App\Models\PublicMailbox;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -13,17 +12,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
-/**
- * Scheduled every minute via Console\Kernel.
- *
- * Strategy:
- *  1. Collect IDs of expired mailboxes.
- *  2. Broadcast MailboxExpired to connected browsers (so UI can react).
- *  3. Delete attachment files from disk.
- *  4. Delete DB rows (cascades handle emails + attachments).
- *
- * Processes in batches of 100 to keep memory usage flat.
- */
+
 class PruneExpiredMailboxes implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -33,36 +22,56 @@ class PruneExpiredMailboxes implements ShouldQueue
 
     public function handle(): void
     {
-        $total = 0;
+        $total  = 0;
+        $failed = 0;
 
         PublicMailbox::expired()
-            ->with('emails.attachments')
-            ->chunkById(100, function ($mailboxes) use (&$total) {
+            ->with('emails.attachments') 
+            ->chunkById(100, function ($mailboxes) use (&$total, &$failed) {
                 foreach ($mailboxes as $mailbox) {
                     try {
-                        // Notify browser
-                        MailboxExpired::dispatch($mailbox);
-
-                        // Delete attachment files from storage
-                        foreach ($mailbox->emails as $email) {
-                            foreach ($email->attachments as $att) {
-                                if (Storage::exists($att->file_path)) {
-                                    Storage::delete($att->file_path);
-                                }
-                            }
-                        }
-
-                        // DB cascade will remove emails + attachments rows
-                        $mailbox->delete();
+                        $this->pruneOne($mailbox);
                         $total++;
                     } catch (\Throwable $e) {
-                        Log::error("PruneExpiredMailboxes: failed for mailbox #{$mailbox->id}: " . $e->getMessage());
+                        $failed++;
+                        Log::error('PruneExpiredMailboxes: failed', [
+                            'mailbox_id' => $mailbox->id,
+                            'email'      => $mailbox->email,
+                            'error'      => $e->getMessage(),
+                            'trace'      => $e->getTraceAsString(),
+                        ]);
                     }
                 }
             });
 
-        if ($total > 0) {
-            Log::info("PruneExpiredMailboxes: pruned {$total} expired mailbox(es).");
+        if ($total > 0 || $failed > 0) {
+            Log::info('PruneExpiredMailboxes: complete', [
+                'pruned' => $total,
+                'failed' => $failed,
+            ]);
         }
+    }
+
+    private function pruneOne(PublicMailbox $mailbox): void
+    {
+        MailboxExpired::dispatch($mailbox);
+
+        foreach ($mailbox->emails as $email) {
+            foreach ($email->attachments as $attachment) {
+                if ($attachment->file_path && Storage::exists($attachment->file_path)) {
+                    Storage::delete($attachment->file_path);
+                }
+
+                $dir = dirname($attachment->file_path);
+                if (Storage::exists($dir)) {
+                    $remaining = Storage::files($dir);
+                    if (empty($remaining)) {
+                        Storage::deleteDirectory($dir);
+                    }
+                }
+            }
+        }
+        
+        $mailbox->delete();
     }
 }

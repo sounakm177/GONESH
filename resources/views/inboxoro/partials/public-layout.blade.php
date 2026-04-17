@@ -39,6 +39,7 @@
     </noscript>
 
     @vite(['resources/js/app.js'])
+    <link rel="stylesheet" href="{{ asset('css/newinbox.css') }}">
     <link rel="stylesheet" href="{{ asset('css/inboxoro.css') }}">
     <!-- <link rel="stylesheet" href="{{ asset('css/inboxoro-mobile-patch.css') }}">
     <link rel="stylesheet" href="{{ asset('css/inboxoro-detail-fix.css') }}">

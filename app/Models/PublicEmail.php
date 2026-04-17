@@ -81,11 +81,12 @@ class PublicEmail extends Model
 
     public function safeBody(): string
     {
-        if ($this->content_type === 'text/plain') {
-            return nl2br(e($this->body));
-        }
-        return strip_tags($this->body,
-            '<p><br><a><strong><b><em><i><ul><ol><li><h1><h2><h3><h4><table><tr><td><th><span><div><hr>'
-        );
+        return $this->body;
+        // if ($this->content_type === 'text/plain') {
+        //     return nl2br(e($this->body));
+        // }
+        // return strip_tags($this->body,
+        //     '<p><br><a><strong><b><em><i><ul><ol><li><h1><h2><h3><h4><table><tr><td><th><span><div><hr>'
+        // );
     }
 }

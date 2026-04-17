@@ -54,6 +54,60 @@ class MailboxService
         ]);
     }
 
+    // public function getInbox(PublicMailbox $mailbox, ?string $search = null, int $page = 1, int $perPage = 30): array
+    // {
+    //     $query = $mailbox->emails()
+    //         ->select([
+    //             'id', 'mailbox_id', 'sender', 'subject',
+    //             'is_read', 'received_at', 'content_type',
+    //             DB::raw("LEFT(body, 120) AS preview"),
+    //         ])
+    //         ->withCount('attachments')
+    //         ->orderByDesc('received_at');
+
+    //     if ($search && strlen($search) >= 2) {
+    //         $query->search($search);
+    //     }
+
+    //     $paginator = $query->paginate($perPage, ['*'], 'page', $page);
+
+
+    //     //  $email = $this->mailboxService->openEmail($mailbox, $id);
+    //     // $senderName = $email->senderName();
+    //     // $avatar = avatar_data($senderName);
+
+    //     // return response()->json([
+    //     //     'id'          => $email->id,
+    //     //     'sender'      => $senderName,
+    //     //     'sender_email'=> $email->senderEmail(),
+    //     //     'subject'     => $email->subject,
+    //     //     'body'        => $email->safeBody(),
+    //     //     'content_type'=> $email->content_type,
+    //     //     'received_at' => $email->received_at->toISOString(),
+    //     //     'time_ago'    => $email->timeAgo(),
+    //     //     'avatar_letter' => $avatar["letter"],
+    //     //     'avatar_color'  => $avatar["color"],
+    //     //     'attachments' => $email->attachments->map(fn ($a) => [
+    //     //         'id'        => $a->id,
+    //     //         'file_name' => $a->file_name,
+    //     //         'size'      => $a->humanSize() ?? '',
+    //     //         'extension' => $a->extension() ?? '',
+    //     //         'icon_style'=> $a->iconStyle() ?? '',
+    //     //         'download_url' => $a->downloadUrl() ?? '',
+    //     //     ]),
+    //     //     'unread_count' => $mailbox->fresh()->unreadCount(),
+    //     // ])->withHeaders(['Cache-Control' => 'no-store']);
+
+    //     return [
+    //         'emails'       => $paginator->items(),
+    //         'total'        => $paginator->total(),
+    //         'unread'       => $mailbox->emails()->unread()->count(),
+    //         'has_more'     => $paginator->hasMorePages(),
+    //         'current_page' => $paginator->currentPage(),
+    //         'last_page'    => $paginator->lastPage(),
+    //     ];
+    // }
+
     public function getInbox(PublicMailbox $mailbox, ?string $search = null, int $page = 1, int $perPage = 30): array
     {
         $query = $mailbox->emails()
@@ -71,8 +125,30 @@ class MailboxService
 
         $paginator = $query->paginate($perPage, ['*'], 'page', $page);
 
+        $emails = collect($paginator->items())->map(function ($email) {
+
+            $senderName = $email->senderName();
+            $avatar = avatar_data($senderName);
+
+            return [
+                'id'                => $email->id,
+                'mailbox_id'        => $email->mailbox_id,
+                'sender'            => $senderName,
+                'sender_email'      => $email->senderEmail(),
+                'subject'           => $email->subject,
+                'preview'           => $email->preview,
+                'content_type'      => $email->content_type,
+                'received_at'       => $email->received_at->toISOString(),
+                'time_ago'          => $email->timeAgo(),
+                'is_read'           => $email->is_read,
+                'attachments_count' => $email->attachments_count,
+                'avatar_letter'     => $avatar["letter"],
+                'avatar_color'      => $avatar["color"],
+            ];
+        });
+
         return [
-            'emails'       => $paginator->items(),
+            'emails'       => $emails,
             'total'        => $paginator->total(),
             'unread'       => $mailbox->emails()->unread()->count(),
             'has_more'     => $paginator->hasMorePages(),

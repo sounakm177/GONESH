@@ -88,6 +88,8 @@ function selectDomain(btn, domain) {
    GENERATE NEW ADDRESS
 ══════════════════════════════════════════════════════════════ */
 async function generateNew(domain = null) {
+  gtag('event', 'generate_email');
+
   const btn = $('btn-new-addr');
   btn.disabled = true;
 
@@ -144,6 +146,7 @@ function resetInboxUI() {
    COPY EMAIL
 ══════════════════════════════════════════════════════════════ */
 function copyEmail() {
+  gtag('event', 'copy_email');
   navigator.clipboard.writeText(currentEmail).catch(() => {});
 
   const btn = $('cbtn');
@@ -286,14 +289,7 @@ async function openEmail(id) {
     const res = await api(`${INBOX_ORO.routes.emailBase}/${id}`);
     const em  = await res.json();
     updateUnreadBadge(em.unread_count);
-
-    /* Inject the wrapper HTML (toolbar + header + iframe shell) */
     $('detail-content').innerHTML = buildDetailHTML(em);
-
-    /* Now mount the email body into the sandboxed iframe.
-       Must happen AFTER innerHTML is set so the iframe element exists in the DOM. */
-    mountEmailIframe(em.body ?? '', `email-frame-${em.id}`);
-
   } catch (err) {
     console.error('[inboxOro] Open email failed:', err);
     $('detail-content').innerHTML = errorPlaceholder();
@@ -306,85 +302,6 @@ function loadingPlaceholder() {
 function errorPlaceholder() {
   return '<div style="flex:1;display:flex;align-items:center;justify-content:center;color:#dc2626;">Failed to load email</div>';
 }
-
-/**
- * Writes email HTML into a sandboxed iframe and auto-sizes it.
- * Called after buildDetailHTML() injects the iframe into the DOM.
- *
- * @param {string} html  - Raw email HTML (may contain <style>, <head>, full <html>)
- * @param {string} iframeId - id of the target <iframe>
- */
-function mountEmailIframe(html, iframeId) {
-  const iframe = document.getElementById(iframeId);
-  if (!iframe) return;
-
-  /* Wrap bare snippets in a full document so email <style> blocks
-     are correctly scoped inside the frame and never leak out.       */
-  const isFullDoc = /<!doctype|<html/i.test(html);
-  const doc = isFullDoc ? html : `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<style>
-  /* Gmail-style email reset — keeps email body readable */
-  html, body {
-    margin: 0; padding: 0;
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    line-height: 1.6;
-    color: #202124;
-    background: #fff;
-    word-break: break-word;
-    overflow-wrap: break-word;
-  }
-  img { max-width: 100%; height: auto; }
-  a   { color: #1a73e8; }
-  table { border-collapse: collapse; }
-  /* Prevent huge fixed-width email tables from overflowing */
-  table, td, th { max-width: 100% !important; }
-</style>
-</head>
-<body>${html}</body>
-</html>`;
-
-console.log('html',html);
-  /* Write into the frame */
-  const iDoc = iframe.contentDocument || iframe.contentWindow.document;
-  iDoc.open();
-  iDoc.write(doc);
-  iDoc.close();
-
-  /* Auto-resize: set iframe height = scrollHeight of its body.
-     Run once immediately, then again after images may have loaded. */
-  function resize() {
-    try {
-      const h = iDoc.body ? iDoc.body.scrollHeight : 0;
-      if (h > 0) iframe.style.height = h + 'px';
-    } catch (_) {}
-  }
-
-  resize();
-  /* Second pass after fonts / images settle */
-  setTimeout(resize, 300);
-  setTimeout(resize, 1000);
-
-  /* Re-size when images inside the email load */
-  try {
-    iDoc.querySelectorAll('img').forEach(img => {
-      img.addEventListener('load', resize);
-    });
-  } catch (_) {}
-
-  /* Open links in parent tab, not inside the tiny iframe */
-  try {
-    iDoc.querySelectorAll('a').forEach(a => {
-      if (!a.target) a.target = '_blank';
-      a.rel = 'noopener noreferrer';
-    });
-  } catch (_) {}
-}
-
 
 /** Builds the full detail panel HTML from an email API response */
 function buildDetailHTML(em) {
@@ -402,9 +319,6 @@ function buildDetailHTML(em) {
          </div>
        </div>`
     : '';
-
-  /* Unique iframe id so multiple openings don't clash */
-  const iframeId = `email-frame-${em.id}`;
 
   return `
     <div class="detail-toolbar">
@@ -440,25 +354,7 @@ function buildDetailHTML(em) {
       </div>
     </div>
 
-    <div class="detail-body">
-      <iframe
-        id="${iframeId}"
-        class="email-iframe"
-        sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"
-        scrolling="no"
-        frameborder="0"
-        title="Email content"
-        aria-label="Email message content"
-        style="
-          width: 100%;
-          min-height: 120px;
-          height: 0;
-          border: none;
-          display: block;
-          background: #fff;
-        "
-      ></iframe>
-    </div>
+    <div class="detail-body">${em.body}</div>
     ${attachHtml}`;
 }
 

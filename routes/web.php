@@ -56,6 +56,7 @@ Route::get('/sitemap.xml', function () {
 
     $staticPages = [
         ['loc' => url('/'), 'priority' => '1.0'],
+        ['loc' => url('/blog'), 'priority' => '0.9'],
         ['loc' => url('/privacy-policy'), 'priority' => '0.5'],
         ['loc' => url('/terms'), 'priority' => '0.5'],
     ];

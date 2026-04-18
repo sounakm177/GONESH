@@ -12,7 +12,8 @@ use App\Models\PublicEmail;
 use App\Models\PublicMailbox;
 use Illuminate\Http\Request;
 use App\Models\SeoPage;
-use Carbon\Carbon;   // ← only needed if you prefer short syntax; otherwise we use full namespace below
+use Carbon\Carbon;
+use App\Models\BlogPost;
 
 
 Route::get('/', [MailboxController::class, 'index'])->name('home');
@@ -87,6 +88,41 @@ Route::get('/sitemap.xml', function () {
     $xml .= '</urlset>';
 
     return response($xml, 200)->header('Content-Type', 'text/xml');
+});
+
+Route::get('/blog-sitemap.xml', function () {
+
+    $urls = [];
+
+    // Get only published blog posts
+    $posts = BlogPost::published()
+        ->orderBy('published_at', 'desc')
+        ->get();
+
+    foreach ($posts as $post) {
+        $urls[] = [
+            'loc' => url('/blog/' . $post->slug),
+            'priority' => $post->is_featured ? '0.9' : '0.7',
+            'lastmod' => optional($post->published_at)->toDateString() ?? date('Y-m-d')
+        ];
+    }
+
+    $xml = '<?xml version="1.0" encoding="UTF-8"?>';
+    $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+
+    foreach ($urls as $url) {
+        $xml .= '<url>';
+        $xml .= '<loc>' . $url['loc'] . '</loc>';
+        $xml .= '<lastmod>' . $url['lastmod'] . '</lastmod>';
+        $xml .= '<changefreq>weekly</changefreq>';
+        $xml .= '<priority>' . $url['priority'] . '</priority>';
+        $xml .= '</url>';
+    }
+
+    $xml .= '</urlset>';
+
+    return response($xml, 200)
+        ->header('Content-Type', 'text/xml');
 });
 
 Route::get('/{slug}', [SeoController::class, 'show'])

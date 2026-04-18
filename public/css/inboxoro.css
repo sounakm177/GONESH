@@ -1122,7 +1122,7 @@ footer {
 .foot-links     { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
 .foot-links a   { font-size: .73rem; color: #6B7280; text-decoration: none; font-weight: 500; }
 .foot-links a:hover { color: var(--Y); }
-.foot-st { font-family: 'JetBrains Mono', monospace; font-size: .68rem; color: #22c55e; display: flex; align-items: center; gap: 5px; }
+.foot-st { font-family: 'JetBrains Mono', monospace; font-size: .68rem; color:  #4B5563; display: flex; align-items: center; gap: 5px; }
 
 /* ═════════════════════════════════════════════════════════════
    TOAST

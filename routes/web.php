@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Public\PublicMailboxController;
 use App\Http\Controllers\Public\PublicEmailController;
 use App\Http\Controllers\Public\SeoController;
+use App\Http\Controllers\Public\BlogController;
 use App\Http\Controllers\MailboxController;
 use App\Events\NewEmailReceived;
 use App\Models\PublicEmail;
@@ -19,14 +20,30 @@ Route::get('/', [MailboxController::class, 'index'])->name('home');
 Route::view('/privacy-policy', 'inboxoro.privacy-policy');
 Route::view('/terms', 'inboxoro.terms-service');
 
-// ── BLOG LISTING PAGE (/blog) ──
-Route::get('/blog', function () {
-    return view('inboxoro.blog.blog');
-})->name('blog.index');
 
-Route::get('/blog-view', function () {
-    return view('inboxoro.blog.view');
-})->name('blog.index');
+Route::prefix('blog')->name('blog.')->group(function () {
+ 
+    // ── Listing  /blog ───────────────────────────────────────────
+    Route::get('/', [BlogController::class, 'index'])
+         ->name('index');
+ 
+    // ── Category shortcut  /blog/category/privacy ────────────────
+    Route::get('/category/{slug}', [BlogController::class, 'category'])
+         ->name('category')
+         ->where('slug', '[a-z0-9\-]+');
+ 
+    // ── Tag shortcut  /blog/tag/spam-protection ──────────────────
+    Route::get('/tag/{slug}', [BlogController::class, 'tag'])
+         ->name('tag')
+         ->where('slug', '[a-z0-9\-]+');
+ 
+    // ── Single post  /blog/{slug} ─────────────────────────────────
+    // Must be last — catches everything that doesn't match above
+    Route::get('/{slug}', [BlogController::class, 'show'])
+         ->name('show')
+         ->where('slug', '[a-z0-9\-]+');
+ 
+});
 
 
 

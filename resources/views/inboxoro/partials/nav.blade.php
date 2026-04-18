@@ -4,10 +4,10 @@
     <span class="badge">FREE</span>
   </a>
 
-  <div class="nav-links">
-    <!-- <a href="#">How it works</a> -->
-    <!-- <a href="#">Domains</a>
+  <!-- <div class="nav-links">
+    <a href="#">How it works</a>
+    <a href="#">Domains</a>
     <a href="#">API</a>
-    <button class="nav-cta">Get Pro</button> -->
-  </div>
+    <button class="nav-cta">Get Pro</button>
+  </div> -->
 </nav>

@@ -8,7 +8,9 @@
     <!-- <a href="#">Domains</a> -->
     <!-- <a href="#">API</a>
     <a href="#">Status</a> -->
+
     <a href="{{url('/')}}">Home</a>
+    <a href="/blog">Blog</a>
     <a href="{{url('privacy-policy')}}">Privacy Policy</a>
     <a href="{{url('terms')}}">Terms</a>
     <a href="mailto:support@inboxoro.com">Contact</a>

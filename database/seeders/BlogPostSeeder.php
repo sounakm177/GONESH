@@ -76,7 +76,7 @@ class BlogPostSeeder extends Seeder
             // 1 blog
             [
                 'blog_category_id'    => $cats['email-tips'],
-                'title'               => 'Temporary Email Generator – Free & Instant Disposable Email Inbox',
+                'title'               => 'Temporary Email Generator – Free Disposable Inbox | inboxOro',
                 'slug'                => 'temporary-email-generator',
                 'excerpt'             => 'Generate a free temporary email address instantly. Receive OTPs, verification emails, and protect your real inbox from spam with a disposable email generator.',
                 'featured_image'      => 'temporary-email-generator.png',
@@ -95,7 +95,7 @@ class BlogPostSeeder extends Seeder
             //2 blog
             [
                 'blog_category_id'    => $cats['email-tips'],
-                'title'               => 'Receive OTP Online Without Phone – Free Temporary Email for Verification Codes',
+                'title'               => 'Receive OTP Online Instantly Without Phone | inboxOro',
                 'slug'                => 'receive-otp-online',
                 'excerpt'             => 'Receive OTP online instantly without using your personal phone number. Use a free temporary email to get verification codes securely and avoid spam.',
                 'featured_image'      => 'receive-otp-online.png',
@@ -112,7 +112,7 @@ class BlogPostSeeder extends Seeder
             ],
             [
                 'blog_category_id'    => $cats['email-tips'],
-                'title'               => 'Fake Email Generator – Create Disposable Email Instantly (No Signup Required)',
+                'title'               => 'Fake Email Generator – Free Disposable Email | inboxOro',
                 'slug'                => 'fake-email-generator',
                 'excerpt'             => 'Use a fake email generator to create a disposable email instantly. Avoid spam, protect your privacy, and receive verification emails without using your real inbox.',
                 'featured_image'      => 'fake-email-generator.png',
@@ -130,7 +130,7 @@ class BlogPostSeeder extends Seeder
 
             [
                 'blog_category_id'    => $cats['email-tips'],
-                'title'               => '10 Minute Email – Get a Free Disposable Email Address Instantly',
+                'title' => '10 Minute Email – Free Disposable Inbox | inboxOro',
                 'slug'                => '10-minute-email',
                 'excerpt'             => 'Use a 10 minute email to get a free disposable email address instantly. Receive OTPs, verify accounts, and avoid spam without using your real inbox.',
                 'featured_image'      => '10-minute-email.png',
@@ -149,7 +149,7 @@ class BlogPostSeeder extends Seeder
             //5 blog
             [
                 'blog_category_id'    => $cats['email-tips'],
-                'title'               => 'Temporary Email for Verification Code – Receive OTP Instantly & Securely',
+                'title' => 'Temporary Email for Verification Codes | inboxOro',
                 'slug'                => 'email-for-verification-code',
                 'excerpt'             => 'Use a temporary email for verification codes and receive OTP instantly. Protect your privacy, avoid spam, and verify accounts without using your real email.',
                 'featured_image'      => 'email-for-verification-code.png',
@@ -168,7 +168,7 @@ class BlogPostSeeder extends Seeder
             // 6 blog
             [
                 'blog_category_id'    => $cats['guides'],
-                'title'               => 'Temporary Email for Discord – Verify Your Account Without Spam',
+                'title' => 'Temporary Email for Discord Verification | inboxOro',
                 'slug'                => 'temp-mail-for-discord',
                 'excerpt'             => 'Use a temporary email for Discord verification. Receive OTP instantly, avoid spam, and protect your real email address while creating your Discord account.',
                 'featured_image'      => 'temp-mail-discord.png',
@@ -187,7 +187,7 @@ class BlogPostSeeder extends Seeder
             //7 blog
             [
                 'blog_category_id'    => $cats['guides'],
-                'title'               => 'Temporary Email for Telegram – Receive OTP Instantly Without Using Your Real Email',
+                'title' => 'Temporary Email for Telegram OTP | inboxOro',
                 'slug'                => 'temp-mail-for-telegram',
                 'excerpt'             => 'Use a temporary email for Telegram verification. Receive OTP instantly, avoid spam, and protect your privacy without using your personal email address.',
                 'featured_image'      => 'temp-mail-telegram.png',

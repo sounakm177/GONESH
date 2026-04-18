@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
   {{-- BASIC SEO --}}
-  <title>{{ $post->title }} | inboxOro Blog</title>
+  <title>{{ $post->title }} Blog</title>
   <meta name="description" content="{{ $post->excerpt }}">
   <meta name="robots" content="index, follow">
   <meta name="author" content="{{ $post->author_name ?? 'inboxOro Team' }}">

@@ -225,8 +225,16 @@
 </main>
 
 @include('inboxoro.blog.partials.footer')
+ <script async src="https://www.googletagmanager.com/gtag/js?id=G-SMT1LQHYBS"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
 
+    gtag('config', 'G-SMT1LQHYBS');
+  </script>
 <script>
+  
 window.addEventListener('scroll',()=>{
   const d=document.documentElement;
   document.getElementById('readBar').style.width=(d.scrollTop/(d.scrollHeight-d.clientHeight)*100)+'%';

@@ -88,6 +88,7 @@ function selectDomain(btn, domain) {
    GENERATE NEW ADDRESS
 ══════════════════════════════════════════════════════════════ */
 async function generateNew(domain = null) {
+  gtag('event', 'generate_email');
   const btn = $('btn-new-addr');
   btn.disabled = true;
 

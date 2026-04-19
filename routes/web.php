@@ -47,9 +47,6 @@ Route::prefix('blog')->name('blog.')->group(function () {
 });
 
 
-
-
-
 Route::get('/sitemap.xml', function () {
 
     $urls = [];

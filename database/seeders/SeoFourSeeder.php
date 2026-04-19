@@ -666,14 +666,14 @@ class SeoFourSeeder extends Seeder
 }
 
 
-
+// php artisan db:seed --class=SeoFourSeeder
 // temp-email-for-free-trials
 // temp-email-for-job-application
-// temp-email-for-students
+// temp-email-for-students --done
 // temp-email-for-online-shopping
-// temp-email-for-coupons
+// temp-email-for-coupons --done
 // temp-email-for-giveaways
 // temp-email-for-newsletters
 // temp-email-for-surveys
-// temp-email-for-downloads
+// temp-email-for-downloads -- done
 // temp-email-for-account-registration

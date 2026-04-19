@@ -6,7 +6,7 @@
     <a href="/blog">Blog</a>
     <a href="/privacy">Privacy</a>
     <a href="/terms">Terms</a>
-    <a href="/api">API</a>
+    <!-- <a href="/api">API</a> -->
   </div>
 
   <div class="foot-copy">

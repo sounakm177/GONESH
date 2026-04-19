@@ -961,6 +961,15 @@ footer,
   .foot-links { justify-content: flex-start; }
 }
 
+.foot-st {
+  font-family:    var(--MONO);
+  font-size:      .62rem;
+  color:          #4B5563;
+  display:        flex;
+  align-items:    center;
+  gap:            5px;
+}
+
 /* ═══════════════════════════════════════════════════════════════
    BREAKPOINT — wide  ≥ 1280 px
    Blog grid expands to 3 cols (sidebar is 300px, leaving ~880px)

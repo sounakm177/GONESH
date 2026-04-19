@@ -224,7 +224,7 @@
 
 </main>
 
-@include('inboxoro.blog.partials.footer')
+@include('inboxoro.partials.footer')
  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SMT1LQHYBS"></script>
   <script>
     window.dataLayer = window.dataLayer || [];

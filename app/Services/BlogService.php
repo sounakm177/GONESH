@@ -17,7 +17,7 @@ class BlogService
     private const TTL_TAGS       = 3600;
 
     // ── Posts per page ───────────────────────────────────────────
-    private const PER_PAGE = 9;
+    private const PER_PAGE = 7;
 
     // ─────────────────────────────────────────────────────────────
     //  LISTING

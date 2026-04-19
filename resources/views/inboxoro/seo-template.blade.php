@@ -54,7 +54,7 @@
 
         {{-- Dynamic Content from Database --}}
         <div class="seo-content" style="margin-top:48px;">
-            <div style="border:2px solid var(--INK);background:#fff;padding:32px 28px;margin-bottom:32px;">
+            <div class="dynamic-content" style="border:2px solid var(--INK);background:#fff;padding:32px 28px;margin-bottom:32px;">
                 <h2 style="
                     font-family:'Inter', sans-serif;
                     font-size:1.65rem;

@@ -3,7 +3,8 @@
     <div class="h-tag">Instant · Private · Free</div>
     <div>
       <h1 class="hero-copy-title">
-        Disposable <span class="gold">Temp Email</span> — No signup, no spam.
+        <!-- Disposable <span class="gold">Temp Email</span> — No signup, no spam. -->
+        Free <span class="gold">Temporary Email</span> – Instant Disposable Inbox for OTP & Verification
       </h1>
       <div class="hero-copy-sub">
         Generate a temporary email instantly. Receive OTPs and verification emails without exposing your real inbox.

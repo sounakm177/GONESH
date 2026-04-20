@@ -16,7 +16,8 @@ class SeoFiveSeeder extends Seeder
             [
                 'slug'             => 'email-sandbox-tool',
                 'title'            => 'Email Sandbox Tool – Instant Disposable Testing | InboxOro',
-                'meta_description' => 'Tired of using your real inbox for email testing? InboxOro’s email sandbox tool gives you real disposable addresses instantly. Test OTPs, signups, and workflows in real time with live updates, attachments support, and auto-delete in 10 minutes. No signup needed.',
+                // 'meta_description' => 'Tired of using your real inbox for email testing? InboxOro’s email sandbox tool gives you real disposable addresses instantly. Test OTPs, signups, and workflows in real time with live updates, attachments support, and auto-delete in 10 minutes. No signup needed.',
+                'meta_description' => 'Test emails without polluting your inbox. InboxOro’s email sandbox tool creates real disposable addresses instantly. Live updates, attachments, and auto-delete in 10 minutes. No signup.',
                 'h1'               => 'Email Sandbox Tool — Instant, Real-Time, Disposable Email Testing',
                 'intro_text'       => '
 <p>Every developer and QA engineer knows the pain: you need to test email flows — OTP verification, password reset, welcome emails, order confirmations, notifications — but using your personal Gmail or Outlook quickly becomes a nightmare of spam and manual cleanup. <strong>inboxOro’s Email Sandbox Tool</strong> was built exactly for this problem.</p>
@@ -79,7 +80,8 @@ class SeoFiveSeeder extends Seeder
             [
                 'slug'             => 'temp-email-for-qa',
                 'title'            => 'Temp Email for QA – Real-Time Testing Inbox | InboxOro',
-                'meta_description' => 'QA teams need fast and clean email testing. Get a temp email for QA with InboxOro — generate instant disposable inboxes, receive test emails live, verify OTPs and flows, and everything auto-deletes after 10 minutes. Zero spam, zero setup.',
+                'meta_description' => 'QA teams, test emails cleanly and fast. InboxOro gives you instant temp email for QA with live inbox, OTP verification, and auto-delete in 10 minutes. Zero spam, zero setup.',
+                // 'meta_description' => 'QA teams need fast and clean email testing. Get a temp email for QA with InboxOro — generate instant disposable inboxes, receive test emails live, verify OTPs and flows, and everything auto-deletes after 10 minutes. Zero spam, zero setup.',
                 'h1'               => 'Temp Email for QA — Real-Time Testing Inbox for QA Teams',
                 'intro_text'       => '
 <p>QA engineers spend countless hours testing email functionality — OTP flows, account creation, notifications, and edge cases. Using personal email accounts creates spam chaos and slows down testing cycles. <strong>inboxOro’s Temp Email for QA</strong> was designed specifically for QA teams who need speed, cleanliness, and reliability.</p>
@@ -128,7 +130,8 @@ class SeoFiveSeeder extends Seeder
             [
                 'slug'             => 'mock-email-service',
                 'title'            => 'Mock Email Service – Fake Emails That Actually Work | InboxOro',
-                'meta_description' => 'Need a reliable mock email service for development? InboxOro creates real working fake email addresses instantly. Perfect for testing signups, OTPs, and notifications. Emails arrive in real time and self-destruct in 10 minutes — completely free and private.',
+                'meta_description' => 'Need a real mock email service? InboxOro creates working fake email addresses instantly. Perfect for testing signups, OTPs & notifications. Real-time delivery and auto-delete in 10 minutes.',
+                // 'meta_description' => 'Need a reliable mock email service for development? InboxOro creates real working fake email addresses instantly. Perfect for testing signups, OTPs, and notifications. Emails arrive in real time and self-destruct in 10 minutes — completely free and private.',
                 'h1'               => 'Mock Email Service — Real Fake Emails That Work Instantly',
                 'intro_text'       => '
 <p>Need a mock email service that actually delivers real emails instead of fake simulated ones? inboxOro provides a production-ready mock email service that generates real, deliverable fake email addresses you can use immediately in any development or testing environment.</p>
@@ -167,7 +170,8 @@ class SeoFiveSeeder extends Seeder
             [
                 'slug'             => 'developer-email-testing-tool',
                 'title'            => 'Developer Email Testing Tool – Instant & Private | InboxOro',
-                'meta_description' => 'Developers, stop polluting your inbox during testing. InboxOro’s developer email testing tool gives you unlimited disposable addresses for OTPs, account creation, and email flows. Real-time delivery, full inbox viewer, and auto-delete in 10 minutes. No account required.',
+                'meta_description' => 'Developers, test emails privately. InboxOro’s developer email testing tool gives unlimited disposable addresses with real-time delivery and auto-delete in 10 minutes. No account needed.',
+                // 'meta_description' => 'Developers, stop polluting your inbox during testing. InboxOro’s developer email testing tool gives you unlimited disposable addresses for OTPs, account creation, and email flows. Real-time delivery, full inbox viewer, and auto-delete in 10 minutes. No account required.',
                 'h1'               => 'Developer Email Testing Tool — Instant, Private & Real-Time',
                 'intro_text'       => '
 <p>Developers need a fast, private, and reliable way to test email functionality without using personal inboxes. inboxOro’s Developer Email Testing Tool delivers exactly that — unlimited disposable email addresses that work instantly and disappear automatically.</p>
@@ -217,3 +221,8 @@ class SeoFiveSeeder extends Seeder
         $this->command->info('🎉 All pages include full 1500+ word content + 10 detailed FAQs each.');
     }
 }
+
+// email-sandbox-tool
+// temp-email-for-qa
+// mock-email-service
+// developer-email-testing-tool

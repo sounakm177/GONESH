@@ -9,7 +9,16 @@
 @endsection
 
 @section('content')
-  {{-- Toast, Nav, Hero, Generator, Inbox, Features, Sidebar, Footer same as before --}}
+ 
+    <div id="toast">
+    <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+      <path stroke-linecap="round" d="M5 13l4 4L19 7"/>
+    </svg>
+    <span>
+      COPIED
+    </span>
+  </div>
+
   @include('inboxoro.partials.nav')
   @include('inboxoro.partials.hero', ['domains' => $domains])
 

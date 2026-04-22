@@ -6,6 +6,8 @@ use App\Http\Controllers\Public\PublicMailboxController;
 use App\Http\Controllers\Public\PublicEmailController;
 use App\Http\Controllers\Public\SeoController;
 use App\Http\Controllers\Public\BlogController;
+use App\Http\Controllers\Public\PageController;
+
 use App\Http\Controllers\MailboxController;
 use App\Events\NewEmailReceived;
 use App\Models\PublicEmail;
@@ -18,8 +20,10 @@ use App\Models\BlogPost;
 
 Route::get('/', [MailboxController::class, 'index'])->name('home');
 
-Route::view('/privacy-policy', 'inboxoro.privacy-policy');
-Route::view('/terms', 'inboxoro.terms-service');
+Route::get('/about',[PageController::class, 'about']);
+Route::get('/contact',[PageController::class, 'contact']);
+Route::get('/privacy-policy',[PageController::class, 'privacy']);
+Route::get('/terms',[PageController::class, 'terms']);
 
 
 Route::prefix('blog')->name('blog.')->group(function () {
@@ -154,6 +158,10 @@ Route::middleware(['web', 'throttle:60,1'])->prefix('mailbox')->name('mailbox.')
 
     // Delete all emails
     Route::delete('all',         [MailboxController::class, 'destroyAll'])->name('destroyAll');
+
+    Route::post('/{mailbox}/extend', [MailboxController::class, 'extend'])->name('mailbox.extend');
+    Route::post('/{mailbox}/pause',  [MailboxController::class, 'pause'])->name('mailbox.pause');
+    Route::post('/{mailbox}/resume', [MailboxController::class, 'resume'])->name('mailbox.resume');
 });
 
 // ── Attachment download ───────────────────────────────────────────────────────

@@ -6,10 +6,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- SEO Title -->
-    <title>Terms of Service – inboxOro | Usage Rules & Conditions</title>
+    <title>Terms of Service – InboxOro | Usage Rules, Privacy & Conditions</title>
 
     <!-- SEO Meta -->
-    <meta name="description" content="Read the Terms of Service for inboxOro. Understand the rules, acceptable usage, limitations, and conditions for using our temporary email service.">
+    <meta name="description" content="Read the Terms of Service for InboxOro. Understand usage rules, limitations, privacy policy, and conditions for using our temporary email service.">
 
     <!-- Canonical -->
     <link rel="canonical" href="{{ url()->current() }}">
@@ -18,33 +18,43 @@
     <meta name="robots" content="index, follow">
 
     <!-- Open Graph -->
-    <meta property="og:title" content="Terms of Service – inboxOro">
-    <meta property="og:description" content="Review the rules and conditions for using inboxOro disposable email service.">
+    <meta property="og:title" content="Terms of Service – InboxOro">
+    <meta property="og:description" content="Understand usage rules, privacy policy, and conditions for using InboxOro temporary email service.">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:type" content="website">
+    <meta property="og:image" content="{{ asset('images/og-image.png') }}">
+    <meta property="og:image:secure_url" content="{{ asset('images/og-image.png') }}">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Terms of Service – inboxOro">
-    <meta name="twitter:description" content="Understand the usage terms of inboxOro temporary email platform.">
+    <meta name="twitter:title" content="Terms of Service – InboxOro">
+    <meta name="twitter:description" content="Usage rules and conditions for InboxOro temporary email platform.">
+    <meta name="twitter:image" content="{{ asset('images/og-image.png') }}">
 
     <!-- Favicons -->
-    <link rel="icon" type="image/png" sizes="32x32" href="{{asset('images/favicon-32.png')}}">
-    <link rel="icon" type="image/png" sizes="64x64" href="{{asset('images/favicon-64.png')}}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon-32.png') }}">
+    <link rel="icon" type="image/png" sizes="64x64" href="{{ asset('images/favicon-64.png') }}">
 
     <!-- Theme Color -->
     <meta name="theme-color" content="#000000">
 
-    <!-- Fonts (Optimized Loading) -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" as="style" 
-          href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" 
+
+    <link rel="preload" as="style"
+          href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
           onload="this.onload=null;this.rel='stylesheet'">
+
     <noscript>
-        <link rel="stylesheet" 
+        <link rel="stylesheet"
               href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
     </noscript>
+
+   <script type="application/ld+json">
+        {!! isset($schema) ? json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : '{}' !!}
+    </script>
+
     <style>
     /* ── Variables ─────────────────────────────────────────────── */
     :root {
@@ -608,27 +618,36 @@
     .back-top svg { color: var(--Y); }
  
     /* ── FOOTER ────────────────────────────────────────────────── */
-    .site-footer {
-      background: var(--INK);
-      border-top: 3px solid var(--Y);
-      padding: 24px 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 14px;
+    footer {
+      background:     var(--INK);
+      padding:        20px 16px;
+      display:        flex;
+      flex-direction: column;
+      align-items:    center;
+      gap:            14px;
+      text-align:     center;
+      border-top:     3px solid var(--Y);
     }
-    .footer-logo {
-      font-family: var(--DISPLAY);
-      font-size: 1.3rem;
-      color: var(--Y);
-      letter-spacing: .03em;
+
+    .foot-logo      { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; color: var(--Y); letter-spacing: .03em; }
+    .foot-logo .oro { color: #fff; }
+    .foot-links     { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+    .foot-links a   { font-size: .73rem; color: #6B7280; text-decoration: none; font-weight: 500; }
+    .foot-links a:hover { color: var(--Y); }
+    .foot-st { font-family: 'JetBrains Mono', monospace; font-size: .68rem; color:  #4B5563; display: flex; align-items: center; gap: 5px; }
+
+    @media (min-width: 900px) {
+      /* Footer */
+      footer {
+        flex-direction: row;
+        padding:        26px 40px;
+        text-align:     left;
+        display:         flex;
+        align-items:     center;
+        justify-content: space-between;
+      }
+      .foot-links { justify-content: flex-start; }
     }
-    .footer-logo span { color: #fff; }
-    .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
-    .footer-links a { font-size: .73rem; color: #6B7280; text-decoration: none; font-weight: 500; }
-    .footer-links a:hover { color: var(--Y); }
-    .footer-copy { font-family: var(--MONO); font-size: .62rem; color: #4B5563; letter-spacing: .04em; }
  
     /* ── RESPONSIVE ────────────────────────────────────────────── */
     @media (max-width: 820px) {
@@ -649,6 +668,89 @@
       .page-wrap { grid-template-columns: 1fr; }
       body { background: #fff; }
     }
+
+     /* ═════════════════════════════════════════════════════════════
+   NAV  (mobile base)
+═════════════════════════════════════════════════════════════ */
+nav {
+  position:        sticky;
+  top:             0;
+  z-index:         100;
+  background:      var(--INK);
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  padding:         0 16px;
+  height:          48px;
+  border-bottom:   3px solid var(--Y);
+}
+
+.nav-logo {
+  font-family:    'Bebas Neue', sans-serif;
+  font-size:      1.45rem;
+  color:          var(--Y);
+  letter-spacing: .03em;
+  line-height:    1;
+  display:        flex;
+  align-items:    center;
+  gap:            2px;
+}
+.nav-logo .oro   { color: #fff; }
+.nav-logo .badge {
+  font-family:    'JetBrains Mono', monospace;
+  font-size:      .5rem;
+  font-weight:    700;
+  background:     var(--Y);
+  color:          var(--INK);
+  padding:        2px 5px;
+  letter-spacing: .08em;
+  margin-left:    6px;
+  align-self:     center;
+}
+
+.logo-img { height: 30px; width: auto; }
+
+.nav-links { display: none; gap: 28px; align-items: center; }
+.nav-links a {
+  font-size:       .76rem;
+  font-weight:     600;
+  letter-spacing:  .1em;
+  text-transform:  uppercase;
+  color:           #9CA3AF;
+  text-decoration: none;
+  transition:      color .2s;
+}
+.nav-links a:hover { color: var(--Y); }
+
+.nav-cta {
+  background:     var(--Y);
+  color:          var(--INK);
+  font-size:      .7rem;
+  font-weight:    700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding:        6px 12px;
+  border:         none;
+  cursor:         pointer;
+  transition:     background .15s;
+  white-space:    nowrap;
+}
+.nav-cta:hover { background: #fff; }
+
+@media (min-width: 600px) {
+
+  nav { padding: 0 24px; height: 52px; }
+  .nav-logo { font-size: 1.55rem; }
+}
+
+@media (min-width: 900px) {
+
+  /* ── Nav ── */
+  nav { padding: 0 40px; height: 52px; }
+  .nav-logo  { font-size: 1.65rem; }
+  .nav-links { display: flex; }
+  .nav-cta   { padding: 7px 16px; font-size: .74rem; }
+}
   </style>
 </head>
 <body>
@@ -661,18 +763,8 @@
   </svg>
 </button>
 
-<!-- ══ NAV ══════════════════════════════════════════════════════ -->
-<nav class="site-nav">
-  <div class="nav-logo">
-    <img src="{{asset('/images/logo.svg')}}" alt="Inboxoro Logo" class="logo-img">
-  </div>
-  <a href="/" class="nav-back">
-    <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-    </svg>
-    Back to App
-  </a>
-</nav>
+{{-- NAV --}}
+@include('inboxoro.partials.nav')
 
 <!-- ══ HERO ══════════════════════════════════════════════════════ -->
 <header class="hero-band">
@@ -713,7 +805,7 @@
   <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
     <path stroke-linecap="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
   </svg>
-  <p>You must be at least 13 years old to use inboxOro. By continuing, you confirm you meet this age requirement.</p>
+  <p>You must be at least 13 years old to use InboxOro. By continuing, you confirm you meet this age requirement.</p>
 </div>
 
 <!-- ══ TOC STRIP ═════════════════════════════════════════════════ -->
@@ -751,11 +843,11 @@
           <div class="section-num">01</div>
           <h2 class="section-title">Introduction</h2>
         </div>
-        <p>Welcome to <strong>inboxOro</strong> ("we," "us," "our," or "the Company"), a free disposable temporary email service available at <a href="https://inboxoro.com" target="_blank" rel="noopener">https://inboxoro.com</a> ("the Website" or "the Service").</p>
-        <p>These Terms of Service ("Terms") are a legally binding agreement between you ("User," "you," or "your") and inboxOro. They govern your access to and use of the Service, including all features, tools, content, and functionality provided through the Website.</p>
-        <p>By using inboxOro in any way — visiting the site, generating a temporary address, or viewing emails — you agree to be bound by these Terms in full. <strong>If you do not agree, please stop using the Service immediately.</strong></p>
+        <p>Welcome to <strong>InboxOro</strong> ("we," "us," "our," or "the Company"), a free disposable temporary email service available at <a href="https://inboxoro.com" target="_blank" rel="noopener">https://inboxoro.com</a> ("the Website" or "the Service").</p>
+        <p>These Terms of Service ("Terms") are a legally binding agreement between you ("User," "you," or "your") and InboxOro. They govern your access to and use of the Service, including all features, tools, content, and functionality provided through the Website.</p>
+        <p>By using InboxOro in any way — visiting the site, generating a temporary address, or viewing emails — you agree to be bound by these Terms in full. <strong>If you do not agree, please stop using the Service immediately.</strong></p>
         <div class="callout-neutral">
-          <p><strong>Plain summary:</strong> inboxOro lets you create temporary email addresses instantly, for free, with no registration. These Terms explain the rules. They are legally binding. Read them before you use the service.</p>
+          <p><strong>Plain summary:</strong> InboxOro lets you create temporary email addresses instantly, for free, with no registration. These Terms explain the rules. They are legally binding. Read them before you use the service.</p>
         </div>
       </section>
 
@@ -765,16 +857,16 @@
           <div class="section-num">02</div>
           <h2 class="section-title">Acceptance of Terms</h2>
         </div>
-        <p>Your access to and use of inboxOro constitutes your full and unconditional acceptance of these Terms, along with our <a href="/privacy">Privacy Policy</a>, which is incorporated herein by reference.</p>
+        <p>Your access to and use of InboxOro constitutes your full and unconditional acceptance of these Terms, along with our <a href="/privacy">Privacy Policy</a>, which is incorporated herein by reference.</p>
         <h3>Eligibility</h3>
         <ul class="tos-list">
-          <li>You must be <strong>at least 13 years of age</strong> to use this Service. If you are under 13, you are not permitted to access or use inboxOro under any circumstances.</li>
+          <li>You must be <strong>at least 13 years of age</strong> to use this Service. If you are under 13, you are not permitted to access or use InboxOro under any circumstances.</li>
           <li>If you are between the ages of 13 and 18 (or the age of legal majority in your jurisdiction), you represent that you have reviewed these Terms with a parent or legal guardian who agrees on your behalf.</li>
           <li>By using the Service, you represent and warrant that you have the legal capacity to enter into a binding agreement.</li>
           <li>You agree to use the Service only in compliance with all applicable local, national, and international laws and regulations.</li>
         </ul>
         <div class="callout-warn">
-          <p><strong>Age requirement:</strong> inboxOro does not knowingly collect information from or provide services to individuals under 13 years of age. If we become aware that a user under 13 has accessed the Service, we will take steps to restrict that access immediately.</p>
+          <p><strong>Age requirement:</strong> InboxOro does not knowingly collect information from or provide services to individuals under 13 years of age. If we become aware that a user under 13 has accessed the Service, we will take steps to restrict that access immediately.</p>
         </div>
       </section>
 
@@ -784,20 +876,20 @@
           <div class="section-num">03</div>
           <h2 class="section-title">Description of Service</h2>
         </div>
-        <p>inboxOro is a <strong>free, no-registration disposable email platform</strong>. The Service provides the following core functionality:</p>
+        <p>InboxOro is a <strong>free, no-registration disposable email platform</strong>. The Service provides the following core functionality:</p>
         <ul class="tos-list check">
           <li>Instant generation of temporary, randomly assigned email addresses</li>
           <li>A web-based inbox interface to view emails received at that address</li>
           <li>Automatic, permanent deletion of all emails and inbox data after 30 to 60 minutes</li>
-          <li>Multiple domain options for generating addresses (e.g., @inboxoro.com and partner domains)</li>
+          <li>Multiple domain options for generating addresses</li>
           <li>Real-time or near-real-time delivery of incoming emails to the temporary inbox</li>
         </ul>
         <h3>Future Features</h3>
-        <p>inboxOro may, at its sole discretion, introduce additional features in the future, such as email forwarding, address aliasing, registered accounts, or developer APIs. These features may be subject to separate terms, pricing, or eligibility requirements. This Terms of Service document will be updated accordingly.</p>
+        <p>InboxOro may, at its sole discretion, introduce additional features in the future, such as email forwarding, address aliasing, registered accounts, or developer APIs. These features may be subject to separate terms, pricing, or eligibility requirements. This Terms of Service document will be updated accordingly.</p>
         <h3>Service is Free and Ad-Supported</h3>
-        <p>inboxOro is provided free of charge. The Service is supported by advertising, including ads served through Google AdSense. By using the Service, you acknowledge and agree that advertisements may be displayed alongside the service interface. Advertisements are served by third-party providers such as Google AdSense, which may use cookies and similar technologies to display personalized or non-personalized ads, and the appearance of any ad does not constitute an endorsement by inboxOro.</p>
+        <p>InboxOro is provided free of charge. The Service is supported by advertising, including ads served through Google AdSense. By using the Service, you acknowledge and agree that advertisements may be displayed alongside the service interface. Advertisements are served by third-party providers such as Google AdSense, which may use cookies and similar technologies to display personalized or non-personalized ads, and the appearance of any ad does not constitute an endorsement by InboxOro.</p>
         <h3>No Registration Required</h3>
-        <p>inboxOro does not currently require users to create accounts, provide personal information, or authenticate in any way to use the core service. This means we have no way to associate activity with a specific individual and no user accounts to delete or modify upon request.</p>
+        <p>InboxOro does not currently require users to create accounts, provide personal information, or authenticate in any way to use the core service. This means we have no way to associate activity with a specific individual and no user accounts to delete or modify upon request.</p>
       </section>
 
       <!-- SECTION 4 -->
@@ -814,20 +906,20 @@
             </svg>
             Critical Warning — Inboxes Are Public
           </div>
-          <p><strong>Temporary inboxes on inboxOro are publicly accessible and are not intended for private or sensitive communications.</strong> Any person who knows or guesses your temporary email address can access and read all emails in that inbox. There is no password, PIN, authentication, or access control of any kind protecting inbox contents.</p>
-          <p>inboxOro <strong>does not guarantee the privacy, confidentiality, or security</strong> of any email content received through the Service. By using inboxOro, you accept full responsibility for what you choose to receive through a temporary inbox.</p>
+          <p><strong>Temporary inboxes on InboxOro are publicly accessible and are not intended for private or sensitive communications.</strong> Any person who knows or guesses your temporary email address can access and read all emails in that inbox. There is no password, PIN, authentication, or access control of any kind protecting inbox contents.</p>
+          <p>InboxOro <strong>does not guarantee the privacy, confidentiality, or security</strong> of any email content received through the Service. By using InboxOro, you accept full responsibility for what you choose to receive through a temporary inbox.</p>
         </div>
 
         <h3>What This Means for You</h3>
         <ul class="tos-list danger">
-          <li>Do NOT use inboxOro to receive passwords, account recovery codes, banking details, financial statements, or any sensitive credentials</li>
-          <li>Do NOT use inboxOro to receive medical records, legal documents, or personally identifiable information</li>
-          <li>Do NOT use inboxOro for private or confidential communications of any kind</li>
-          <li>Do NOT assume that any email received via inboxOro is visible only to you — it is accessible to anyone with the address</li>
+          <li>Do NOT use InboxOro to receive passwords, account recovery codes, banking details, financial statements, or any sensitive credentials</li>
+          <li>Do NOT use InboxOro to receive medical records, legal documents, or personally identifiable information</li>
+          <li>Do NOT use InboxOro for private or confidential communications of any kind</li>
+          <li>Do NOT assume that any email received via InboxOro is visible only to you — it is accessible to anyone with the address</li>
         </ul>
 
         <h3>No Responsibility for Exposed Data</h3>
-        <p>inboxOro shall not be held responsible for any loss, damage, harm, or consequence resulting from unauthorized access to, disclosure of, or interception of email content received through the Service. You use inboxOro <strong>entirely at your own risk</strong>.</p>
+        <p>InboxOro shall not be held responsible for any loss, damage, harm, or consequence resulting from unauthorized access to, disclosure of, or interception of email content received through the Service. You use InboxOro <strong>entirely at your own risk</strong>.</p>
 
         <h3>Intended Use Cases</h3>
         <ul class="tos-list">
@@ -838,7 +930,7 @@
         </ul>
 
         <div class="callout-warn">
-          <p>inboxOro is a <strong>convenience tool</strong>, not a secure communication service. For private, encrypted email communications, please use a dedicated secure email provider.</p>
+          <p>InboxOro is a <strong>convenience tool</strong>, not a secure communication service. For private, encrypted email communications, please use a dedicated secure email provider.</p>
         </div>
       </section>
 
@@ -848,9 +940,9 @@
           <div class="section-num">05</div>
           <h2 class="section-title">Acceptable Use Policy</h2>
         </div>
-        <p>inboxOro is provided for lawful, legitimate, and non-abusive purposes only. By using the Service, you agree to the following:</p>
+        <p>InboxOro is provided for lawful, legitimate, and non-abusive purposes only. By using the Service, you agree to the following:</p>
 
-        <h3>You May Use inboxOro To:</h3>
+        <h3>You May Use InboxOro To:</h3>
         <ul class="tos-list check">
           <li>Generate temporary email addresses for personal convenience</li>
           <li>Receive non-sensitive verification or signup emails</li>
@@ -859,7 +951,7 @@
           <li>Any lawful purpose that does not harm others or violate these Terms</li>
         </ul>
 
-        <h3>You Must NOT Use inboxOro To:</h3>
+        <h3>You Must NOT Use InboxOro To:</h3>
         <ul class="tos-list danger">
           <li>Send, distribute, or facilitate spam, unsolicited bulk emails, or phishing messages</li>
           <li>Engage in fraud, identity theft, scamming, or impersonation of any kind</li>
@@ -870,10 +962,10 @@
           <li>Conduct any activity that violates applicable local, national, or international law</li>
           <li>Use automated bots, scripts, or programs to mass-generate addresses without prior written permission</li>
           <li>Attempt to interfere with, disrupt, or overload our infrastructure, servers, or network</li>
-          <li>Engage in any activity that could expose inboxOro to legal liability</li>
+          <li>Engage in any activity that could expose InboxOro to legal liability</li>
         </ul>
 
-        <p>inboxOro reserves the right to determine, at its sole discretion, whether any use constitutes a violation of this Acceptable Use Policy. Such determinations are final.</p>
+        <p>InboxOro reserves the right to determine, at its sole discretion, whether any use constitutes a violation of this Acceptable Use Policy. Such determinations are final.</p>
       </section>
 
       <!-- SECTION 6 -->
@@ -882,7 +974,7 @@
           <div class="section-num">06</div>
           <h2 class="section-title">Prohibited Activities</h2>
         </div>
-        <p>The following activities are strictly prohibited on or through inboxOro. Violation may result in immediate access termination, IP-level blocking, and/or referral to law enforcement:</p>
+        <p>The following activities are strictly prohibited on or through InboxOro. Violation may result in immediate access termination, IP-level blocking, and/or referral to law enforcement:</p>
 
         <div class="prohibited-grid">
           <div class="prohibited-card">
@@ -903,17 +995,17 @@
           <div class="prohibited-card">
             <div class="prohibited-card-icon">🤖</div>
             <div class="prohibited-card-name">Automated Abuse</div>
-            <p>Running bots, scrapers, or automated scripts to mass-generate addresses, flood our servers, or abuse third-party services via inboxOro.</p>
+            <p>Running bots, scrapers, or automated scripts to mass-generate addresses, flood our servers, or abuse third-party services via InboxOro.</p>
           </div>
           <div class="prohibited-card">
             <div class="prohibited-card-icon">💻</div>
             <div class="prohibited-card-name">System Attacks</div>
-            <p>Attempting to hack, exploit, probe, scan, or perform any attack (DDoS, SQL injection, XSS, etc.) against inboxOro's infrastructure or third-party systems accessed via our service.</p>
+            <p>Attempting to hack, exploit, probe, scan, or perform any attack (DDoS, SQL injection, XSS, etc.) against InboxOro's infrastructure or third-party systems accessed via our service.</p>
           </div>
           <div class="prohibited-card">
             <div class="prohibited-card-icon">🎭</div>
             <div class="prohibited-card-name">Impersonation</div>
-            <p>Impersonating any person, company, government authority, or inboxOro itself in communications originating from or facilitated by the Service.</p>
+            <p>Impersonating any person, company, government authority, or InboxOro itself in communications originating from or facilitated by the Service.</p>
           </div>
         </div>
 
@@ -924,7 +1016,7 @@
             </svg>
             Consequences of Violation
           </div>
-          <p>Users who violate these prohibitions may face <strong>immediate IP-level blocking</strong>, permanent restriction from the Service, and reporting of illegal activity to relevant law enforcement authorities in India and/or the user's home jurisdiction. inboxOro cooperates fully with lawful investigations.</p>
+          <p>Users who violate these prohibitions may face <strong>immediate IP-level blocking</strong>, permanent restriction from the Service, and reporting of illegal activity to relevant law enforcement authorities in India and/or the user's home jurisdiction. InboxOro cooperates fully with lawful investigations.</p>
         </div>
       </section>
 
@@ -934,11 +1026,11 @@
           <div class="section-num">07</div>
           <h2 class="section-title">Service Availability</h2>
         </div>
-        <p>inboxOro is provided on a best-effort basis. We make no guarantees about the availability, continuity, reliability, or performance of the Service.</p>
+        <p>InboxOro is provided on a best-effort basis. We make no guarantees about the availability, continuity, reliability, or performance of the Service.</p>
         
         <h3>No Uptime Guarantee</h3>
         <ul class="tos-list">
-          <li>inboxOro does not guarantee 100% uptime or uninterrupted service access</li>
+          <li>InboxOro does not guarantee 100% uptime or uninterrupted service access</li>
           <li>The Service may be temporarily unavailable due to maintenance, technical issues, infrastructure upgrades, or circumstances beyond our control</li>
           <li>We may suspend or discontinue the Service, in whole or in part, at any time without prior notice</li>
         </ul>
@@ -947,14 +1039,14 @@
         <ul class="tos-list">
           <li>We do not guarantee that all emails sent to a temporary address will be received, displayed correctly, or delivered in a timely manner</li>
           <li>Emails may be delayed, filtered, lost, or rejected at any point during transmission</li>
-          <li>inboxOro is not responsible for any loss or damage resulting from failure to receive expected emails</li>
+          <li>InboxOro is not responsible for any loss or damage resulting from failure to receive expected emails</li>
         </ul>
 
         <h3>Data Loss on Expiry</h3>
-        <p>All temporary inboxes and their email contents are <strong>permanently and irreversibly deleted</strong> after the expiry window (typically 30–60 minutes). We are not responsible for any data loss resulting from the expiry of a temporary inbox. Do not rely on inboxOro for the long-term storage of any important information.</p>
+        <p>All temporary inboxes and their email contents are <strong>permanently and irreversibly deleted</strong> after the expiry window (typically 30–60 minutes). We are not responsible for any data loss resulting from the expiry of a temporary inbox. Do not rely on InboxOro for the long-term storage of any important information.</p>
 
         <div class="callout-neutral">
-          <p>inboxOro provides no Service Level Agreement (SLA) of any kind. The Service is offered "as-is" for convenience purposes only. Do not use it for mission-critical workflows that require guaranteed delivery or availability.
+          <p>InboxOro provides no Service Level Agreement (SLA) of any kind. The Service is offered "as-is" for convenience purposes only. Do not use it for mission-critical workflows that require guaranteed delivery or availability.
 
             We may retain limited server logs, including IP addresses and request metadata, for security, abuse prevention, and legal compliance purposes.
           </p>
@@ -969,15 +1061,15 @@
         </div>
 
         <h3>Our Property</h3>
-        <p>All intellectual property in and relating to inboxOro — including but not limited to the name "inboxOro," the Website design, source code, user interface, graphics, logos, trademarks, and service architecture — is the exclusive property of inboxOro and its owners. All rights are reserved.</p>
+        <p>All intellectual property in and relating to InboxOro — including but not limited to the name "InboxOro," the Website design, source code, user interface, graphics, logos, trademarks, and service architecture — is the exclusive property of InboxOro and its owners. All rights are reserved.</p>
         <ul class="tos-list">
           <li>You may not copy, reproduce, distribute, or create derivative works of any part of the Service without our express written permission</li>
-          <li>You may not use the inboxOro name, logo, or branding in any way that implies endorsement or affiliation without our prior written consent</li>
+          <li>You may not use the InboxOro name, logo, or branding in any way that implies endorsement or affiliation without our prior written consent</li>
           <li>You may not reverse-engineer, decompile, or attempt to extract the source code of any part of the Service</li>
         </ul>
 
         <h3>Your Content</h3>
-        <p>inboxOro does not claim ownership over emails received into temporary inboxes. However, by using the Service, you acknowledge that:</p>
+        <p>InboxOro does not claim ownership over emails received into temporary inboxes. However, by using the Service, you acknowledge that:</p>
         <ul class="tos-list">
           <li>Emails received in temporary inboxes are transiently stored on our infrastructure and are accessible to any person with the corresponding email address</li>
           <li>You have no proprietary rights over the temporary email address itself — it is system-generated and may be re-assigned after expiry</li>
@@ -985,7 +1077,7 @@
         </ul>
 
         <h3>Limited License</h3>
-        <p>Subject to these Terms, inboxOro grants you a limited, non-exclusive, non-transferable, revocable license to access and use the Service for personal, non-commercial purposes. This license does not permit resale, sublicensing, or commercial exploitation of the Service in any form.</p>
+        <p>Subject to these Terms, InboxOro grants you a limited, non-exclusive, non-transferable, revocable license to access and use the Service for personal, non-commercial purposes. This license does not permit resale, sublicensing, or commercial exploitation of the Service in any form.</p>
       </section>
 
       <!-- SECTION 9 -->
@@ -994,25 +1086,25 @@
           <div class="section-num">09</div>
           <h2 class="section-title">Third-Party Services</h2>
         </div>
-        <p>inboxOro integrates with and relies upon several third-party services to operate. By using inboxOro, you acknowledge that these services may process certain data about you in accordance with their own privacy policies and terms.</p>
+        <p>InboxOro integrates with and relies upon several third-party services to operate. By using InboxOro, you acknowledge that these services may process certain data about you in accordance with their own privacy policies and terms.</p>
 
         <h3>Google Analytics <span class="tag tag-b">Analytics</span></h3>
         <p>We use Google Analytics to measure and analyze how visitors interact with the Service. Google Analytics may collect your IP address, browser type, device type, and behavioral data via cookies. This data is anonymized and aggregated. You can opt out at <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">tools.google.com/dlpage/gaoptout</a>.</p>
 
         <h3>Google AdSense <span class="tag tag-y">Advertising</span></h3>
-        <p>inboxOro displays advertisements served by Google AdSense. Google may use cookies and browsing data to serve personalized advertisements based on your prior visits to this and other websites. inboxOro does not control which ads are shown and receives no information about individual ad viewers from Google. Manage your ad preferences at <a href="https://adssettings.google.com" target="_blank" rel="noopener">adssettings.google.com</a>.</p>
+        <p>InboxOro displays advertisements served by Google AdSense. Google may use cookies and browsing data to serve personalized advertisements based on your prior visits to this and other websites. InboxOro does not control which ads are shown and receives no information about individual ad viewers from Google. Manage your ad preferences at <a href="https://adssettings.google.com" target="_blank" rel="noopener">adssettings.google.com</a>.</p>
 
         <h3>Email Infrastructure <span class="tag tag-g">Mail Delivery</span></h3>
-        <p>inboxOro relies on third-party email receiving infrastructure (SMTP relay and processing services) to accept and route incoming emails to temporary inboxes. These providers operate under their own data processing terms and handle email content solely for the purpose of delivery.</p>
+        <p>InboxOro relies on third-party email receiving infrastructure (SMTP relay and processing services) to accept and route incoming emails to temporary inboxes. These providers operate under their own data processing terms and handle email content solely for the purpose of delivery.</p>
 
         <h3>Cloud Hosting <span class="tag tag-b">Infrastructure</span></h3>
         <p>Our servers and infrastructure are hosted on third-party cloud platforms. These providers may have access to server-level operational data under their own terms of service and data processing agreements.</p>
 
         <h3>Third-Party Links</h3>
-        <p>The Service may contain links to third-party websites or services. inboxOro is not responsible for the content, privacy practices, or terms of any third-party site. Visiting third-party links is done entirely at your own risk.</p>
+        <p>The Service may contain links to third-party websites or services. InboxOro is not responsible for the content, privacy practices, or terms of any third-party site. Visiting third-party links is done entirely at your own risk.</p>
 
         <div class="callout-neutral">
-          <p>inboxOro does not sell personal data to any third party. We share only the minimum data necessary to operate the Service. All third-party providers are contractually prohibited from using your data for independent commercial purposes.</p>
+          <p>InboxOro does not sell personal data to any third party. We share only the minimum data necessary to operate the Service. All third-party providers are contractually prohibited from using your data for independent commercial purposes.</p>
         </div>
       </section>
 
@@ -1025,13 +1117,13 @@
 
         <div class="disclaimer-block">
           <p><strong>THE SERVICE IS PROVIDED "AS IS," "AS AVAILABLE," AND "WITH ALL FAULTS," WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.</strong></p>
-          <p>To the fullest extent permitted by applicable law, inboxOro expressly disclaims all warranties, whether express, implied, statutory, or otherwise, including but not limited to:</p>
+          <p>To the fullest extent permitted by applicable law, InboxOro expressly disclaims all warranties, whether express, implied, statutory, or otherwise, including but not limited to:</p>
           <p>— Any implied warranty of merchantability, fitness for a particular purpose, or non-infringement;<br>
              — Any warranty that the Service will be uninterrupted, error-free, virus-free, or secure;<br>
              — Any warranty that emails will be received, delivered, or retained for any period of time;<br>
              — Any warranty that the Service will meet your requirements or expectations;<br>
              — Any warranty regarding the accuracy, reliability, or completeness of any content displayed through the Service.</p>
-          <p><strong>USE OF inboxOro IS ENTIRELY AT YOUR OWN RISK. YOU ASSUME FULL RESPONSIBILITY FOR ALL RISKS ASSOCIATED WITH ACCESS TO AND USE OF THE SERVICE.</strong></p>
+          <p><strong>USE OF InboxOro IS ENTIRELY AT YOUR OWN RISK. YOU ASSUME FULL RESPONSIBILITY FOR ALL RISKS ASSOCIATED WITH ACCESS TO AND USE OF THE SERVICE.</strong></p>
         </div>
 
         <p>Some jurisdictions do not allow the exclusion of certain warranties. In such jurisdictions, the above exclusions apply only to the maximum extent permitted by law.</p>
@@ -1052,10 +1144,10 @@
              — Damages resulting from service downtime, errors, interruptions, or failures;<br>
              — Damages resulting from reliance on any information provided through the Service;<br>
              — Any other damages, regardless of the legal theory on which the claim is based.</p>
-          <p><strong>To the maximum extent permitted by applicable law, inboxOro’s total liability shall be limited.</strong></p>
+          <p><strong>To the maximum extent permitted by applicable law, InboxOro’s total liability shall be limited.</strong></p>
         </div>
 
-        <p>This limitation of liability applies regardless of whether inboxOro was advised of the possibility of such damages, and regardless of whether any remedy fails of its essential purpose.</p>
+        <p>This limitation of liability applies regardless of whether InboxOro was advised of the possibility of such damages, and regardless of whether any remedy fails of its essential purpose.</p>
         <p>Some jurisdictions do not permit the exclusion or limitation of certain damages. In such cases, the limitations above apply to the fullest extent permitted by law in your jurisdiction.</p>
       </section>
 
@@ -1065,7 +1157,7 @@
           <div class="section-num">12</div>
           <h2 class="section-title">Indemnification</h2>
         </div>
-        <p>You agree to <strong>defend, indemnify, and hold harmless</strong> inboxOro and its owners, officers, directors, employees, contractors, agents, and affiliates from and against any and all claims, damages, obligations, losses, liabilities, costs, and expenses (including reasonable legal fees) arising out of or related to:</p>
+        <p>You agree to <strong>defend, indemnify, and hold harmless</strong> InboxOro and its owners, officers, directors, employees, contractors, agents, and affiliates from and against any and all claims, damages, obligations, losses, liabilities, costs, and expenses (including reasonable legal fees) arising out of or related to:</p>
         <ul class="tos-list">
           <li>Your access to or use of the Service</li>
           <li>Your violation of any provision of these Terms</li>
@@ -1082,7 +1174,7 @@
           <div class="section-num">13</div>
           <h2 class="section-title">Termination &amp; Access Restriction</h2>
         </div>
-        <p>inboxOro reserves the right to restrict, suspend, or terminate your access to the Service at any time and for any reason, with or without notice, including but not limited to:</p>
+        <p>InboxOro reserves the right to restrict, suspend, or terminate your access to the Service at any time and for any reason, with or without notice, including but not limited to:</p>
 
         <ul class="tos-list">
           <li>Violation of any provision of these Terms or our Acceptable Use Policy</li>
@@ -1090,11 +1182,11 @@
           <li>Suspected involvement in spam, phishing, fraud, or illegal activity</li>
           <li>Generating unusually high volumes of traffic or requests that strain our infrastructure</li>
           <li>Receipt of complaints from third parties or law enforcement about your use of the Service</li>
-          <li>Any other reason that inboxOro determines, in its sole discretion, to be grounds for restriction</li>
+          <li>Any other reason that InboxOro determines, in its sole discretion, to be grounds for restriction</li>
         </ul>
 
         <h3>IP Blocking</h3>
-        <p>inboxOro may implement <strong>IP-level blocks</strong> to restrict access from specific addresses, ranges, or networks associated with abuse, spam, or policy violations. IP blocks may be temporary or permanent and may affect other users sharing the same IP (e.g., through a VPN or shared network).</p>
+        <p>InboxOro may implement <strong>IP-level blocks</strong> to restrict access from specific addresses, ranges, or networks associated with abuse, spam, or policy violations. IP blocks may be temporary or permanent and may affect other users sharing the same IP (e.g., through a VPN or shared network).</p>
 
         <h3>Effect of Termination</h3>
         <ul class="tos-list">
@@ -1104,7 +1196,7 @@
         </ul>
 
         <div class="callout-warn">
-          <p>Because inboxOro requires no registration, we may not be able to provide advance notice of access restriction. Restrictions are based on network-level signals and are enforced automatically in many cases.</p>
+          <p>Because InboxOro requires no registration, we may not be able to provide advance notice of access restriction. Restrictions are based on network-level signals and are enforced automatically in many cases.</p>
         </div>
       </section>
 
@@ -1114,7 +1206,7 @@
           <div class="section-num">14</div>
           <h2 class="section-title">Changes to These Terms</h2>
         </div>
-        <p>inboxOro reserves the right to modify, update, or replace these Terms of Service at any time in its sole discretion. Changes may be made to reflect:</p>
+        <p>InboxOro reserves the right to modify, update, or replace these Terms of Service at any time in its sole discretion. Changes may be made to reflect:</p>
         <ul class="tos-list">
           <li>Changes in applicable laws or regulations</li>
           <li>New features, services, or changes to existing functionality</li>
@@ -1142,17 +1234,17 @@
         <p>These Terms of Service shall be governed by and construed in accordance with the <strong>laws of India</strong>, without regard to its conflict of law provisions.</p>
 
         <h3>Jurisdiction</h3>
-        <p>Any disputes arising out of or in connection with these Terms, the Service, or your use of inboxOro shall be subject to the <strong>exclusive jurisdiction of the courts located in Kolkata, West Bengal, India</strong>.</p>
+        <p>Any disputes arising out of or in connection with these Terms, the Service, or your use of InboxOro shall be subject to the <strong>exclusive jurisdiction of the courts located in Kolkata, West Bengal, India</strong>.</p>
 
         <h3>Dispute Resolution</h3>
         <ul class="tos-list">
-          <li>Before initiating any formal legal proceedings, you agree to first attempt to resolve the dispute informally by contacting us at <a href="mailto:support@inboxoro.com">support@inboxoro.com</a></li>
+          <li>Before initiating any formal legal proceedings, you agree to first attempt to resolve the dispute informally by contacting us at <a href="mailto:support@inboxorI.com">support@inboxorI.com</a></li>
           <li>We will make reasonable efforts to resolve any complaint or dispute within 30 calendar days of receiving written notice</li>
           <li>If informal resolution fails, disputes shall be resolved by competent courts in Kolkata, West Bengal, India</li>
         </ul>
 
         <h3>International Users</h3>
-        <p>inboxOro is operated from India. If you access the Service from outside India, you do so at your own initiative and are solely responsible for ensuring compliance with the laws of your own jurisdiction. Use of the Service does not exempt you from local legal obligations.</p>
+        <p>InboxOro is operated from India. If you access the Service from outside India, you do so at your own initiative and are solely responsible for ensuring compliance with the laws of your own jurisdiction. Use of the Service does not exempt you from local legal obligations.</p>
 
         <div class="callout-neutral">
           <p>If any provision of these Terms is found to be unenforceable or invalid under applicable law, that provision shall be modified to the minimum extent necessary to make it enforceable, and all other provisions shall remain in full force and effect.</p>
@@ -1168,7 +1260,7 @@
         <p>If you have any questions, concerns, feedback, or legal inquiries regarding these Terms of Service, please contact us. We aim to respond to all queries within <strong>5 business days</strong>.</p>
 
         <div class="contact-box">
-          <div class="contact-box-title">Reach inboxOro</div>
+          <div class="contact-box-title">Reach InboxOro</div>
           <div class="contact-box-sub">We take all legal and policy inquiries seriously.</div>
 
           <div class="contact-row">
@@ -1179,7 +1271,7 @@
             </div>
             <div>
               <div class="contact-label">General &amp; Terms Inquiries</div>
-              <div class="contact-value"><a href="mailto:support@inboxoro.com">support@inboxoro.com</a></div>
+              <div class="contact-value"><a href="mailto:support@I.com">support@inboxoro.com</a></div>
             </div>
           </div>
 
@@ -1220,7 +1312,7 @@
           </div>
         </div>
 
-        <p style="margin-top:20px; font-size:.85rem; color:var(--MU);">These Terms of Service were last updated on <strong>March 28, 2026</strong>. They constitute the entire agreement between you and inboxOro with respect to your use of the Service, superseding all prior agreements and understandings. These Terms are written in plain English for clarity and are not a substitute for qualified legal counsel.</p>
+        <p style="margin-top:20px; font-size:.85rem; color:var(--MU);">These Terms of Service were last updated on <strong>March 28, 2026</strong>. They constitute the entire agreement between you and InboxOro with respect to your use of the Service, superseding all prior agreements and understandings. These Terms are written in plain English for clarity and are not a substitute for qualified legal counsel.</p>
       </section>
 
     </div><!-- /content-col -->
@@ -1252,18 +1344,7 @@
 </main>
 
 <!-- ══ FOOTER ════════════════════════════════════════════════════ -->
-<footer class="site-footer">
-  <div class="nav-logo">
-    <img src="{{asset('/images/logo.svg')}}" alt="Inboxoro Logo" class="logo-img">
-  </div>
-  <div class="footer-links">
-    <a href="{{url('/')}}">Home</a>
-    <a href="{{url('privacy-policy')}}">Privacy Policy</a>
-    <a href="{{url('terms')}}">Terms</a>
-    <a href="mailto:support@inboxoro.com">Contact</a>
-  </div>
-  <div class="footer-copy">© 2026 inboxOro. All rights reserved.</div>
-</footer>
+@include('inboxoro.partials.footer')
 
 <script>
   /* ── Reading progress bar ──────────────────────────────────── */

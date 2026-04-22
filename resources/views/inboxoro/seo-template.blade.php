@@ -3,6 +3,11 @@
 @section('title', $seo_page->title)
 @section('meta_description', $seo_page->meta_description)
 
+
+@section('schema')
+  {!! isset($schema) ? json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : '{}' !!}
+@endsection
+
 @section('content')
   {{-- Toast, Nav, Hero, Generator, Inbox, Features, Sidebar, Footer same as before --}}
   @include('inboxoro.partials.nav')

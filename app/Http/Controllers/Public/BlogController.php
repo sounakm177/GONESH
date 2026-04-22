@@ -44,22 +44,47 @@ class BlogController extends Controller
 
         $schema = [
             "@context" => "https://schema.org",
-            "@type" => "Blog",
+            "@graph" => [
 
-            "name" => "inboxOro Blog",
-            "description" => "Expert guides on temporary email, OTP receiving, spam protection, and digital privacy.",
+                [
+                    "@type" => "Organization",
+                    "name" => "Inboxoro",
+                    "url" => url('/'),
+                    "logo" => [
+                        "@type" => "ImageObject",
+                        "url" => asset('images/logo.svg')
+                    ]
+                ],
 
-            "url" => url()->current(),
+                [
+                    "@type" => "WebSite",
+                    "name" => "Inboxoro",
+                    "url" => url('/'),
+                    "inLanguage" => "en"
+                ],
 
-            "publisher" => [
-                "@type" => "Organization",
-                "name" => "inboxOro",
-                "logo" => [
-                    "@type" => "ImageObject",
-                    "url" => asset('images/logo.svg')
+                [
+                    "@type" => "CollectionPage",
+                    "name" => "Inboxoro Blog",
+                    "url" => url()->current(),
+                    "description" => "Guides on temporary email, OTP verification, spam protection, and online privacy.",
+                    "isPartOf" => [
+                        "@type" => "WebSite",
+                        "url" => url('/')
+                    ]
+                ],
+
+                [
+                    "@type" => "Blog",
+                    "name" => "Inboxoro Blog",
+                    "url" => url('/blog'),
+                    "publisher" => [
+                        "@type" => "Organization",
+                        "name" => "Inboxoro"
+                    ]
                 ]
-            ],
-            "inLanguage" => "en"
+
+            ]
         ];
  
         return view('inboxoro.blog.index', compact(
@@ -97,50 +122,77 @@ class BlogController extends Controller
     
         $schema = [
             "@context" => "https://schema.org",
-            "@type" => "BlogPosting",
+            "@graph" => [
 
-            "headline" => $post->title,
-            "description" => $post->excerpt,
+                [
+                    "@type" => "Organization",
+                    "name" => "Inboxoro",
+                    "url" => url('/'),
+                    "logo" => [
+                        "@type" => "ImageObject",
+                        "url" => asset('images/logo.svg')
+                    ]
+                ],
 
-            "image" => $post->featured_image
-                ? asset('storage/' . $post->featured_image)
-                : asset('images/default.jpg'),
+                [
+                    "@type" => "WebPage",
+                    "@id" => url('/blog/' . $post->slug),
+                    "url" => url('/blog/' . $post->slug),
+                    "name" => $post->title,
+                    "isPartOf" => [
+                        "@type" => "WebSite",
+                        "url" => url('/')
+                    ]
+                ],
 
-            "url" => url('/blog/' . $post->slug),
+                [
+                    "@type" => "BlogPosting",
+                    "mainEntityOfPage" => [
+                        "@type" => "WebPage",
+                        "@id" => url('/blog/' . $post->slug)
+                    ],
 
-            "author" => [
-                "@type" => "Organization",
-                "name" => $post->author_name ?? "inboxOro Team"
-            ],
+                    "headline" => $post->title,
+                    "description" => $post->excerpt,
 
-            "publisher" => [
-                "@type" => "Organization",
-                "name" => "inboxOro",
-                "logo" => [
-                    "@type" => "ImageObject",
-                    "url" => asset('images/logo.svg')
+                    "image" => [
+                        "@type" => "ImageObject",
+                        "url" => $post->featured_image
+                            ? asset('images/blog/' . $post->featured_image)
+                            : asset('images/default.jpg')
+                    ],
+
+                    "author" => [
+                        "@type" => "Organization",
+                        "name" => $post->author_name ?? "Inboxoro Team"
+                    ],
+
+                    "publisher" => [
+                        "@type" => "Organization",
+                        "name" => "Inboxoro",
+                        "logo" => [
+                            "@type" => "ImageObject",
+                            "url" => asset('images/logo.svg')
+                        ]
+                    ],
+
+                    "articleSection" => $post->category->name ?? "Blog",
+
+                    "keywords" => implode(", ", $post->tags->pluck('name')->toArray()),
+
+                    "inLanguage" => "en",
+
+                    "timeRequired" => "PT{$post->read_time_minutes}M",
+
+                    "datePublished" => $post->published_at
+                        ? \Carbon\Carbon::parse($post->published_at)->toIso8601String()
+                        : null,
+
+                    "dateModified" => $post->updated_at
+                        ? \Carbon\Carbon::parse($post->updated_at)->toIso8601String()
+                        : null
                 ]
-            ],
 
-            "articleSection" => $post->category->name ?? "Blog",
-
-            "keywords" => $post->tags->pluck('name')->toArray(),
-
-            "inLanguage" => "en",
-
-            "timeRequired" => "PT{$post->read_time_minutes}M",
-
-            "datePublished" => $post->published_at
-                ? \Carbon\Carbon::parse($post->published_at)->toIso8601String()
-                : null,
-
-            "dateModified" => $post->updated_at
-                ? \Carbon\Carbon::parse($post->updated_at)->toIso8601String()
-                : null,
-
-            "mainEntityOfPage" => [
-                "@type" => "WebPage",
-                "@id" => url('/blog/' . $post->slug)
             ]
         ];
 

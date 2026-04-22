@@ -1,0 +1,80 @@
+/* =============================================================
+   TIMER CONTROLS  — append to inboxoro.css
+   Nothing below overrides existing rules.
+   ============================================================= */
+
+/* ── Compact control buttons beside the timer ───────────────── */
+.btn-timer-ctrl {
+  display:        inline-flex;
+  align-items:    center;
+  justify-content: center;
+  height:         24px;
+  padding:        0 8px;
+  font-family:    'JetBrains Mono', monospace;
+  font-size:      .6rem;
+  font-weight:    700;
+  letter-spacing: .06em;
+  color:          var(--INK);
+  background:     #fff;
+  border:         1.5px solid var(--BD);
+  cursor:         pointer;
+  transition:     background .12s, border-color .12s, color .12s, opacity .15s;
+  flex-shrink:    0;
+  white-space:    nowrap;
+}
+
+.btn-timer-ctrl:hover:not(:disabled) {
+  background:    var(--INK);
+  border-color:  var(--INK);
+  color:         var(--Y);
+}
+
+/* Disabled state — when max 30-min is hit */
+.btn-timer-ctrl:disabled {
+  opacity:       .35;
+  cursor:        not-allowed;
+  pointer-events: none;
+}
+
+/* Square icon-only button for pause/resume */
+.btn-pause-resume {
+  width:   28px;
+  padding: 0;
+}
+
+/* ── Paused badge (shown by JS) ─────────────────────────────── */
+.timer-paused-badge {
+  font-family:    'JetBrains Mono', monospace;
+  font-size:      .58rem;
+  font-weight:    700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color:          var(--MU);
+  /* subtle pulse so it's visible but not jarring */
+  animation:      pausedPulse 2s ease-in-out infinite;
+}
+
+@keyframes pausedPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .45; }
+}
+
+/* ── Pulse animation on extend (added by JS then removed) ────── */
+@keyframes timerExtendFlash {
+  0%   { box-shadow: 0 0 0 0 rgba(250, 204, 21, .7); }
+  70%  { box-shadow: 0 0 0 6px rgba(250, 204, 21, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0); }
+}
+
+.timer-fill.extended {
+  animation: timerExtendFlash .5s ease-out;
+}
+
+/* ── Responsive: keep controls in one line on small screens ──── */
+@media (max-width: 420px) {
+  .btn-timer-ctrl { height: 22px; padding: 0 6px; font-size: .56rem; }
+  .btn-pause-resume { width: 26px; }
+  .timer-paused-badge { display: none; }   /* badge hides; icon is enough */
+}
+
+

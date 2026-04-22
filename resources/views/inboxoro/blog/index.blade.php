@@ -4,10 +4,10 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 
-  <title>Blog — inboxOro | Temporary Email, OTP & Privacy Guides</title>
+  <title>Blog — InboxOro | Temporary Email, OTP & Privacy Guides</title>
   <meta name="description" content="Explore expert guides on temporary email, OTP receiving, spam protection, and digital privacy. Learn how to protect your inbox and use disposable emails effectively."/>
   <meta name="robots" content="index, follow">
-  <meta name="author" content="inboxOro Team">
+  <meta name="author" content="InboxOro Team">
 
   <!-- Canonical -->
   <link rel="canonical" href="{{ url()->current() }}"/>
@@ -18,14 +18,14 @@
 
   <!-- Open Graph (Listing Page = Website type, NOT article) -->
   <meta property="og:type" content="website"/>
-  <meta property="og:title" content="Blog — inboxOro | Temporary Email & Privacy Guides"/>
+  <meta property="og:title" content="Blog — InboxOro | Temporary Email & Privacy Guides"/>
   <meta property="og:description" content="Explore expert guides on temporary email, OTP receiving, spam protection, and digital privacy."/>
   <meta property="og:url" content="{{ url()->current() }}"/>
   <meta property="og:image" content="{{ asset('images/blog-og.png') }}"/>
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Blog — inboxOro | Temporary Email & Privacy Guides">
+  <meta name="twitter:title" content="Blog — InboxOro | Temporary Email & Privacy Guides">
   <meta name="twitter:description" content="Explore expert guides on temporary email, OTP receiving, spam protection, and digital privacy.">
   <meta name="twitter:image" content="{{ asset('images/blog-og.png') }}">
 
@@ -34,8 +34,8 @@
   <link rel="stylesheet" href="{{ asset('css/blog.css') }}">
   
   <!-- Structured Data: Blog (Collection Page Style) -->
-  <script type="application/ld+json">
-    @json($schema)
+   <script type="application/ld+json">
+        {!! isset($schema) ? json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : '{}' !!}
     </script>
 </head>
 <body>
@@ -43,7 +43,7 @@
 <div class="read-bar" id="readBar"></div>
 
 {{-- NAV --}}
-@include('inboxoro.blog.partials.nav', ['active' => 'blog'])
+@include('inboxoro.partials.nav')
 
 {{-- HERO --}}
 <header class="blog-hero">

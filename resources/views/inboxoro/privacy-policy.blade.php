@@ -5,43 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <!-- SEO Title -->
-    <title>Privacy Policy – inboxOro | Disposable Email Data Protection</title>
+    <!-- SEO Title - Primary keyword first + brand + benefit (perfect for Google) -->
+    <title>Privacy Policy – InboxOro | Temporary Email & Data Protection</title>
 
-    <!-- SEO Meta -->
-    <meta name="description" content="Read the Privacy Policy of inboxOro. Learn how we handle temporary emails, data retention, privacy protection, and user security.">
-    
-    <!-- Canonical -->
+    <!-- SEO Meta Description - Keyword-rich, benefit-focused, 158 characters -->
+    <meta name="description" content="Read the InboxOro Privacy Policy to understand how we handle temporary emails, data retention, email security, and user privacy protection.">
+    <!-- Canonical URL -->
     <link rel="canonical" href="{{ url()->current() }}">
 
     <!-- Robots -->
     <meta name="robots" content="index, follow">
 
     <!-- Open Graph -->
-    <meta property="og:title" content="Privacy Policy – inboxOro">
-    <meta property="og:description" content="Learn how inboxOro protects your privacy and handles temporary email data.">
+    <meta property="og:title" content="Privacy Policy – InboxOro">
+    <meta property="og:description" content="Learn how InboxOro protects your privacy, handles temporary emails, and manages user data securely.">
     <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:type" content="website">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="InboxOro">
 
-    <!-- Twitter -->
+    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Privacy Policy – inboxOro">
-    <meta name="twitter:description" content="Understand how your data is handled in inboxOro temporary email service.">
+    <meta name="twitter:title" content="Privacy Policy – InboxOro">
+    <meta name="twitter:description" content="Understand how InboxOro handles temporary email data, privacy, and security.">
 
-    <!-- Favicons -->
-    <link rel="icon" type="image/png" sizes="32x32" href="{{asset('images/favicon-32.png')}}">
-    <link rel="icon" type="image/png" sizes="64x64" href="{{asset('images/favicon-64.png')}}">
+    <!-- Favicons (same as index) -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon-32.png') }}">
+    <link rel="icon" type="image/png" sizes="64x64" href="{{ asset('images/favicon-64.png') }}">
 
-    <!-- Fonts (Optimized Loading) -->
+    <!-- Fonts: Exact same preload as index.blade.php for LCP boost -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" as="style" 
-          href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" 
-          onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
     <noscript>
-        <link rel="stylesheet" 
-              href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
     </noscript>
+        
+        <!-- Structured Data: Blog (Collection Page Style) -->
+   <script type="application/ld+json">
+        {!! isset($schema) ? json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : '{}' !!}
+    </script>
   <style>
     /* ── Variables ─────────────────────────────────────────────── */
     :root {
@@ -567,6 +569,41 @@
     .contact-value a { color: var(--B); font-weight: 700; }
 
     /* ── FOOTER ────────────────────────────────────────────────── */
+
+    /* ═════════════════════════════════════════════════════════════
+   FOOTER  (mobile: stacked)
+═════════════════════════════════════════════════════════════ */
+footer {
+  background:     var(--INK);
+  padding:        20px 16px;
+  display:        flex;
+  flex-direction: column;
+  align-items:    center;
+  gap:            14px;
+  text-align:     center;
+  border-top:     3px solid var(--Y);
+}
+
+.foot-logo      { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; color: var(--Y); letter-spacing: .03em; }
+.foot-logo .oro { color: #fff; }
+.foot-links     { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+.foot-links a   { font-size: .73rem; color: #6B7280; text-decoration: none; font-weight: 500; }
+.foot-links a:hover { color: var(--Y); }
+.foot-st { font-family: 'JetBrains Mono', monospace; font-size: .68rem; color:  #4B5563; display: flex; align-items: center; gap: 5px; }
+
+@media (min-width: 900px) {
+  /* Footer */
+  footer {
+    flex-direction: row;
+    padding:        26px 40px;
+    text-align:     left;
+    display:         flex;
+    align-items:     center;
+    justify-content: space-between;
+  }
+  .foot-links { justify-content: flex-start; }
+}
+/* 
     .site-footer {
       background: var(--INK);
       border-top: 3px solid var(--Y);
@@ -601,7 +638,7 @@
       font-size: .62rem;
       color: #4B5563;
       letter-spacing: .04em;
-    }
+    } */
 
     /* ── PROGRESS BAR ──────────────────────────────────────────── */
     .read-progress {
@@ -656,6 +693,89 @@
       .policy-section { opacity: 1 !important; transform: none !important; }
       body { background: white; }
     }
+
+    /* ═════════════════════════════════════════════════════════════
+   NAV  (mobile base)
+═════════════════════════════════════════════════════════════ */
+nav {
+  position:        sticky;
+  top:             0;
+  z-index:         100;
+  background:      var(--INK);
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  padding:         0 16px;
+  height:          48px;
+  border-bottom:   3px solid var(--Y);
+}
+
+.nav-logo {
+  font-family:    'Bebas Neue', sans-serif;
+  font-size:      1.45rem;
+  color:          var(--Y);
+  letter-spacing: .03em;
+  line-height:    1;
+  display:        flex;
+  align-items:    center;
+  gap:            2px;
+}
+.nav-logo .oro   { color: #fff; }
+.nav-logo .badge {
+  font-family:    'JetBrains Mono', monospace;
+  font-size:      .5rem;
+  font-weight:    700;
+  background:     var(--Y);
+  color:          var(--INK);
+  padding:        2px 5px;
+  letter-spacing: .08em;
+  margin-left:    6px;
+  align-self:     center;
+}
+
+.logo-img { height: 30px; width: auto; }
+
+.nav-links { display: none; gap: 28px; align-items: center; }
+.nav-links a {
+  font-size:       .76rem;
+  font-weight:     600;
+  letter-spacing:  .1em;
+  text-transform:  uppercase;
+  color:           #9CA3AF;
+  text-decoration: none;
+  transition:      color .2s;
+}
+.nav-links a:hover { color: var(--Y); }
+
+.nav-cta {
+  background:     var(--Y);
+  color:          var(--INK);
+  font-size:      .7rem;
+  font-weight:    700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding:        6px 12px;
+  border:         none;
+  cursor:         pointer;
+  transition:     background .15s;
+  white-space:    nowrap;
+}
+.nav-cta:hover { background: #fff; }
+
+@media (min-width: 600px) {
+
+  nav { padding: 0 24px; height: 52px; }
+  .nav-logo { font-size: 1.55rem; }
+}
+
+@media (min-width: 900px) {
+
+  /* ── Nav ── */
+  nav { padding: 0 40px; height: 52px; }
+  .nav-logo  { font-size: 1.65rem; }
+  .nav-links { display: flex; }
+  .nav-cta   { padding: 7px 16px; font-size: .74rem; }
+}
   </style>
 </head>
 <body>
@@ -673,17 +793,8 @@
 
 
 <!-- ══ NAV ══════════════════════════════════════════════════════ -->
-<nav class="site-nav">
-  <a href="/" class="nav-logo">
-    <img src="{{asset('/images/logo.svg')}}" alt="Inboxoro Logo" class="logo-img">
-  </a>
-  <a href="/" class="nav-back">
-    <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-    </svg>
-    Back to App
-  </a>
-</nav>
+{{-- NAV --}}
+@include('inboxoro.partials.nav')
 
 <!-- ══ HERO ══════════════════════════════════════════════════════ -->
 <header class="hero-band">
@@ -744,16 +855,16 @@
       <h2 class="section-title">Introduction</h2>
     </div>
 
-    <p>Welcome to <strong>inboxOro</strong> ("we," "us," or "our") — a free, disposable temporary email service available at <a href="https://inboxoro.com">inboxoro.com</a>. This Privacy Policy explains what information we collect, why we collect it, how we use it, and your rights in relation to that information.</p>
+    <p>Welcome to <strong>InboxOro</strong> ("we," "us," or "our") — a free, disposable temporary email service available at <a href="https://inboxoro.com">inboxoro.com</a>. This Privacy Policy explains what information we collect, why we collect it, how we use it, and your rights in relation to that information.</p>
 
-    <p>By accessing or using inboxOro, you agree to the practices described in this Privacy Policy. If you disagree with any part of this policy, please discontinue use of the service.</p>
+    <p>By accessing or using InboxOro, you agree to the practices described in this Privacy Policy. If you disagree with any part of this policy, please discontinue use of the service.</p>
 
     <div class="callout-info">
-      <p><strong>Plain-language summary:</strong> inboxOro is a tool for generating disposable email addresses. We collect minimal data (like your IP address and browser info) to keep the service running and prevent abuse. We don't require registration, and we don't sell your data.
+      <p><strong>Plain-language summary:</strong> InboxOro is a tool for generating disposable email addresses. We collect minimal data (like your IP address and browser info) to keep the service running and prevent abuse. We don't require registration, and we don't sell your data.
       Emails received in temporary inboxes are automatically deleted after a short period — however, they are <em>not</em> private.</p>
     </div>
 
-    <p>This policy applies to all users of inboxOro, including visitors who use the temporary email generator without creating an account.</p>
+    <p>This policy applies to all users of InboxOro, including visitors who use the temporary email generator without creating an account.</p>
   </section>
 
   <!-- ── SECTION 2: Information We Collect ── -->
@@ -763,7 +874,7 @@
       <h2 class="section-title">Information We Collect</h2>
     </div>
 
-    <p>inboxOro is designed to be used without registration. As a result, we collect very limited personal information. Here is a breakdown of what we may collect and why:</p>
+    <p>InboxOro is designed to be used without registration. As a result, we collect very limited personal information. Here is a breakdown of what we may collect and why:</p>
 
     <table class="data-table" aria-label="Data collection overview">
       <thead>
@@ -890,9 +1001,9 @@
         </svg>
         Critical: Temporary Inboxes Are NOT Private
       </div>
-      <p>Any email sent to an inboxOro temporary address can be read by <strong>anyone who knows that email address</strong>. There is no password, authentication, or access control protecting your temporary inbox.</p>
-      <p><strong>Do not use inboxOro to receive:</strong> passwords, banking or financial information, medical records, legal documents, personal identification data, or any other sensitive or confidential information.</p>
-      <p>inboxOro does not guarantee the privacy, confidentiality, or security of any content received in a temporary inbox.</p>
+      <p>Any email sent to an InboxOro temporary address can be read by <strong>anyone who knows that email address</strong>. There is no password, authentication, or access control protecting your temporary inbox.</p>
+      <p><strong>Do not use InboxOro to receive:</strong> passwords, banking or financial information, medical records, legal documents, personal identification data, or any other sensitive or confidential information.</p>
+      <p>InboxOro does not guarantee the privacy, confidentiality, or security of any content received in a temporary inbox.</p>
       <p><strong>By using this service, you explicitly acknowledge and accept that all temporary inboxes are public and accessible without authentication.</strong></p>
     </div>
 
@@ -914,7 +1025,7 @@
     </ul>
 
     <div class="callout-info">
-      <p><strong>Remember:</strong> inboxOro is a convenience tool, not a secure communication channel. For private email communication, use an encrypted email provider.</p>
+      <p><strong>Remember:</strong> InboxOro is a convenience tool, not a secure communication channel. For private email communication, use an encrypted email provider.</p>
     </div>
   </section>
 
@@ -967,7 +1078,7 @@
     <p>Once the retention period expires, data is permanently and irreversibly deleted. We do not archive, sell, or transfer expired data to third parties.</p>
 
     <div class="callout-neutral">
-      <p>Because inboxOro does not require user registration and stores no accounts, there is typically no user-specific data we can delete on request — it has already been deleted automatically. For any data retention questions, contact us at <a href="mailto:support@inboxoro.com">support@inboxoro.com</a>.</p>
+      <p>Because InboxOro does not require user registration and stores no accounts, there is typically no user-specific data we can delete on request — it has already been deleted automatically. For any data retention questions, contact us at <a href="mailto:support@inboxoro.com">support@inboxoro.com</a>.</p>
     </div>
   </section>
 
@@ -978,7 +1089,7 @@
       <h2 class="section-title">Cookies Policy</h2>
     </div>
 
-    <p>inboxOro and its third-party partners use cookies and similar tracking technologies (web beacons, pixel tags) to operate the service and deliver advertising. Here is a clear breakdown:</p>
+    <p>InboxOro and its third-party partners use cookies and similar tracking technologies (web beacons, pixel tags) to operate the service and deliver advertising. Here is a clear breakdown:</p>
 
     <div class="cookie-grid">
       <div class="cookie-card">
@@ -1032,7 +1143,7 @@
       <div class="tp-icon">GA</div>
       <div class="tp-body">
         <div class="tp-name">Google Analytics</div>
-        <p class="tp-desc">We use Google Analytics to understand how visitors interact with inboxOro — including which pages are visited, how long sessions last, and where traffic originates. Google Analytics uses cookies to collect this information. Data is aggregated and does not identify individual users.</p>
+        <p class="tp-desc">We use Google Analytics to understand how visitors interact with InboxOro — including which pages are visited, how long sessions last, and where traffic originates. Google Analytics uses cookies to collect this information. Data is aggregated and does not identify individual users.</p>
         <a class="tp-link" href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google Privacy Policy →</a>
         &nbsp;&nbsp;
         <a class="tp-link" href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">Opt Out →</a>
@@ -1043,7 +1154,7 @@
       <div class="tp-icon">AS</div>
       <div class="tp-body">
         <div class="tp-name">Google AdSense</div>
-        <p class="tp-desc">inboxOro displays advertisements powered by Google AdSense to keep the service free. AdSense may use cookies to show ads relevant to your interests based on prior visits to this and other websites. We do not have direct control over the specific ads shown by Google.</p>
+        <p class="tp-desc">InboxOro displays advertisements powered by Google AdSense to keep the service free. AdSense may use cookies to show ads relevant to your interests based on prior visits to this and other websites. We do not have direct control over the specific ads shown by Google.</p>
         <a class="tp-link" href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener">AdSense Privacy →</a>
         &nbsp;&nbsp;
         <a class="tp-link" href="https://adssettings.google.com" target="_blank" rel="noopener">Opt Out of Personalized Ads →</a>
@@ -1054,7 +1165,7 @@
       <div class="tp-icon">MX</div>
       <div class="tp-body">
         <div class="tp-name">Email Infrastructure Providers</div>
-        <p class="tp-desc">inboxOro relies on SMTP/mail relay infrastructure to receive emails sent to temporary addresses. These providers process email data solely to deliver messages to the correct temporary inbox. They are bound by data processing agreements and may not use your data for independent purposes.</p>
+        <p class="tp-desc">InboxOro relies on SMTP/mail relay infrastructure to receive emails sent to temporary addresses. These providers process email data solely to deliver messages to the correct temporary inbox. They are bound by data processing agreements and may not use your data for independent purposes.</p>
         <a class="tp-link" href="mailto:support@inboxoro.com">Request Provider Details →</a>
       </div>
     </div>
@@ -1096,10 +1207,10 @@
         No Inbox is Secure
       </div>
       <p>Despite our infrastructure security measures, <strong>the temporary inbox itself is inherently public</strong>. Any person who knows or can guess your temporary email address can view your inbox. No amount of technical security can protect a public inbox from authorized or unauthorized viewers.</p>
-      <p>Never use inboxOro for sensitive communications. No electronic service can guarantee 100% security.</p>
+      <p>Never use InboxOro for sensitive communications. No electronic service can guarantee 100% security.</p>
     </div>
 
-    <p>If you discover a security vulnerability in inboxOro, please report it responsibly to <a href="mailto:support@inboxoro.com">support@inboxoro.com</a>. We appreciate responsible disclosure.</p>
+    <p>If you discover a security vulnerability in InboxOro, please report it responsibly to <a href="mailto:support@inboxoro.com">support@inboxoro.com</a>. We appreciate responsible disclosure.</p>
   </section>
 
   <!-- ── SECTION 9: User Responsibility ── -->
@@ -1109,27 +1220,27 @@
       <h2 class="section-title">Your Responsibility</h2>
     </div>
 
-    <p>By using inboxOro, you accept personal responsibility for how you use the service. Your obligations include:</p>
+    <p>By using InboxOro, you accept personal responsibility for how you use the service. Your obligations include:</p>
     <p>This service is not intended for children under the age of 13. We do not knowingly collect personal data from children. If you believe a child has used this service, please contact us and we will take appropriate action.</p>
     
     <h3>Understanding the Public Nature of Inboxes</h3>
     <ul class="policy-list">
       <li>You acknowledge that temporary inboxes are publicly accessible to anyone with the address</li>
-      <li>You will not use inboxOro to receive confidential, sensitive, or legally protected information</li>
-      <li>You understand that inboxOro cannot recover expired inboxes or deleted emails</li>
+      <li>You will not use InboxOro to receive confidential, sensitive, or legally protected information</li>
+      <li>You understand that InboxOro cannot recover expired inboxes or deleted emails</li>
     </ul>
 
     <h3>Acceptable Use</h3>
     <ul class="policy-list">
-      <li>You will not use inboxOro to engage in spam, phishing, fraud, or harassment</li>
-      <li>You will not use inboxOro to circumvent authentication systems in a manner that violates applicable laws</li>
-      <li>You will not use inboxOro to receive or distribute illegal content of any kind</li>
-      <li>You will not use inboxOro's API (if available) to overload, disrupt, or reverse-engineer our systems</li>
+      <li>You will not use InboxOro to engage in spam, phishing, fraud, or harassment</li>
+      <li>You will not use InboxOro to circumvent authentication systems in a manner that violates applicable laws</li>
+      <li>You will not use InboxOro to receive or distribute illegal content of any kind</li>
+      <li>You will not use InboxOro's API (if available) to overload, disrupt, or reverse-engineer our systems</li>
       <li>You will not use automated scripts to generate large numbers of addresses without prior permission</li>
     </ul>
 
     <h3>No Account Recovery</h3>
-    <p>Because inboxOro requires no registration, we have no account data to recover. If your temporary address expires, all associated emails are permanently gone. We are not liable for any loss of data resulting from expiry or deletion.</p>
+    <p>Because InboxOro requires no registration, we have no account data to recover. If your temporary address expires, all associated emails are permanently gone. We are not liable for any loss of data resulting from expiry or deletion.</p>
 
     <div class="callout-neutral">
       <p>Violations of our Acceptable Use Policy may result in temporary or permanent IP-level blocks from the service. Illegal activity will be reported to the appropriate authorities.</p>
@@ -1148,10 +1259,10 @@
     <ul class="policy-list">
       <li>We will update the <strong>Effective Date</strong> and <strong>Last Updated</strong> date at the top of this page</li>
       <li>For material changes, we will display a prominent notice on our website homepage or within the service</li>
-      <li>Continued use of inboxOro after any change constitutes your acceptance of the updated policy</li>
+      <li>Continued use of InboxOro after any change constitutes your acceptance of the updated policy</li>
     </ul>
 
-    <p>We encourage you to review this policy periodically. Previous versions are available upon request by emailing <a href="mailto:support@inboxoro.com">support@inboxoro.com</a>.</p>
+    <p>We encourage you to review this policy periodically. Previous versions are available upon request by emailing <a href="mailto:support@I.com">support@inboxoro.com</a>.</p>
 
     <div class="callout-info">
       <p>The most important principle guiding any future changes: we will never start selling your personal data, and we will always give advance notice before introducing any features that collect significantly more personal information than described here.</p>
@@ -1175,7 +1286,7 @@
       <li>Right to object to data processing</li>
     </ul>
 
-    <p>Because inboxOro does not store user accounts and data is automatically deleted, most data cannot be retrieved after expiration.</p>
+    <p>Because InboxOro does not store user accounts and data is automatically deleted, most data cannot be retrieved after expiration.</p>
   </section>
 
   <!-- ── SECTION 12: Contact ── -->
@@ -1231,7 +1342,7 @@
     </div>
 
     <p style="margin-top: 20px; font-size: .85rem; color: var(--MU);">
-      This Privacy Policy was written in plain English intentionally. It is not a substitute for legal advice. If you are building a product on top of inboxOro's API or have complex compliance requirements, we recommend consulting a qualified legal professional.
+      This Privacy Policy was written in plain English intentionally. It is not a substitute for legal advice. If you are building a product on top of InboxOro's API or have complex compliance requirements, we recommend consulting a qualified legal professional.
     </p>
   </section>
 
@@ -1242,7 +1353,7 @@
       <h2 class="section-title">Limitation of Liability</h2>
     </div>
 
-    <p>To the maximum extent permitted by applicable law, inboxOro shall not be liable for any direct, indirect, incidental, consequential, or special damages arising out of or related to:</p>
+    <p>To the maximum extent permitted by applicable law, InboxOro shall not be liable for any direct, indirect, incidental, consequential, or special damages arising out of or related to:</p>
 
     <ul class="policy-list">
       <li>Your use or inability to use the service</li>
@@ -1254,25 +1365,13 @@
 
     <p>We do not warrant that the service will be uninterrupted, error-free, or completely secure.</p>
 
-    <p>By using inboxOro, you acknowledge and agree that you use the service at your own risk.</p>
+    <p>By using InboxOro, you acknowledge and agree that you use the service at your own risk.</p>
   </section>
 
 </main>
 
 <!-- ══ FOOTER ════════════════════════════════════════════════════ -->
-<footer class="site-footer">
-  <div class="nav-logo">
-    <img src="{{asset('/images/logo.svg')}}" alt="Inboxoro Logo" class="logo-img">
-  </div>
-  <div class="footer-links">
-    <a href="{{url('/')}}">Home</a>
-    <a href="{{url('privacy-policy')}}">Privacy Policy</a>
-    <a href="{{url('terms')}}">Terms</a>
-    <a href="mailto:support@inboxoro.com">Contact</a>
-  </div>
-  <div class="footer-copy">© 2026 inboxOro. All rights reserved.</div>
-</footer>
-
+@include('inboxoro.partials.footer')
 <script>
   // ── Read progress bar ──────────────────────────────────────────
   const progressBar = document.getElementById('readProgress');

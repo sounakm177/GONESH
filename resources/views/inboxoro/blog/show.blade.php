@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
   {{-- BASIC SEO --}}
-  <title>{{ $post->title }} Blog</title>
+  <title>{{ $post->title }}</title>
   <meta name="description" content="{{ $post->excerpt }}">
   <meta name="robots" content="index, follow">
-  <meta name="author" content="{{ $post->author_name ?? 'inboxOro Team' }}">
+  <meta name="author" content="{{ $post->author_name ?? 'InboxOro Team' }}">
 
   {{-- CANONICAL --}}
   <link rel="canonical" href="{{ url('/blog/'.$post->slug) }}"/>
@@ -27,7 +27,7 @@
   {{-- ARTICLE META --}}
   <meta property="article:published_time" content="{{ optional($post->published_at)->toIso8601String() }}"/>
   <meta property="article:modified_time" content="{{ optional($post->updated_at)->toIso8601String() }}"/>
-  <meta property="article:author" content="{{ $post->author_name ?? 'inboxOro Team' }}"/>
+  <meta property="article:author" content="{{ $post->author_name ?? 'InboxOro Team' }}"/>
   <meta property="article:section" content="{{ $post->category->name ?? 'Blog' }}"/>
 
   {{-- TWITTER SEO --}}
@@ -52,7 +52,7 @@
   <link rel="stylesheet" href="{{ asset('css/blog-view.css') }}">
 
   <script type="application/ld+json">
-    @json($schema)
+        {!! isset($schema) ? json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : '{}' !!}
     </script>
 </head>
 <body>
@@ -61,7 +61,7 @@
 
 {{-- NAV --}}
 <header>
-@include('inboxoro.blog.partials.nav')
+@include('inboxoro.partials.nav')
 </header>
 
 <!-- BREADCRUMB -->
@@ -200,7 +200,7 @@
     <div class="author-card rv" itemscope itemtype="https://schema.org/Person">
       <div class="author-avatar" aria-hidden="true">IO</div>
       <div class="author-info">
-        <div class="author-name" itemprop="name">inboxOro Team</div>
+        <div class="author-name" itemprop="name">InboxOro Team</div>
         <div class="author-role">Privacy &amp; Email Security Experts · <a href="https://inboxoro.com" itemprop="url" style="color:var(--B);font-size:.6rem;">inboxoro.com</a></div>
       </div>
     </div>
@@ -238,90 +238,7 @@
     {!! $bodyHtml !!}
 
     </article>
-    <!-- <article class="post-content rv" itemprop="articleBody" itemscope itemtype="https://schema.org/BlogPosting">
-
-      <p>Every time you hand over your real email address to sign up for a website, you're making a trade: convenience in exchange for privacy. More often than not, that trade doesn't end well. Within weeks, you're drowning in promotional emails, newsletter chains you never requested, and — in worst cases — phishing attempts.</p>
-
-      <p>The solution isn't better spam filters. It's never giving away your real email address in the first place. That's where <strong>disposable email addresses</strong> come in.</p>
-
-      <div class="info-box">
-        💡 <strong>Quick fact:</strong> The average professional receives 121 emails per day. According to Statista, 45.6% of all emails sent in 2023 were spam. That's over 160 billion spam emails every single day.
-      </div>
-
-      <h2 id="the-spam-problem">The Spam Problem Nobody Talks About</h2>
-
-      <p>Most people think spam is an inconvenience they just have to live with. They dutifully click "unsubscribe," mark messages as junk, and hope for the best. But the problem runs much deeper.</p>
-
-      <p>When you sign up for a service with your real email, you're at the mercy of that company's data practices. If they're acquired, if they suffer a breach, or if they simply decide to monetize their user list — your inbox is compromised. And once your email is in the wild, it's nearly impossible to take back.</p>
-
-      <blockquote>
-        <strong>"The best privacy is the kind you never have to fight for."</strong><br>
-        The most effective strategy isn't cleaning up your inbox after the fact — it's never letting spam find you in the first place.
-      </blockquote>
-
-      <h2 id="how-disposable-email-works">How Disposable Email Actually Works</h2>
-
-      <p>A <a href="/temporary-email">temporary email address</a> is a fully functional email address that you can generate instantly, use once (or a few times), and then discard. Here's the mechanics behind it:</p>
-
-      <ol>
-        <li>You visit a service like <a href="/">inboxOro</a> and instantly receive a random email address (e.g., <code>swift.wolf4521@inboxoro.com</code>).</li>
-        <li>You use that address to sign up for whatever service requires it.</li>
-        <li>The verification email or OTP arrives in the temporary inbox, which you check right there on the page.</li>
-        <li>After a set period (typically 10–60 minutes), the inbox and all its contents are automatically and permanently deleted.</li>
-      </ol>
-
-      <p>The service you signed up for now has a dead email address. Any spam it tries to send in the future goes nowhere. Your real inbox remains completely clean.</p>
-
-      <h2 id="real-world-use-cases">Real-World Use Cases</h2>
-
-      <p>Disposable email addresses aren't just for avoiding newsletters. Here are the most effective ways people use them:</p>
-
-      <h3>Free Trial Signups</h3>
-      <p>SaaS companies often require email verification before granting access to free trials. Using a temp email means you get the trial without committing your real address to their marketing funnel.</p>
-
-      <h3>One-Time Downloads</h3>
-      <p>E-books, whitepapers, and templates typically require an email "gate." A disposable address gets you the content without the follow-up sequence.</p>
-
-      <h3>Forum and Community Registrations</h3>
-      <p>Forum email lists are frequently scraped and sold. Protecting your real identity with a temporary address is simply good operational security.</p>
-
-      <ul>
-        <li><a href="/temp-mail-for-discord">Discord account verification</a> — avoid linking your real email to gaming communities</li>
-        <li>Reddit signups — keep your browsing persona separated from your identity</li>
-        <li>Event registrations — conferences that sell attendee data won't get your real contact</li>
-        <li>Developer testing — generate real verification emails in CI/CD pipelines without real accounts</li>
-      </ul>
-
-      <h2 id="choosing-the-right-service">Choosing the Right Service</h2>
-
-      <p>Not all temporary email services are created equal. Here's what to look for:</p>
-
-      <ul>
-        <li><strong>No registration required</strong> — the best services are instant. If you have to sign up to get a temp email, that defeats the purpose.</li>
-        <li><strong>Multiple domains</strong> — some services block single domains. Having options like <code>inboxoro.com</code>, <code>burnbox.dev</code>, and <code>zaptmp.net</code> improves deliverability.</li>
-        <li><strong>Real-time inbox</strong> — you need to see emails arrive instantly. WebSocket or Reverb-based real-time delivery is significantly better than page-refresh polling.</li>
-        <li><strong>Automatic deletion</strong> — data that's deleted can't be breached. Confirm that the service auto-deletes after a defined window.</li>
-        <li><strong>API access</strong> — if you're a developer, <a href="/api">programmatic access</a> to temporary email generation is invaluable for testing workflows.</li>
-      </ul>
-
-      <h2 id="security-considerations">Security Considerations</h2>
-
-      <p>Disposable email addresses improve privacy but come with important caveats you should understand:</p>
-
-      <blockquote>
-        ⚠️ <strong>Important:</strong> Temporary inboxes are typically <strong>public</strong>. Anyone who knows the email address can view its contents. Never use a disposable address to receive sensitive information — bank statements, medical records, or account recovery codes for important services.
-      </blockquote>
-
-      <p>For long-term accounts (banking, healthcare, work), always use your real, well-secured email address. Disposable emails are for throwaway registrations, not for replacing your primary address entirely.</p>
-
-      <h2 id="conclusion">Conclusion</h2>
-
-      <p>The spam problem is solved at the source, not at the filter. By adopting a simple habit — using a <a href="/">disposable email address</a> for every non-essential signup — you can permanently and dramatically reduce the volume of unwanted mail that reaches your real inbox.</p>
-
-      <p>It takes less than three seconds to generate a temporary address on inboxOro. That's a negligible investment for a lifetime of inbox peace.</p>
-
-    </article> -->
-
+   
     <!-- TAGS -->
     @if($post->tags->isNotEmpty())
         <div class="post-tags rv" aria-label="Article tags">
@@ -359,7 +276,7 @@
     <!-- TRY FREE CTA -->
     <div class="post-cta rv">
       <div class="cta-tag">✦ Free Tool</div>
-      <h2 class="cta-title">Try <span>inboxOro</span> Free</h2>
+      <h2 class="cta-title">Try <span>InboxOro</span> Free</h2>
       <p class="cta-sub">Generate a disposable email address instantly — no signup, no registration, no spam. Just click and use.</p>
       <a href="/" class="cta-btn">
         Generate Free Email

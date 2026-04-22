@@ -3,6 +3,10 @@
 @section('title', 'InboxOro – Free Temporary Email & Disposable Inbox for OTPs')
 @section('meta_description', 'Get a free temporary email instantly with InboxOro. Receive OTPs, avoid spam, and use a disposable inbox with no signup and auto deletion.')
 
+@section('schema')
+  {!! isset($schema) ? json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : '{}' !!}
+@endsection
+
 @section('content')
   <div id="toast">
     <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">

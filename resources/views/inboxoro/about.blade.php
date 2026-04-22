@@ -9,7 +9,7 @@
     <title>About InboxOro – Free Temporary Email & Disposable Inbox Service</title>
 
     <!-- ✅ Meta Description -->
-    <meta name="description" content="Learn about InboxOro, a free temporary email service that helps you receive OTPs, avoid spam, and protect your privacy with auto-expiring disposable inboxes. No signup required.">
+    <meta name="description" content="Learn about InboxOro, a free temporary email service for OTPs, spam protection, and privacy with auto-expiring inboxes.">
 
     <!-- ✅ Canonical -->
     <link rel="canonical" href="{{ url()->current() }}">

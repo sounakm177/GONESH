@@ -1455,14 +1455,5 @@ footer {
       background:    var(--Y);
       border-radius: 50%;
     }
-    .sec-title {
-      font-family:    var(--DISP);
-      font-size:      clamp(1.6rem, 4vw, 2.5rem);
-      letter-spacing: .03em;
-      color:          var(--INK);
-      line-height:    1;
-      margin-bottom:  24px;
-    }
-    .sec-title .gold { color: var(--Y); }
 
     .divider { border: none; border-top: 2px solid var(--BD); margin: 52px 0; }

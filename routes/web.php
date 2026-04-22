@@ -60,6 +60,8 @@ Route::get('/sitemap.xml', function () {
         ['loc' => url('/blog'), 'priority' => '0.9'],
         ['loc' => url('/privacy-policy'), 'priority' => '0.5'],
         ['loc' => url('/terms'), 'priority' => '0.5'],
+        ['loc' => url('/about'), 'priority' => '0.5'],
+        ['loc' => url('/contact'), 'priority' => '0.5'],
     ];
 
     foreach ($staticPages as $page) {

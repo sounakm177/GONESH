@@ -84,7 +84,7 @@
                     margin-bottom:20px;
                     color:var(--INK);
                 ">
-                Why Use inboxOro?  
+                Why Use InboxOro?  
                 </h2>
 
                 <ul style="font-family:'Inter', sans-serif; list-style:none; padding:0; display:grid; gap:14px; font-size:1.02rem; color:#111;">
@@ -142,7 +142,7 @@
             @endphp
 
             @if(count($faqList) > 0)
-                <div style="border:2px solid var(--INK);background:#fff;padding:32px 28px;">
+                <div style="border:2px solid var(--INK);background:#fff;padding:32px 28px;margin-bottom:32px;">
                     
                     <h2 style="
                         font-family:'Inter', sans-serif;
@@ -181,6 +181,49 @@
 
                 </div>
             @endif
+
+            @if(in_array($seo_page->slug, [
+                'temp-mail-for-facebook',
+                'temp-mail-for-instagram',
+                'temp-mail-for-discord',
+                'temp-mail-for-twitter',
+                'temp-mail-for-linkedin',
+                'temp-mail-for-tiktok'
+            ]))
+                <div style="border:2px solid var(--INK);background:#fff;padding:32px 28px;margin-bottom:32px;">
+                    <p style="font-size:12px; color:#888;">
+                        InboxOro is not affiliated with or endorsed by any third-party brands mentioned on this page. 
+                        All trademarks belong to their respective owners.
+                    </p>
+                </div>
+            @endif
+
+            <section aria-labelledby="legal-heading" class="rv">
+                <!-- <div class="sec-label">Legal</div> -->
+                <h2 class="sec-title" id="legal-heading">Disclaimer</h2>
+                <div class="legal-block">
+                    <div class="legal-block-title">Important Notice</div>
+                    
+                    <p>
+                    InboxOro provides a temporary email and disposable inbox service for lawful use, including spam protection, email privacy, and short-term email verification.
+                    </p>
+                    
+                    <p>
+                    Users are solely responsible for how they use the service. It must not be used for illegal activities, fraud, harassment, phishing, or any activity that violates applicable laws.
+                    </p>
+                    
+                    <p>
+                    Emails received in temporary inboxes are automatically deleted after expiration. We are not responsible for any loss of access to accounts or services where a temporary email address was used.
+                    </p>
+                    
+                    <p>
+                    This is a privacy and testing utility and does not guarantee anonymity. For more details, please review our
+                    <a href="/privacy-policy" style="color:var(--Y);">Privacy Policy</a> and
+                    <a href="/terms" style="color:var(--Y);">Terms of Service</a>.
+                    </p>
+
+                </div>
+            </section>
         </div>
     </div>
 

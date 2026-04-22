@@ -182,22 +182,6 @@
                 </div>
             @endif
 
-            @if(in_array($seo_page->slug, [
-                'temp-mail-for-facebook',
-                'temp-mail-for-instagram',
-                'temp-mail-for-discord',
-                'temp-mail-for-twitter',
-                'temp-mail-for-linkedin',
-                'temp-mail-for-tiktok'
-            ]))
-                <div style="border:2px solid var(--INK);background:#fff;padding:32px 28px;margin-bottom:32px;">
-                    <p style="font-size:12px; color:#888;">
-                        InboxOro is not affiliated with or endorsed by any third-party brands mentioned on this page. 
-                        All trademarks belong to their respective owners.
-                    </p>
-                </div>
-            @endif
-
             <section aria-labelledby="legal-heading" class="rv">
                 <!-- <div class="sec-label">Legal</div> -->
                 <h2 class="sec-title" id="legal-heading">Disclaimer</h2>
@@ -221,6 +205,20 @@
                     <a href="/privacy-policy" style="color:var(--Y);">Privacy Policy</a> and
                     <a href="/terms" style="color:var(--Y);">Terms of Service</a>.
                     </p>
+
+                     @if(in_array($seo_page->slug, [
+                        'temp-mail-for-facebook',
+                        'temp-mail-for-instagram',
+                        'temp-mail-for-discord',
+                        'temp-mail-for-twitter',
+                        'temp-mail-for-linkedin',
+                        'temp-mail-for-tiktok'
+                    ]))
+                        <p>
+                            InboxOro is not affiliated with or endorsed by any third-party brands mentioned on this page. 
+                            All trademarks belong to their respective owners.
+                        </p>
+                    @endif
 
                 </div>
             </section>

@@ -1457,3 +1457,42 @@ footer {
     }
 
     .divider { border: none; border-top: 2px solid var(--BD); margin: 52px 0; }
+
+
+
+
+
+
+/* Empty states */
+.no-mail, .detail-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 40px 20px;
+  color: #6B7280;
+}
+.no-mail svg, .detail-empty svg {
+  animation: bounce 2s ease-in-out infinite;
+}
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+.no-mail p, .detail-empty p {
+  margin: 0;
+  font-size: 13px;
+  color: #9CA3AF;
+}
+.mail-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #FACC15;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.7); }
+}

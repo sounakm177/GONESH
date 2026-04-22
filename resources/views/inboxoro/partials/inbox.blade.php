@@ -64,15 +64,11 @@
         @forelse($inbox['emails'] as $em)
           @include('inboxoro.partials.email-row', ['em' => $em])
         @empty
-          <div class="no-mail">
-            <svg width="40" height="40" fill="none" viewBox="0 0 24 24"
-                 stroke="#D1D5DB" stroke-width="1.2">
-              <path stroke-linecap="round"
-                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8
-                       M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5
-                       a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-            </svg>
-            <p>No messages yet</p>
+           <div class="no-mail">
+              <svg width="36" height="36" fill="none" viewBox="0 0 24 24" stroke="#FACC15" stroke-width="1.5">
+                <path stroke-linecap="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+              </svg>
+              <p>No messages yet</p>
           </div>
         @endforelse
       </div>
@@ -104,7 +100,7 @@
       {{-- Desktop empty state placeholder --}}
       <div class="detail-empty" id="detail-empty">
         <svg width="48" height="48" fill="none" viewBox="0 0 24 24"
-             stroke="#D1D5DB" stroke-width="1">
+             stroke="#FACC15" stroke-width="1">
           <path stroke-linecap="round"
                 d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8
                    M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5

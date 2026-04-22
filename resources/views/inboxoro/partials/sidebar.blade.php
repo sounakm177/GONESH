@@ -298,7 +298,7 @@
         <div class="seo-guide-divider"></div>
 
         <div class="seo-guide-block">
-          <div class="seo-guide-title">Why Use inboxOro?</div>
+          <div class="seo-guide-title">Why Use InboxOro?</div>
           <ul class="seo-why-list">
             <li>
               <span class="seo-check">✓</span>

@@ -19,7 +19,7 @@
 
   <div class="foot-st">
     <p>
-      © {{ date('Y') }} Inboxoro. All rights reserved.
+      © {{ date('Y') }} InboxOro. All rights reserved.
     </p>
   </div>
 </footer>

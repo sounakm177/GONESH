@@ -22,7 +22,7 @@
         <span class="seo-card-label">Popular Pages</span>
       </div>
 
-      <ul class="seo-link-list">
+      <!-- <ul class="seo-link-list">
         <li>
           <a href="/temporary-email">
             <svg width="11" height="11" fill="none" viewBox="0 0 24 24"
@@ -93,7 +93,131 @@
             Temp Mail for Reddit
           </a>
         </li>
-      </ul>
+      </ul> -->
+
+      
+    <ul class="seo-link-list">
+      <li>
+        <a href="/temporary-email">
+          <svg width="11" height="11" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M9 5l7 7-7 7"/>
+          </svg>
+          Temporary Email
+        </a>
+      </li>
+      <li>
+        <a href="/temp-mail">
+          <svg width="11" height="11" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M9 5l7 7-7 7"/>
+          </svg>
+          Temp Mail
+        </a>
+      </li>
+      <li>
+        <a href="/disposable-email">
+          <svg width="11" height="11" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M9 5l7 7-7 7"/>
+          </svg>
+          Disposable Email
+        </a>
+      </li>
+      <li>
+        <a href="/10-minute-email">
+          <svg width="11" height="11" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M9 5l7 7-7 7"/>
+          </svg>
+          10 Minute Email
+        </a>
+      </li>
+      <li>
+        <a href="/fake-email">
+          <svg width="11" height="11" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M9 5l7 7-7 7"/>
+          </svg>
+          Fake Email
+        </a>
+      </li>
+      <li>
+        <a href="/email-for-otp">
+          <svg width="11" height="11" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M9 5l7 7-7 7"/>
+          </svg>
+          Email for OTP
+        </a>
+      </li>
+      <li>
+        <a href="/temp-mail-for-verification">
+          <svg width="11" height="11" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M9 5l7 7-7 7"/>
+          </svg>
+          Temp Mail for Verification
+        </a>
+      </li>
+      <li>
+        <a href="/temp-mail-for-signup">
+          <svg width="11" height="11" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M9 5l7 7-7 7"/>
+          </svg>
+          Temp Mail for Signup
+        </a>
+      </li>
+      <li>
+        <a href="/temp-mail-for-facebook">
+          <svg width="11" height="11" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M9 5l7 7-7 7"/>
+          </svg>
+          Temp Mail for Facebook
+        </a>
+      </li>
+      <li>
+        <a href="/temp-mail-for-instagram">
+          <svg width="11" height="11" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M9 5l7 7-7 7"/>
+          </svg>
+          Temp Mail for Instagram
+        </a>
+      </li>
+      <li>
+        <a href="/temp-mail-for-discord">
+          <svg width="11" height="11" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M9 5l7 7-7 7"/>
+          </svg>
+          Temp Mail for Discord
+        </a>
+      </li>
+      <li>
+        <a href="/temp-mail-for-twitter">
+          <svg width="11" height="11" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M9 5l7 7-7 7"/>
+          </svg>
+          Temp Mail for Twitter
+        </a>
+      </li>
+    </ul>
 
       <div class="seo-card-tip">
         <div class="seo-tip-label">
@@ -112,6 +236,7 @@
       </div>
 
     </div>{{-- /seo-links-card --}}
+
 
     {{-- ── Pro tip card ── --}}
     <div class="pro-card">

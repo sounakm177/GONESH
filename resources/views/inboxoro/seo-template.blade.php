@@ -200,11 +200,6 @@
                     Emails received in temporary inboxes are automatically deleted after expiration. We are not responsible for any loss of access to accounts or services where a temporary email address was used.
                     </p>
                     
-                    <p>
-                    This is a privacy and testing utility and does not guarantee anonymity. For more details, please review our
-                    <a href="/privacy-policy" style="color:var(--Y);">Privacy Policy</a> and
-                    <a href="/terms" style="color:var(--Y);">Terms of Service</a>.
-                    </p>
 
                      @if(in_array($seo_page->slug, [
                         'temp-mail-for-facebook',
@@ -220,6 +215,12 @@
                         </p>
                     @endif
 
+
+                    <p>
+                    This is a privacy and testing utility and does not guarantee anonymity. For more details, please review our
+                    <a href="/privacy-policy" style="color:var(--Y);">Privacy Policy</a> and
+                    <a href="/terms" style="color:var(--Y);">Terms of Service</a>.
+                    </p>
                 </div>
             </section>
         </div>

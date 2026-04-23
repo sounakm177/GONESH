@@ -224,7 +224,7 @@
                         'temp-mail-for-upwork', 
                         'temp-mail-for-freelancing', 
                         'temp-mail-for-ai-tools', 
-                        'temp-mail-for-openai', 
+                        'temp-mail-for-openai',  
                         'temp-mail-for-api-testing', 
                         'temp-mail-for-saas-signup'
                     ]))

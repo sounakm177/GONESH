@@ -216,7 +216,17 @@
                         'temp-mail-for-discord',
                         'temp-mail-for-twitter',
                         'temp-mail-for-linkedin',
-                        'temp-mail-for-tiktok'
+                        'temp-mail-for-tiktok',
+                        'temp-mail-for-chatgpt', 
+                        'temp-mail-for-gmail-signup', 
+                        'temp-mail-for-apple-id', 
+                        'temp-mail-for-payoneer', 
+                        'temp-mail-for-upwork', 
+                        'temp-mail-for-freelancing', 
+                        'temp-mail-for-ai-tools', 
+                        'temp-mail-for-openai', 
+                        'temp-mail-for-api-testing', 
+                        'temp-mail-for-saas-signup'
                     ]))
                         <p>
                             InboxOro is not affiliated with or endorsed by any third-party brands mentioned on this page. 

@@ -1170,7 +1170,9 @@ footer {
                     letter-spacing:.03em;
                     margin-bottom:14px;
                     color:var(--INK);
-                    font-weight:600;}
+                    font-weight:600;
+                    margin-top: 15px;
+                  }
 
 /* ═════════════════════════════════════════════════════════════
    TABLET  ≥ 600px

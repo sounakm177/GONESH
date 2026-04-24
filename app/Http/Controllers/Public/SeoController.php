@@ -52,7 +52,9 @@ class SeoController extends Controller
                     "url" => url('/'),
                     "logo" => [
                         "@type" => "ImageObject",
-                        "url" => asset('images/logo.svg')
+                        "url" => asset('images/logo.png'),
+                        "width" => 512,
+                        "height" => 512
                     ]
                 ],
                 [

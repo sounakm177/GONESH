@@ -19,7 +19,9 @@ class PageController extends Controller
                     "url" => url('/'),
                     "logo" => [
                         "@type" => "ImageObject",
-                        "url" => asset('images/logo.svg')
+                        "url" => asset('images/logo.svg'),
+                        "width" => 512,
+                        "height" => 512
                     ]
                 ],
 
@@ -52,7 +54,9 @@ class PageController extends Controller
                     "url" => url('/'),
                     "logo" => [
                         "@type" => "ImageObject",
-                        "url" => asset('images/logo.svg')
+                        "url" => asset('images/logo.png'),
+                        "width" => 512,
+                        "height" => 512
                     ],
                     "contactPoint" => [
                         [
@@ -94,7 +98,9 @@ class PageController extends Controller
                     "url" => url('/'),
                     "logo" => [
                         "@type" => "ImageObject",
-                        "url" => asset('images/logo.svg')
+                        "url" => asset('images/logo.png'),
+                        "width" => 512,
+                        "height" => 512
                     ],
                     "sameAs" => [],
                     "contactPoint" => [
@@ -144,15 +150,17 @@ class PageController extends Controller
         $schema = [
             "@context" => "https://schema.org",
             "@type" => "WebPage",
-            "name" => "Terms of Service – inboxOro",
+            "name" => "Terms of Service – InboxOro",
             "url" => url()->current(),
-            "description" => "Terms of Service for inboxOro temporary email service.",
+            "description" => "Terms of Service for InboxOro temporary email service.",
             "publisher" => [
                 "@type" => "Organization",
-                "name" => "inboxOro",
+                "name" => "InboxOro",
                 "logo" => [
                     "@type" => "ImageObject",
-                    "url" => asset("images/logo.svg")
+                    "url" => asset("images/logo.png"),
+                    "width" => 512,
+                    "height" => 512
                 ]
             ]
         ];

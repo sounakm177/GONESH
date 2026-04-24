@@ -18,12 +18,16 @@ use Carbon\Carbon;
 use App\Models\BlogPost;
 
 
-Route::get('/', [MailboxController::class, 'index'])->name('home');
+Route::get('/sounak', function(){
+    return view('dashboard');
+});
 
+Route::get('/', [MailboxController::class, 'index'])->name('home');
 Route::get('/about',[PageController::class, 'about']);
 Route::get('/contact',[PageController::class, 'contact']);
 Route::get('/privacy-policy',[PageController::class, 'privacy']);
 Route::get('/terms',[PageController::class, 'terms']);
+
 
 
 Route::prefix('blog')->name('blog.')->group(function () {
@@ -49,7 +53,6 @@ Route::prefix('blog')->name('blog.')->group(function () {
          ->where('slug', '[a-z0-9\-]+');
  
 });
-
 
 Route::get('/sitemap.xml', function () {
 
@@ -258,6 +261,9 @@ if (app()->environment('local')) {
     });
 
 }
+
+
+
 
 
 

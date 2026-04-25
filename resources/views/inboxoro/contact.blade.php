@@ -1012,34 +1012,112 @@ nav {
     el.addEventListener('change', () => { el.classList.remove('invalid'); getErr(id).classList.remove('show'); });
   });
 
-  form.addEventListener('submit', e => {
-    e.preventDefault();
+  
 
-    const isEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
 
-    const ok = [
-      validate('name',    v => v.length >= 2),
-      validate('email',   v => isEmail(v)),
-      validate('subject', v => v !== ''),
-      validate('message', v => v.length >= 10),
-    ].every(Boolean);
+  // ============================================================
+// REPLACE the "Simulate submission" block at the bottom of
+// contact.blade.php's <script> with this real fetch call.
+// Everything above (validation logic) stays the same.
+// ============================================================
 
-    if (! ok) {
-      /* Scroll to first invalid field */
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+
+  const isEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+
+  const ok = [
+    validate('name',    v => v.length >= 2),
+    validate('email',   v => isEmail(v)),
+    validate('subject', v => v !== ''),
+    validate('message', v => v.length >= 10),
+  ].every(Boolean);
+
+  if (! ok) {
+    const first = form.querySelector('.invalid');
+    if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  // ── Disable submit while in-flight ───────────────────────
+  submit.disabled    = true;
+  submit.textContent = 'Sending…';
+
+  try {
+    const res = await fetch('{{ route("contact.store") }}', {
+      method:  'POST',
+      headers: {
+        'Content-Type':  'application/json',
+        'Accept':        'application/json',
+        'X-CSRF-TOKEN':  document.querySelector('meta[name="csrf-token"]')?.content ?? '',
+      },
+      body: JSON.stringify({
+        name:    getEl('name').value.trim(),
+        email:   getEl('email').value.trim(),
+        subject: getEl('subject').value,
+        message: getEl('message').value.trim(),
+      }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      // ── Success ──────────────────────────────────────────
+      form.style.display = 'none';
+      success.classList.add('show');
+
+    } else if (res.status === 422) {
+      // ── Laravel validation errors ─────────────────────────
+      const errors = data.errors ?? {};
+      Object.entries(errors).forEach(([field, msgs]) => {
+        const el  = getEl(field);
+        const err = getErr(field);
+        if (el)  el.classList.add('invalid');
+        if (err) { err.textContent = msgs[0]; err.classList.add('show'); }
+      });
       const first = form.querySelector('.invalid');
       if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      return;
+
+    } else if (res.status === 429) {
+      // ── Rate limited ──────────────────────────────────────
+      showFormError('Too many submissions. Please wait a minute and try again.');
+
+    } else {
+      showFormError(data.message ?? 'Something went wrong. Please email us directly.');
     }
 
-    /* ── Simulate submission (replace with real fetch/axios call) ── */
-    submit.disabled    = true;
-    submit.textContent = 'Sending…';
+  } catch (err) {
+    console.error('[Contact] Submit failed:', err);
+    showFormError('Could not send message. Please email support@inboxoro.com directly.');
 
-    setTimeout(() => {
-      form.style.display    = 'none';
-      success.classList.add('show');
-    }, 800);
-  });
+  } finally {
+    if (! success.classList.contains('show')) {
+      submit.disabled    = false;
+      submit.textContent = 'Send Message →';
+    }
+  }
+});
+
+// ── Inline form-level error (non-field errors) ───────────────
+function showFormError(msg) {
+  let box = document.getElementById('form-level-error');
+  if (! box) {
+    box = document.createElement('p');
+    box.id = 'form-level-error';
+    box.style.cssText = `
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .72rem;
+      color: #DC2626;
+      background: rgba(220,38,38,.06);
+      border: 1.5px solid #DC2626;
+      padding: 10px 14px;
+      margin-top: 12px;
+    `;
+    submit.insertAdjacentElement('afterend', box);
+  }
+  box.textContent = msg;
+}
+
 </script>
 
 </body>

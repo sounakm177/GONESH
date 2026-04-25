@@ -6,6 +6,7 @@ use App\Http\Controllers\Public\PublicMailboxController;
 use App\Http\Controllers\Public\PublicEmailController;
 use App\Http\Controllers\Public\SeoController;
 use App\Http\Controllers\Public\BlogController;
+use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\PageController;
 
 use App\Http\Controllers\MailboxController;
@@ -24,10 +25,21 @@ Route::get('/sounak', function(){
 
 Route::get('/', [MailboxController::class, 'index'])->name('home');
 Route::get('/about',[PageController::class, 'about']);
-Route::get('/contact',[PageController::class, 'contact']);
+// Route::get('/contact',[PageController::class, 'contact']);
 Route::get('/privacy-policy',[PageController::class, 'privacy']);
 Route::get('/terms',[PageController::class, 'terms']);
 
+
+Route::get('/contact', [ContactController::class, 'index'])
+     ->name('contact.index');
+ 
+Route::post('/contact', [ContactController::class, 'store'])
+     ->name('contact.store')
+     ->middleware('throttle:5,1');
+ 
+Route::patch('/admin/contact/{message}/status', [ContactController::class, 'updateStatus'])
+     ->name('contact.updateStatus')
+     ->middleware(['auth', 'admin']); 
 
 
 Route::prefix('blog')->name('blog.')->group(function () {

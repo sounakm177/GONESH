@@ -13,6 +13,9 @@ use Illuminate\Support\Carbon;
 
 class AprilTwentyFourSeeder extends Seeder
 {
+
+    // php artisan db:seed --class=AprilTwentyFourSeeder    
+
     /**
      * Run the database seeds.
      */

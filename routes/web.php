@@ -20,8 +20,17 @@ use App\Models\BlogPost;
 
 
 Route::get('/sounak', function(){
-    return view('dashboard');
+    return view('dashboard.dash');
 });
+
+Route::get('/login', function(){
+    return view('dashboard.login');
+});
+
+Route::get('/register', function(){
+    return view('dashboard.register');
+});
+
 
 Route::get('/', [MailboxController::class, 'index'])->name('home');
 Route::get('/about',[PageController::class, 'about']);

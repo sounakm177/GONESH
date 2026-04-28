@@ -220,15 +220,15 @@ svg    { flex-shrink: 0; }
 }
 
 /* ════════════════════════════════════════════════
-   SIDEBAR
-   Mobile: slides in as overlay (off-canvas)
-   Desktop: inline, collapses to icon rail
+   SIDEBAR — dark, matches topbar (#111827)
+   Mobile: off-canvas overlay
+   Desktop: inline, collapses to 60px icon rail
 ════════════════════════════════════════════════ */
 .sidebar {
   width:          var(--SB-W);
   min-width:      var(--SB-W);
-  background:     var(--SURF);
-  border-right:   1px solid var(--BD);
+  background:     var(--INK);           /* dark — same as topbar */
+  border-right:   1px solid rgba(255,255,255,.07);
   display:        flex;
   flex-direction: column;
   overflow:       hidden;
@@ -239,50 +239,48 @@ svg    { flex-shrink: 0; }
   z-index:        150;
 
   /* Mobile: off-canvas */
-  position:   fixed;
-  top:        56px;
-  left:       0;
-  bottom:     0;
-  transform:  translateX(-100%);
+  position:  fixed;
+  top:       56px;
+  left:      0;
+  bottom:    0;
+  transform: translateX(-100%);
 }
 
-/* open on mobile */
 .sidebar.mob-open {
-  transform: translateX(0);
-  box-shadow: 4px 0 24px rgba(0,0,0,.12);
+  transform:  translateX(0);
+  box-shadow: 6px 0 32px rgba(0,0,0,.35);
 }
 
-/* mobile overlay backdrop */
+/* Mobile backdrop */
 .sb-backdrop {
   display:    none;
   position:   fixed;
   inset:      0;
-  background: rgba(0,0,0,.35);
+  background: rgba(0,0,0,.5);
   z-index:    140;
 }
 .sb-backdrop.show { display: block; }
 
-/* collapsed state (desktop only) */
+/* Collapsed (desktop) */
 .sidebar.collapsed {
   width:     var(--SB-MINI);
   min-width: var(--SB-MINI);
 }
 
-/* ── Sidebar has NO header row — logo lives in topbar only ──
-   Collapse button is in the topbar (desktop only) */
+/* ── Collapse btn — lives in topbar, desktop only ── */
 .sb-collapse-btn {
   width:      36px;
   height:     36px;
   min-width:  36px;
-  display:    none; /* shown at ≥900px */
+  display:    none;            /* revealed at ≥900px */
   align-items:     center;
   justify-content: center;
   border-radius:   8px;
-  color:      var(--MU2);
+  color:      rgba(255,255,255,.5);
   flex-shrink: 0;
   transition: background .15s, color .15s;
 }
-.sb-collapse-btn:hover { background: rgba(255,255,255,.08); color: #fff; }
+.sb-collapse-btn:hover { background: rgba(255,255,255,.1); color: #fff; }
 .sb-collapse-btn svg   { transition: transform .25s cubic-bezier(.4,0,.2,1); }
 body.sb-collapsed .sb-collapse-btn svg { transform: rotate(180deg); }
 
@@ -291,61 +289,66 @@ body.sb-collapsed .sb-collapse-btn svg { transform: rotate(180deg); }
   flex:       1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding:    12px 0;
+  padding:    8px 0 12px;
 }
-.sb-body::-webkit-scrollbar { width: 3px; }
-.sb-body::-webkit-scrollbar-thumb { background: var(--BD); border-radius: 2px; }
+.sb-body::-webkit-scrollbar       { width: 3px; }
+.sb-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 2px; }
 
-/* section label */
+/* Section label */
 .sb-label {
   font-family:    var(--MONO);
-  font-size:      .56rem;
+  font-size:      .54rem;
   font-weight:    700;
-  letter-spacing: .12em;
+  letter-spacing: .13em;
   text-transform: uppercase;
-  color:          var(--MU2);
-  padding:        14px 18px 6px;
+  color:          rgba(255,255,255,.25);
+  padding:        16px 20px 6px;
   white-space:    nowrap;
   overflow:       hidden;
-  transition:     opacity .2s, height .2s;
+  transition:     opacity .2s, padding .2s;
   opacity:        1;
 }
-.sidebar.collapsed .sb-label { opacity: 0; height: 0; padding: 0; }
+.sidebar.collapsed .sb-label { opacity: 0; padding-top: 0; padding-bottom: 0; height: 0; }
 
-/* nav item */
+/* Nav item */
 .sb-item {
   display:       flex;
   align-items:   center;
   gap:           10px;
-  padding:       9px 14px;
+  padding:       9px 12px;
   margin:        1px 8px;
   border-radius: 8px;
   font-size:     .84rem;
   font-weight:   500;
-  color:         var(--MU);
+  color:         rgba(255,255,255,.55);
   transition:    background .12s, color .12s;
   white-space:   nowrap;
   overflow:      hidden;
   position:      relative;
+  text-decoration: none;
 }
-.sb-item:hover { background: var(--BD2); color: var(--INK); }
+.sb-item:hover {
+  background: rgba(255,255,255,.07);
+  color:      #fff;
+}
 .sb-item.active {
-  background: rgba(250,204,21,.15);
-  color:      var(--INK);
+  background: rgba(250,204,21,.14);
+  color:      var(--Y);
   font-weight: 600;
 }
-.sb-item.active .sb-item-icon { color: var(--INK2); }
+.sb-item.active .sb-item-icon { color: var(--Y); }
 
 .sb-item-icon {
-  width:           20px;
-  min-width:       20px;
-  display:         flex;
-  align-items:     center;
+  width:      20px;
+  min-width:  20px;
+  display:    flex;
+  align-items: center;
   justify-content: center;
-  color:           var(--MU);
-  transition:      color .12s;
+  color:      rgba(255,255,255,.4);
+  transition: color .12s;
+  flex-shrink: 0;
 }
-.sb-item:hover .sb-item-icon { color: var(--INK); }
+.sb-item:hover .sb-item-icon  { color: rgba(255,255,255,.9); }
 
 .sb-item-label {
   flex:       1;
@@ -355,57 +358,63 @@ body.sb-collapsed .sb-collapse-btn svg { transform: rotate(180deg); }
 }
 .sidebar.collapsed .sb-item-label { opacity: 0; }
 
+/* Notification pill */
 .sb-pill {
-  background:     var(--INK);
-  color:          var(--Y);
-  font-family:    var(--MONO);
-  font-size:      .52rem;
-  font-weight:    800;
-  padding:        2px 6px;
-  border-radius:  4px;
-  flex-shrink:    0;
-  opacity:        1;
-  transition:     opacity .15s;
+  background:    var(--Y);
+  color:         var(--INK);
+  font-family:   var(--MONO);
+  font-size:     .52rem;
+  font-weight:   800;
+  padding:       2px 7px;
+  border-radius: 10px;
+  flex-shrink:   0;
+  opacity:       1;
+  transition:    opacity .15s;
 }
 .sidebar.collapsed .sb-pill { opacity: 0; }
 
-/* collapsed tooltip on hover */
+/* Tooltip when collapsed */
 .sb-item[data-tip]:hover::after {
-  content:      attr(data-tip);
-  position:     absolute;
-  left:         calc(var(--SB-MINI) + 4px);
-  top:          50%;
-  transform:    translateY(-50%);
-  background:   var(--INK);
-  color:        #fff;
-  font-size:    .74rem;
-  padding:      5px 10px;
-  border-radius: 6px;
-  white-space:  nowrap;
+  content:        attr(data-tip);
+  position:       absolute;
+  left:           calc(var(--SB-MINI) + 6px);
+  top:            50%;
+  transform:      translateY(-50%);
+  background:     var(--INK2);
+  color:          #fff;
+  font-size:      .76rem;
+  font-weight:    500;
+  padding:        6px 12px;
+  border-radius:  8px;
+  white-space:    nowrap;
   pointer-events: none;
-  display:      none; /* only show when collapsed */
+  box-shadow:     0 4px 16px rgba(0,0,0,.25);
+  display:        none;
+  z-index:        999;
 }
 .sidebar.collapsed .sb-item[data-tip]:hover::after { display: block; }
 
-.sb-divider { height: 1px; background: var(--BD2); margin: 8px 16px; }
+/* Divider */
+.sb-divider { height: 1px; background: rgba(255,255,255,.07); margin: 8px 16px; }
 
 /* ── Sidebar footer ── */
 .sb-footer {
-  padding:         12px;
-  border-top:      1px solid var(--BD2);
-  flex-shrink:     0;
+  padding:    10px 12px 14px;
+  border-top: 1px solid rgba(255,255,255,.07);
+  flex-shrink: 0;
 }
 .sb-user {
   display:       flex;
   align-items:   center;
   gap:           10px;
-  padding:       8px 6px;
+  padding:       8px;
   border-radius: 8px;
   cursor:        pointer;
   overflow:      hidden;
   transition:    background .12s;
 }
-.sb-user:hover { background: var(--BD2); }
+.sb-user:hover { background: rgba(255,255,255,.07); }
+
 .sb-user-av {
   width:           32px;
   min-width:       32px;
@@ -419,11 +428,12 @@ body.sb-collapsed .sb-collapse-btn svg { transform: rotate(180deg); }
   font-size:       .9rem;
   color:           var(--INK);
   font-weight:     700;
+  flex-shrink:     0;
 }
-.sb-user-info { overflow: hidden; opacity: 1; transition: opacity .15s; }
+.sb-user-info  { overflow: hidden; opacity: 1; transition: opacity .15s; }
 .sidebar.collapsed .sb-user-info { opacity: 0; }
-.sb-user-name  { font-size: .8rem; font-weight: 700; color: var(--INK); white-space: nowrap; }
-.sb-user-plan  { font-family: var(--MONO); font-size: .58rem; color: var(--MU); white-space: nowrap; }
+.sb-user-name  { font-size: .8rem; font-weight: 700; color: #fff; white-space: nowrap; }
+.sb-user-plan  { font-family: var(--MONO); font-size: .58rem; color: rgba(255,255,255,.4); white-space: nowrap; margin-top: 1px; }
 
 /* ════════════════════════════════════════════════
    MAIN CONTENT
@@ -868,7 +878,7 @@ body.sb-collapsed .sb-collapse-btn svg { transform: rotate(180deg); }
     transform: none !important;
     box-shadow: none !important;
   }
-  /* .sb-collapse-btn { display: flex; } */
+  .sb-collapse-btn { display: flex; }
 
   /* Desktop: topbar toggle acts as sidebar collapse toggle */
   .main { padding: 28px 28px 60px; }
@@ -905,9 +915,9 @@ body.sb-collapsed .sb-collapse-btn svg { transform: rotate(180deg); }
     <img src="/images/logo.svg" alt="InboxOro" class="logo-img"/>
   </div>
   <!-- Desktop-only collapse button — single control, no duplicate -->
-  <button class="sb-collapse-btn" id="sb-collapse-btn" aria-label="Collapse sidebar">
+  <!-- <button class="sb-collapse-btn" id="sb-collapse-btn" aria-label="Collapse sidebar">
     <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M15 19l-7-7 7-7"/></svg>
-  </button>
+  </button> -->
 
   <div class="topbar-search">
     <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="M21 21l-4.35-4.35"/></svg>
@@ -1188,7 +1198,7 @@ toggleBtn.addEventListener('click', () => {
 });
 
 /* Chevron: desktop collapse/expand */
-collapseBtn.addEventListener('click', () => collapseSidebar(!isCollapsed));
+// collapseBtn.addEventListener('click', () => collapseSidebar(!isCollapsed));
 
 function collapseSidebar(collapse) {
   isCollapsed = collapse;

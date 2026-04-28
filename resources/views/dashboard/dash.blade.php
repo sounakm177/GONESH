@@ -49,13 +49,13 @@ a      { text-decoration: none; color: inherit; }
 svg    { flex-shrink: 0; }
 
 /* ════════════════════════════════════════════════
-   TOPBAR
+   TOPBAR — dark background so logo SVG is visible
 ════════════════════════════════════════════════ */
 .topbar {
   height:          56px;
   min-height:      56px;
-  background:      var(--SURF);
-  border-bottom:   1px solid var(--BD);
+  background:      var(--INK);          /* dark — logo white text visible */
+  border-bottom:   1px solid rgba(255,255,255,.08);
   display:         flex;
   align-items:     center;
   padding:         0 16px;
@@ -64,42 +64,47 @@ svg    { flex-shrink: 0; }
   flex-shrink:     0;
 }
 
-/* hamburger / toggle — visible on mobile, repurposed as collapse toggle on desktop */
+/* Single toggle button — hamburger on mobile, collapse on desktop */
 .sb-toggle {
   width:           36px;
   height:          36px;
+  min-width:       36px;
   display:         flex;
   align-items:     center;
   justify-content: center;
   border-radius:   8px;
-  color:           var(--MU);
+  color:           var(--MU2);
   transition:      background .15s, color .15s;
   flex-shrink:     0;
 }
-.sb-toggle:hover { background: var(--BD2); color: var(--INK); }
+.sb-toggle:hover { background: rgba(255,255,255,.08); color: #fff; }
 
+/* Logo image in topbar */
 .topbar-logo {
-  font-family:    var(--DISP);
-  font-size:      1.45rem;
-  color:          var(--INK);
-  letter-spacing: .04em;
-  flex-shrink:    0;
-  line-height:    1;
+  display:     flex;
+  align-items: center;
+  flex-shrink: 0;
+  line-height: 1;
 }
-.topbar-logo .acc { color: var(--Y); }
+.topbar-logo img,
+.logo-img {
+  height:    32px;
+  width:     auto;
+  display:   block;
+}
 
 /* search */
 .topbar-search {
-  flex:        1;
-  max-width:   360px;
-  display:     flex;
-  align-items: center;
-  gap:         8px;
-  background:  var(--BG);
-  border:      1px solid var(--BD);
+  flex:          1;
+  max-width:     360px;
+  display:       flex;
+  align-items:   center;
+  gap:           8px;
+  background:    rgba(255,255,255,.07);
+  border:        1px solid rgba(255,255,255,.12);
   border-radius: 8px;
-  padding:     0 12px;
-  height:      36px;
+  padding:       0 12px;
+  height:        36px;
 }
 .topbar-search input {
   flex:        1;
@@ -108,10 +113,10 @@ svg    { flex-shrink: 0; }
   background:  transparent;
   font-family: var(--BODY);
   font-size:   .84rem;
-  color:       var(--INK);
+  color:       #fff;
 }
-.topbar-search input::placeholder { color: var(--MU2); }
-.topbar-search svg { color: var(--MU2); }
+.topbar-search input::placeholder { color: #6B7280; }
+.topbar-search svg { color: #6B7280; }
 
 /* search hidden on very small mobile */
 @media (max-width: 400px) { .topbar-search { display: none; } }
@@ -130,11 +135,11 @@ svg    { flex-shrink: 0; }
   align-items:     center;
   justify-content: center;
   border-radius:   8px;
-  color:           var(--MU);
+  color:           var(--MU2);
   position:        relative;
   transition:      background .15s, color .15s;
 }
-.tb-icon:hover { background: var(--BD2); color: var(--INK); }
+.tb-icon:hover { background: rgba(255,255,255,.08); color: #fff; }
 
 .notif-badge {
   position:      absolute;
@@ -144,7 +149,7 @@ svg    { flex-shrink: 0; }
   height:        7px;
   background:    var(--RED);
   border-radius: 50%;
-  border:        2px solid var(--SURF);
+  border:        2px solid var(--INK);
 }
 
 .tb-avatar {
@@ -263,45 +268,23 @@ svg    { flex-shrink: 0; }
   min-width: var(--SB-MINI);
 }
 
-/* ── Sidebar header ── */
-.sb-header {
-  height:          56px;
-  min-height:      56px;
-  display:         flex;
-  align-items:     center;
-  padding:         0 14px;
-  border-bottom:   1px solid var(--BD2);
-  gap:             10px;
-  flex-shrink:     0;
-}
-.sb-brand {
-  font-family:    var(--DISP);
-  font-size:      1.3rem;
-  color:          var(--INK);
-  letter-spacing: .04em;
-  white-space:    nowrap;
-  overflow:       hidden;
-  opacity:        1;
-  transition:     opacity .2s;
-}
-.sb-brand .acc { color: var(--Y); }
-.sidebar.collapsed .sb-brand { opacity: 0; width: 0; pointer-events: none; }
-
-/* collapse toggle button (inside sidebar, desktop) */
+/* ── Sidebar has NO header row — logo lives in topbar only ──
+   Collapse button is in the topbar (desktop only) */
 .sb-collapse-btn {
-  width:           28px;
-  height:          28px;
-  min-width:       28px;
-  display:         none; /* shown at desktop */
+  width:      36px;
+  height:     36px;
+  min-width:  36px;
+  display:    none; /* shown at ≥900px */
   align-items:     center;
   justify-content: center;
-  border-radius:   6px;
-  color:           var(--MU);
-  margin-left:     auto;
-  transition:      background .15s, color .15s, transform .25s;
+  border-radius:   8px;
+  color:      var(--MU2);
+  flex-shrink: 0;
+  transition: background .15s, color .15s;
 }
-.sb-collapse-btn:hover { background: var(--BD2); color: var(--INK); }
-.sidebar.collapsed .sb-collapse-btn { transform: rotate(180deg); }
+.sb-collapse-btn:hover { background: rgba(255,255,255,.08); color: #fff; }
+.sb-collapse-btn svg   { transition: transform .25s cubic-bezier(.4,0,.2,1); }
+body.sb-collapsed .sb-collapse-btn svg { transform: rotate(180deg); }
 
 /* ── Sidebar body ── */
 .sb-body {
@@ -885,7 +868,7 @@ svg    { flex-shrink: 0; }
     transform: none !important;
     box-shadow: none !important;
   }
-  .sb-collapse-btn { display: flex; }
+  /* .sb-collapse-btn { display: flex; } */
 
   /* Desktop: topbar toggle acts as sidebar collapse toggle */
   .main { padding: 28px 28px 60px; }
@@ -897,133 +880,6 @@ svg    { flex-shrink: 0; }
 
 @media (min-width: 1100px) {
   .main { padding: 32px 36px 64px; }
-}
-
-
-
-
-
-
-
-
-
-
-
-/* ═══════════════════════════════════════
-   FIX: TRUE MERGED TOPBAR + SIDEBAR (GMAIL STYLE)
-═══════════════════════════════════════ */
-@media (min-width: 900px) {
-
-  /* Sidebar should start from top */
-  .sidebar {
-    position: relative;
-    top: 0;
-    height: 100vh;
-  }
-
-  /* 🔴 REMOVE duplicate header effect */
-  .sb-header {
-    display: none; /* key fix */
-  }
-
-  /* Adjust sidebar body spacing */
-  .sb-body {
-    padding-top: 12px;
-  }
-
-  /* Keep only ONE header (topbar) */
-  .topbar {
-    position: sticky;
-    top: 0;
-    z-index: 300;
-  }
-
-  /* Keep hamburger (like Gmail) */
-  .sb-toggle {
-    display: flex;
-  }
-
-  /* REMOVE sidebar collapse button (duplicate UX) */
-  .sb-collapse-btn {
-    display: none !important;
-  }
-
-  /* Align everything clean */
-  .shell {
-    align-items: stretch;
-  }
-
-  /* Smooth visual connection */
-  .sidebar {
-    border-right: 1px solid var(--BD);
-  }
-
-  /* Fix spacing so content aligns like Gmail */
-  .main {
-    margin-left: 0;
-  }
-}
-
-/* ═══════════════════════════════════════
-   TOPBAR REFINEMENT (DESKTOP ONLY)
-═══════════════════════════════════════ */
-@media (min-width: 900px) {
-
-  .topbar {
-    padding: 0 24px;
-    gap: 16px;
-  }
-
-  /* Better logo spacing */
-  .topbar-logo {
-    margin-right: 8px;
-  }
-
-  /* Search centered + balanced */
-  .topbar-search {
-    max-width: 480px;
-    height: 38px;
-    border-radius: 10px;
-  }
-
-  /* Push search slightly to center visually */
-  .topbar-search {
-    margin-left: 12px;
-  }
-
-  /* Right side spacing */
-  .topbar-right {
-    gap: 10px;
-  }
-
-  /* Icons better touch + visual weight */
-  .tb-icon {
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
-  }
-
-  /* Avatar refinement */
-  .tb-avatar {
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
-  }
-
-  /* Subtle separation from content */
-  .topbar {
-    box-shadow: 0 1px 0 var(--BD);
-  }
-
-  /* Align with sidebar visually */
-  .topbar {
-    padding-left: 20px;
-  }
-
-  /* Optional: constrain content width feel (premium look) */
-  .topbar > * {
-    align-self: center;
-  }
 }
 </style>
 </head>
@@ -1046,8 +902,12 @@ svg    { flex-shrink: 0; }
   </button>
 
   <div class="topbar-logo">
-    <img src="{{asset('/images/logo.svg')}}" alt="Inboxoro Temporary Email Service" class="logo-img">
+    <img src="/images/logo.svg" alt="InboxOro" class="logo-img"/>
   </div>
+  <!-- Desktop-only collapse button — single control, no duplicate -->
+  <button class="sb-collapse-btn" id="sb-collapse-btn" aria-label="Collapse sidebar">
+    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M15 19l-7-7 7-7"/></svg>
+  </button>
 
   <div class="topbar-search">
     <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="M21 21l-4.35-4.35"/></svg>
@@ -1088,17 +948,7 @@ svg    { flex-shrink: 0; }
   <!-- ════ SIDEBAR ════ -->
   <div class="sidebar" id="sidebar">
 
-    <div class="sb-header">
-      <div class="sb-brand">DROP<span class="acc">IT</span></div>
-      <!-- Desktop collapse button (inside sidebar) -->
-      <button class="sb-collapse-btn" id="sb-collapse-btn" aria-label="Collapse sidebar">
-        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-          <path stroke-linecap="round" d="M15 19l-7-7 7-7"/>
-        </svg>
-      </button>
-    </div>
-
-    <div class="sb-body">
+    <div class="sb-body" style="padding-top:16px;">
 
       <div class="sb-label">Main</div>
 
@@ -1315,33 +1165,35 @@ svg    { flex-shrink: 0; }
 <script>
 /* ════════════════════════════
    SIDEBAR LOGIC
+   - Mobile  : hamburger slides sidebar in as overlay
+   - Desktop : collapse btn (topbar) collapses to icon rail
+   - ONE button per action — no duplicates
 ════════════════════════════ */
-const sidebar   = document.getElementById('sidebar');
-const backdrop  = document.getElementById('sb-backdrop');
-const toggleBtn = document.getElementById('sb-toggle-btn');
-const collapseBtn = document.getElementById('sb-collapse-btn');
+const sidebar     = document.getElementById('sidebar');
+const backdrop    = document.getElementById('sb-backdrop');
+const toggleBtn   = document.getElementById('sb-toggle-btn');   // hamburger — mobile only
+const collapseBtn = document.getElementById('sb-collapse-btn'); // chevron  — desktop only
 
 let isMobile = () => window.innerWidth < 900;
 let isCollapsed = false;
 
-/* Top-bar toggle button — dual behaviour */
+/* Hamburger: mobile overlay open/close */
 toggleBtn.addEventListener('click', () => {
   if (isMobile()) {
-    /* Mobile: slide in/out overlay */
     const open = sidebar.classList.toggle('mob-open');
     backdrop.classList.toggle('show', open);
-  } else {
-    /* Desktop: collapse/expand inline */
-    collapseSidebar(!isCollapsed);
+  }else{
+    collapseSidebar(!isCollapsed)
   }
 });
 
-/* Collapse button inside sidebar (desktop) */
+/* Chevron: desktop collapse/expand */
 collapseBtn.addEventListener('click', () => collapseSidebar(!isCollapsed));
 
 function collapseSidebar(collapse) {
   isCollapsed = collapse;
   sidebar.classList.toggle('collapsed', collapse);
+  document.body.classList.toggle('sb-collapsed', collapse); // arrow flip via CSS
 }
 
 function closeMobileSb() {

@@ -226,7 +226,12 @@
                         'temp-mail-for-ai-tools', 
                         'temp-mail-for-openai',  
                         'temp-mail-for-api-testing', 
-                        'temp-mail-for-saas-signup'
+                        'temp-mail-for-saas-signup',
+                        'temp-mail-for-netflix',
+                        'temp-mail-for-spotify',
+                        'temp-mail-for-reddit',
+                        'temp-mail-for-twitter',
+                        'temp-mail-for-amazon',
                     ]))
                         <p>
                             InboxOro is not affiliated with or endorsed by any third-party brands mentioned on this page. 

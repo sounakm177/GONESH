@@ -2,10 +2,24 @@
   <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
     <div class="h-tag">Instant · Private · Free</div>
     <div>
-      <h1 class="hero-copy-title">
-        <!-- Disposable <span class="gold">Temp Email</span> — No signup, no spam. -->
-        Free <span class="gold">Temporary Email</span> – Instant Disposable Inbox for OTP & Verification
-      </h1>
+      @if(!isset($seo_page))
+        <h1 class="hero-copy-title">
+          Free <span class="gold">Temporary Email</span> – Instant Disposable Inbox for OTP & Verification
+        </h1>
+      @else
+          @php
+            $h1 = $seo_page->h1;
+            $parts = preg_split('/\s*[-–—]\s*/u', $h1, 2);
+            $main = trim($parts[0] ?? '');
+            $extra = trim($parts[1] ?? '');
+          @endphp
+          <h1 class="hero-copy-title">
+              Free <span class="gold">{{ $main }}</span>
+              @if($extra)
+                  – {{ $extra }}
+              @endif
+          </h1>
+      @endif
       <div class="hero-copy-sub">
         Generate a temporary email instantly. Receive OTPs and verification emails without exposing your real inbox.
       </div>

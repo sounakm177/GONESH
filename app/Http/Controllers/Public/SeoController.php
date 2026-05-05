@@ -40,15 +40,13 @@ class SeoController extends Controller
                        ->where('is_active', true)
                        ->firstOrFail();
 
-            
-
         $data = $this->getCommonData($request);
 
         $data['popular'] = SeoPage::where('category', $page->category)->inRandomOrder()->limit(12)->get();
  
         $data['seo_page'] = $page;
         
-        $schema =$schema = [
+        $schema = [
             "@context" => "https://schema.org",
             "@graph" => [
                 [

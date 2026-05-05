@@ -2,6 +2,11 @@
 
 @section('title', $seo_page->title)
 @section('meta_description', $seo_page->meta_description)
+@section('canonical', url($seo_page->slug))
+@section('og_title', $seo_page->title)
+@section('og_description', $seo_page->meta_description)
+@section('og_url', url($seo_page->slug))
+@section('keywords', $seo_page->keywords)
 
 
 @section('schema')
@@ -20,7 +25,7 @@
   </div>
 
   @include('inboxoro.partials.nav')
-  @include('inboxoro.partials.hero', ['domains' => $domains])
+  @include('inboxoro.partials.hero', ['domains' => $domains, 'seo_page' => $seo_page])
 
   <div class="page-wrap">
     <div class="left-col">

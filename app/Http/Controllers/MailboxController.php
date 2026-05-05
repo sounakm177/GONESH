@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use App\Models\SeoPage;
 
 class MailboxController extends Controller
 {
@@ -82,9 +83,10 @@ class MailboxController extends Controller
             ]
         ];
 
+        $popular = SeoPage::where('category', 'verification')->inRandomOrder()->limit(12)->get();
 
         return response()
-            ->view('inboxoro.index', compact('mailbox', 'domains', 'inbox','schema'))
+            ->view('inboxoro.index', compact('mailbox', 'domains', 'inbox','schema','popular'))
             ->header('Cache-Control', 'no-store, no-cache, must-revalidate');
     }
 

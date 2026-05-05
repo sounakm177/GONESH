@@ -209,36 +209,12 @@
                     Emails received in temporary inboxes are automatically deleted after expiration. We are not responsible for any loss of access to accounts or services where a temporary email address was used.
                     </p>
                     
-
-                     @if(in_array($seo_page->slug, [
-                        'temp-mail-for-facebook',
-                        'temp-mail-for-instagram',
-                        'temp-mail-for-discord',
-                        'temp-mail-for-twitter',
-                        'temp-mail-for-linkedin',
-                        'temp-mail-for-tiktok',
-                        'temp-mail-for-chatgpt', 
-                        'temp-mail-for-gmail-signup', 
-                        'temp-mail-for-apple-id', 
-                        'temp-mail-for-payoneer', 
-                        'temp-mail-for-upwork', 
-                        'temp-mail-for-freelancing', 
-                        'temp-mail-for-ai-tools', 
-                        'temp-mail-for-openai',  
-                        'temp-mail-for-api-testing', 
-                        'temp-mail-for-saas-signup',
-                        'temp-mail-for-netflix',
-                        'temp-mail-for-spotify',
-                        'temp-mail-for-reddit',
-                        'temp-mail-for-twitter',
-                        'temp-mail-for-amazon',
-                    ]))
+                    @if($seo_page->is_brand)
                         <p>
                             InboxOro is not affiliated with or endorsed by any third-party brands mentioned on this page. 
                             All trademarks belong to their respective owners.
                         </p>
                     @endif
-
 
                     <p>
                     This is a privacy and testing utility and does not guarantee anonymity. For more details, please review our

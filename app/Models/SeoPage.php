@@ -71,33 +71,27 @@ class SeoPage extends Model
     {
         $keywords = [];
 
-        // 1. Slug-based keywords
+        // 1. Base keyword
         $base = str_replace('-', ' ', $this->slug);
 
         $keywords[] = $base;
-        $keywords[] = $base . ' free';
-        $keywords[] = $base . ' online';
-        $keywords[] = $base . ' temp mail';
-        $keywords[] = $base . ' disposable email';
+        $keywords[] = "$base free";
+        $keywords[] = "$base online";
 
-        // 2. Detect platform (for "temp-mail-for-youtube")
+        // 2. Platform-based (ONLY if relevant)
         if (Str::startsWith($this->slug, 'temp-mail-for-')) {
             $platform = str_replace('temp-mail-for-', '', $this->slug);
             $platform = str_replace('-', ' ', $platform);
 
             $keywords[] = "temp mail for $platform";
-            $keywords[] = "$platform temp mail";
             $keywords[] = "$platform verification email";
-            $keywords[] = "email for $platform signup";
         }
 
-        // 3. Category-based keywords
+        // 3. Category-based (LIMITED + INTENT FOCUSED)
         switch ($this->category) {
             case 'otp':
                 $keywords = array_merge($keywords, [
                     'receive otp online',
-                    'free otp email',
-                    'email for verification code',
                     'temporary email for otp',
                 ]);
                 break;
@@ -106,16 +100,12 @@ class SeoPage extends Model
                 $keywords = array_merge($keywords, [
                     'email testing tool',
                     'fake email for testing',
-                    'qa email testing',
-                    'sandbox email tool',
                 ]);
                 break;
 
             case 'privacy':
                 $keywords = array_merge($keywords, [
                     'anonymous email',
-                    'private email address',
-                    'hide email online',
                     'protect email privacy',
                 ]);
                 break;
@@ -124,7 +114,6 @@ class SeoPage extends Model
                 $keywords = array_merge($keywords, [
                     'avoid spam email',
                     'stop spam emails',
-                    'spam protection email',
                 ]);
                 break;
 
@@ -132,29 +121,28 @@ class SeoPage extends Model
                 $keywords = array_merge($keywords, [
                     'temp mail vs gmail',
                     'temporary email comparison',
-                    'disposable email vs real email',
                 ]);
                 break;
 
             case 'guide':
                 $keywords = array_merge($keywords, [
-                    'how to use temp mail',
                     'temporary email guide',
-                    'step by step email tutorial',
+                    'how to use temp mail',
                 ]);
                 break;
         }
 
-        // 4. Global keywords (always add)
+        // 4. Global keywords (CORE ONLY)
         $keywords = array_merge($keywords, [
             'temporary email',
-            'disposable email',
             'temp mail',
+            'disposable email',
             '10 minute email',
-            'free temp mail',
         ]);
 
-        // Remove duplicates
-        return implode(', ', array_unique($keywords));
+        // 5. Clean + limit
+        $keywords = array_unique($keywords);
+
+        return implode(', ', array_slice($keywords, 0, 12));
     }
 }

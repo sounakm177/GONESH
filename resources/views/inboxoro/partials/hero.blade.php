@@ -12,6 +12,7 @@
             $parts = preg_split('/\s*[-–—]\s*/u', $h1, 2);
             $main = trim($parts[0] ?? '');
             $extra = trim($parts[1] ?? '');
+            $main = preg_replace('/^free\s+/iu', '', $main);
           @endphp
           <h1 class="hero-copy-title">
               Free <span class="gold">{{ $main }}</span>
@@ -20,9 +21,16 @@
               @endif
           </h1>
       @endif
-      <div class="hero-copy-sub">
-        Generate a temporary email instantly. Receive OTPs and verification emails without exposing your real inbox.
-      </div>
+      @if(!isset($seo_page))
+        <div class="hero-copy-sub">
+          Generate a temporary email instantly. Receive OTPs and verification emails without exposing your real inbox.
+        </div>
+      @else
+        <div class="hero-copy-sub">
+          {{$seo_page->meta_description}}
+        </div>
+      @endif
+       
     </div>
   </div>
 

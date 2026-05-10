@@ -258,7 +258,7 @@ nav,
   height:          48px;
   border-radius:   50%;
   background:      var(--INK);
-  border:          2px solid var(--Y);
+  /* border:          2px solid var(--Y); */
   display:         flex;
   align-items:     center;
   justify-content: center;

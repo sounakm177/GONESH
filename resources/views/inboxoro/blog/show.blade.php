@@ -198,7 +198,9 @@
 
     <!-- AUTHOR -->
     <div class="author-card rv" itemscope itemtype="https://schema.org/Person">
-      <div class="author-avatar" aria-hidden="true">IO</div>
+      <div class="author-avatar" aria-hidden="true">
+        <img src="{{asset('images/icon.png')}}" alt="logo">
+      </div>
       <div class="author-info">
         <div class="author-name" itemprop="name">InboxOro Team</div>
         <div class="author-role">Privacy &amp; Email Security Experts · <a href="https://inboxoro.com" itemprop="url" style="color:var(--B);font-size:.6rem;">inboxoro.com</a></div>

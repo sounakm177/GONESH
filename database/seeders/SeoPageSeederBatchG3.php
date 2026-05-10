@@ -36,7 +36,7 @@ class SeoPageSeederBatchG3 extends Seeder
                 'meta_description' => 'Use InboxOro free temp mail for Shopify trial signup. Instant disposable inbox, no registration. Auto-deletes in 10 min. Evaluate ecommerce tools freely.',
                 'h1'               => 'Temp Mail for Shopify — Explore the Ecommerce Platform Before You Commit Your Business Email',
                 'category'         => 'platform',
-                'is_brand'         => false,
+                'is_brand'         => true,
                 'template'         => 'default',
                 'intro_text'       => '
 <p>Shopify is one of the world\'s leading ecommerce platforms — used by millions of merchants globally to build online stores, manage inventory, process payments, and grow their retail businesses. Its free trial gives prospective merchants access to the full platform before committing to a paid plan, and like most SaaS platforms, it requires an email address for trial account creation. Once registered, Shopify initiates a detailed onboarding sequence alongside promotional communications about its ecosystem of apps, payment solutions, and merchant services. For entrepreneurs, developers, and retail professionals evaluating whether Shopify is the right platform for their ecommerce business before committing their real business email, <strong>InboxOro</strong> provides a free temporary email for the Shopify trial account creation step.</p>
@@ -100,7 +100,7 @@ class SeoPageSeederBatchG3 extends Seeder
                 'meta_description' => 'Use InboxOro free temp mail for WooCommerce & WordPress signup. Instant disposable inbox, no registration. Auto-deletes in 10 min. Research freely.',
                 'h1'               => 'Temp Mail for WooCommerce — Explore WordPress Ecommerce Without Inbox Commitment',
                 'category'         => 'platform',
-                'is_brand'         => false,
+                'is_brand'         => true,
                 'template'         => 'default',
                 'intro_text'       => '
 <p>WooCommerce is the world\'s most widely used open-source ecommerce plugin, transforming WordPress sites into fully functional online stores. As part of the WordPress ecosystem and managed by a major open-source software company, WooCommerce is supported by an extensive marketplace of extensions, payment gateways, shipping integrations, and developer tools. Accessing WooCommerce\'s extension marketplace, support resources, and platform-specific developer tools often requires account creation with email registration. For developers, merchants, and digital agencies evaluating WooCommerce\'s ecosystem and extension quality before committing to building a WooCommerce store, <strong>InboxOro</strong> provides a free temporary email for the account creation step.</p>
@@ -156,7 +156,7 @@ class SeoPageSeederBatchG3 extends Seeder
                 'meta_description' => 'Use InboxOro free temp mail for BigCommerce trial signup. Instant disposable inbox, no registration. Auto-deletes in 10 min. Compare ecommerce platforms freely.',
                 'h1'               => 'Temp Mail for BigCommerce — Evaluate Enterprise Ecommerce Without Inbox Obligation',
                 'category'         => 'platform',
-                'is_brand'         => false,
+                'is_brand'         => true,
                 'template'         => 'default',
                 'intro_text'       => '
 <p>BigCommerce is an enterprise-grade hosted ecommerce platform designed for high-volume merchants, multi-channel sellers, and B2B businesses that need advanced catalogue management, flexible checkout customisation, and robust API capabilities. It offers a free trial for prospective merchants, and like most enterprise software platforms, it requires email registration for trial access and initiates a structured sales and onboarding engagement sequence upon registration. For ecommerce managers, technology leaders, and enterprise retail teams evaluating BigCommerce as a potential platform for their business before entering a formal sales discussion, <strong>InboxOro</strong> provides a free temporary email for the BigCommerce trial account creation step.</p>
@@ -210,7 +210,7 @@ class SeoPageSeederBatchG3 extends Seeder
                 'meta_description' => 'Use InboxOro free temp mail for Etsy signup. Instant disposable inbox, no registration. Auto-deletes in 10 min. Browse handmade marketplace without spam.',
                 'h1'               => 'Temp Mail for Etsy — Browse the Handmade Marketplace Without the Marketing Flood',
                 'category'         => 'platform',
-                'is_brand'         => false,
+                'is_brand'         => true,
                 'template'         => 'default',
                 'intro_text'       => '
 <p>Etsy is the world\'s largest marketplace for handmade, vintage, and craft items — connecting millions of independent creative sellers with buyers who value unique, personally crafted goods. Creating an Etsy account gives buyers access to personalised product recommendations, the ability to save items to favourites, and the full shopping experience across Etsy\'s vast catalogue. It also enrolls the buyer in Etsy\'s marketing system — triggering deal alerts, abandoned cart reminders, personalised product recommendations, promotional offer emails, and periodic marketing from Etsy\'s broader ecosystem. For shoppers who want to browse Etsy\'s marketplace and explore what independent creators are offering without committing their real email to Etsy\'s comprehensive buyer marketing communications, <strong>InboxOro</strong> provides a free temporary email for the Etsy account creation step.</p>
@@ -266,7 +266,7 @@ class SeoPageSeederBatchG3 extends Seeder
                 'meta_description' => 'Use InboxOro free temp mail for Alibaba signup. Instant disposable inbox, no registration. Auto-deletes in 10 min. Research suppliers without inbox spam.',
                 'h1'               => 'Temp Mail for Alibaba — Research Global Suppliers Without Inbox Overload',
                 'category'         => 'platform',
-                'is_brand'         => false,
+                'is_brand'         => true,
                 'template'         => 'default',
                 'intro_text'       => '
 <p>Alibaba is the world\'s largest B2B commerce platform, connecting millions of manufacturers, wholesalers, and suppliers with buyers from every industry and market globally. It is the primary sourcing destination for businesses looking for manufacturing partners, wholesale inventory, private label products, and OEM/ODM services across virtually every product category. Registering on Alibaba gives buyers access to detailed supplier profiles, product catalogues, minimum order quantities, certification information, and direct messaging capabilities. It also enrolls the buyer in Alibaba\'s buyer marketing communications — trade fair invitations, promotional offers, new supplier recommendations, and platform-level marketing from the broader Alibaba ecosystem. For procurement managers, product sourcing specialists, and entrepreneurs researching suppliers on Alibaba without wanting to commit their business email to the platform\'s buyer marketing system during the initial research phase, <strong>InboxOro</strong> provides a free temporary email for the Alibaba account creation step.</p>

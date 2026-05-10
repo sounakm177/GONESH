@@ -36,7 +36,7 @@ class SeoPageSeederBatchG2 extends Seeder
                 'meta_description' => 'Use InboxOro free temp mail for Jira signup. Instant disposable inbox, no registration. Auto-deletes in 10 min. Evaluate agile tools without spam.',
                 'h1'               => 'Temp Mail for Jira — Evaluate Agile Issue Tracking Without Inbox Overload',
                 'category'         => 'platform',
-                'is_brand'         => false,
+                'is_brand'         => true,
                 'template'         => 'default',
                 'intro_text'       => '
 <p>Jira is the dominant issue tracking and agile project management platform in software engineering — used by development teams globally for sprint planning, backlog management, bug tracking, and release coordination. It requires email registration to access its trial environment, and once registered, it initiates detailed onboarding communications, product update emails, and platform marketing from the broader software development ecosystem it belongs to. For engineering managers, developers, and IT decision-makers evaluating whether Jira\'s agile workflow model fits their team\'s development process — particularly before engaging with a sales or procurement process — <strong>InboxOro</strong> provides a free temporary email for the Jira account creation step.</p>
@@ -104,7 +104,7 @@ class SeoPageSeederBatchG2 extends Seeder
                 'meta_description' => 'Use InboxOro free temp mail for Zoho signup. Instant disposable inbox, no registration. Auto-deletes in 10 min. Evaluate business suites without spam.',
                 'h1'               => 'Temp Mail for Zoho — Evaluate Integrated Business Suites Without Inbox Commitment',
                 'category'         => 'platform',
-                'is_brand'         => false,
+                'is_brand'         => true,
                 'template'         => 'default',
                 'intro_text'       => '
 <p>Zoho is one of the most comprehensive integrated business software suites available — offering CRM, email marketing, project management, invoicing, HR, customer support, and dozens of additional business applications within a single integrated ecosystem. Its breadth is a major selling point, but evaluating whether that breadth translates into a genuine productivity improvement for a specific organisation requires hands-on testing across multiple modules. Zoho requires email registration for access and, once registered, initiates communication from across its product suite. For business owners, operations managers, and IT decision-makers evaluating whether Zoho\'s integrated approach can consolidate their existing tool stack, <strong>InboxOro</strong> provides a free temporary email for the Zoho account creation step.</p>
@@ -168,7 +168,7 @@ class SeoPageSeederBatchG2 extends Seeder
                 'meta_description' => 'Use InboxOro free temp mail for Mailchimp signup. Instant disposable inbox, no registration. Auto-deletes in 10 min. Evaluate email tools without spam.',
                 'h1'               => 'Temp Mail for Mailchimp — Research Email Marketing Tools Without Becoming a Subscriber',
                 'category'         => 'platform',
-                'is_brand'         => false,
+                'is_brand'         => true,
                 'template'         => 'default',
                 'intro_text'       => '
 <p>Mailchimp is one of the world\'s most widely used email marketing platforms — popular with small businesses, nonprofit organisations, content creators, and marketing agencies for building and managing email subscriber lists, designing campaigns, and tracking email performance. It requires email registration for account access and, once registered, demonstrates its own email marketing capabilities through a detailed onboarding sequence, feature education emails, and promotional communications. For marketing professionals evaluating Mailchimp\'s template quality, automation features, and pricing model before selecting it as their primary email marketing platform, <strong>InboxOro</strong> provides a free temporary email for the Mailchimp account creation step.</p>
@@ -232,7 +232,7 @@ class SeoPageSeederBatchG2 extends Seeder
                 'meta_description' => 'Use InboxOro free temp mail for HubSpot signup. Instant disposable inbox, no registration. Auto-deletes in 10 min. Evaluate CRM tools without spam.',
                 'h1'               => 'Temp Mail for HubSpot — Evaluate the Full CRM and Marketing Suite Without Inbox Commitment',
                 'category'         => 'platform',
-                'is_brand'         => false,
+                'is_brand'         => true,
                 'template'         => 'default',
                 'intro_text'       => '
 <p>HubSpot is one of the most comprehensive CRM and inbound marketing platforms available — combining contact management, email marketing, sales pipeline tracking, landing page creation, marketing analytics, customer service tools, and CMS capabilities in a single integrated platform. Its free tier is notably generous, which makes it a frequent starting point for businesses exploring CRM options. HubSpot requires email registration for account access and immediately initiates a comprehensive onboarding and education sequence once registered. For sales, marketing, and operations professionals evaluating HubSpot\'s fit for their specific organisation before committing their real business email to HubSpot\'s own expertly designed nurture sequences, <strong>InboxOro</strong> provides a free temporary email for the HubSpot account creation step.</p>
@@ -288,7 +288,7 @@ class SeoPageSeederBatchG2 extends Seeder
                 'meta_description' => 'Use InboxOro free temp mail for Salesforce trial signup. Instant disposable inbox, no registration. Auto-deletes in 10 min. Assess enterprise CRM freely.',
                 'h1'               => 'Temp Mail for Salesforce — Independent CRM Research Before the Enterprise Sales Process',
                 'category'         => 'platform',
-                'is_brand'         => false,
+                'is_brand'         => true,
                 'template'         => 'default',
                 'intro_text'       => '
 <p>Salesforce is the world\'s leading enterprise CRM platform — a comprehensive customer relationship management ecosystem used by organisations ranging from fast-growing SMEs to global enterprises. It provides sales cloud, service cloud, marketing cloud, commerce cloud, and analytics capabilities within a highly extensible platform architecture. Salesforce offers trial access for independent evaluation, and signing up for a trial initiates both a structured onboarding sequence and typically the beginning of a sales engagement process. For business decision-makers, IT architects, and development teams who want to conduct an independent technical assessment of Salesforce\'s capabilities before engaging with the vendor\'s sales process, <strong>InboxOro</strong> provides a free temporary email for the trial account creation step.</p>

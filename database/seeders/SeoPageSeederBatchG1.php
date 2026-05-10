@@ -35,7 +35,7 @@ class SeoPageSeederBatchG1 extends Seeder
                 'meta_description' => 'Use InboxOro free temp mail for Dribbble signup. Instant disposable inbox, no registration needed. Auto-deletes in 10 minutes. Stay spam-free.',
                 'h1'               => 'Temp Mail for Dribbble — Explore Design Communities Without Inbox Consequences',
                 'category'         => 'platform',
-                'is_brand'         => false,
+                'is_brand'         => true,
                 'template'         => 'default',
                 'intro_text'       => '
 <p>Dribbble is one of the world\'s most respected design portfolio communities — a platform where UI/UX designers, illustrators, graphic designers, and creative professionals share their work, discover inspiration, and connect with potential clients or employers. Getting full access to Dribbble\'s community features requires creating an account, which means providing an email address. For designers, recruiters, and creative professionals who want to explore what Dribbble offers before committing their real professional email to another platform\'s notification and marketing system, <strong>InboxOro</strong> provides a free, instant temporary email for the account creation step.</p>
@@ -111,7 +111,7 @@ class SeoPageSeederBatchG1 extends Seeder
                 'meta_description' => 'Use InboxOro free temp mail for Behance signup. Instant disposable inbox, no registration. Auto-deletes in 10 min. Browse portfolios without inbox spam.',
                 'h1'               => 'Temp Mail for Behance — Browse Creative Portfolios Without Permanent Inbox Commitment',
                 'category'         => 'platform',
-                'is_brand'         => false,
+                'is_brand'         => true,
                 'template'         => 'default',
                 'intro_text'       => '
 <p>Behance is one of the world\'s largest creative portfolio networks, hosted within a major creative software ecosystem. It showcases work across graphic design, illustration, photography, motion graphics, branding, UX/UI, fashion, architecture, and dozens of other creative disciplines. Accessing Behance\'s full discovery features — following creatives, appreciating projects, saving work to collections, and accessing the platform\'s job board — requires account creation with an email address. For users who want to explore Behance\'s vast creative library or research design talent without committing their professional email to the platform\'s notification and marketing ecosystem, <strong>InboxOro</strong> offers a free, instant disposable email for the account registration step.</p>
@@ -179,7 +179,7 @@ class SeoPageSeederBatchG1 extends Seeder
                 'meta_description' => 'Use InboxOro free temp mail for Trello signup. Instant disposable inbox, no registration. Auto-deletes in 10 min. Evaluate project tools without spam.',
                 'h1'               => 'Temp Mail for Trello — Evaluate Kanban Workflows Without Committing Your Inbox',
                 'category'         => 'platform',
-                'is_brand'         => false,
+                'is_brand'         => true,
                 'template'         => 'default',
                 'intro_text'       => '
 <p>Trello is one of the most widely recognised kanban-based project management tools, used by individuals, small teams, and large organisations to organise tasks, track projects, and manage workflows visually. It requires email registration for account creation, and once registered, Trello generates ongoing notification emails about board activity, card assignments, due date reminders, and platform-level marketing communications. For professionals evaluating whether Trello\'s kanban approach fits their workflow before committing their real professional or team email to another project management tool\'s notification system, <strong>InboxOro</strong> provides a free temporary email for the Trello account creation step.</p>
@@ -245,7 +245,7 @@ class SeoPageSeederBatchG1 extends Seeder
                 'meta_description' => 'Use InboxOro free temp mail for Asana signup. Instant disposable inbox, no registration. Auto-deletes in 10 min. Evaluate work management tools freely.',
                 'h1'               => 'Temp Mail for Asana — Assess Work Management Tools Without Inbox Lock-In',
                 'category'         => 'platform',
-                'is_brand'         => false,
+                'is_brand'         => true,
                 'template'         => 'default',
                 'intro_text'       => '
 <p>Asana is a leading work management platform used by teams across industries to coordinate projects, track deliverables, manage timelines, and align cross-functional work. It requires email registration for account access and generates a high volume of task notification emails, project update summaries, deadline alerts, and platform marketing communications once registered. For operations managers, project leads, and team members evaluating whether Asana\'s structured work management approach fits their organisation\'s needs — and who want to conduct this evaluation without immediately committing their professional email to Asana\'s notification and marketing system — <strong>InboxOro</strong> provides a free temporary email for the Asana account creation step.</p>
@@ -309,7 +309,7 @@ class SeoPageSeederBatchG1 extends Seeder
                 'meta_description' => 'Use InboxOro free temp mail for ClickUp signup. Instant disposable inbox, no registration. Auto-deletes in 10 min. Evaluate all-in-one tools freely.',
                 'h1'               => 'Temp Mail for ClickUp — Explore All-in-One Project Features Without Inbox Obligation',
                 'category'         => 'platform',
-                'is_brand'         => false,
+                'is_brand'         => true,
                 'template'         => 'default',
                 'intro_text'       => '
 <p>ClickUp is an all-in-one productivity and project management platform that combines task management, documents, goals, time tracking, whiteboards, and dashboards into a single highly customisable workspace. Its depth and flexibility make it one of the most compelling tools in the productivity space — and also one of the more complex to evaluate thoroughly. ClickUp requires email registration for access, and once registered, it generates detailed notification emails about workspace activity, task updates, and a comprehensive product education sequence as part of its onboarding. For teams and individuals who want to genuinely evaluate ClickUp\'s breadth of features before committing their real professional email to the platform\'s notification ecosystem, <strong>InboxOro</strong> provides a free temporary email for the ClickUp account creation step.</p>

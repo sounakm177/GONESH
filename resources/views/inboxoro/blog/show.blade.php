@@ -199,7 +199,7 @@
     <!-- AUTHOR -->
     <div class="author-card rv" itemscope itemtype="https://schema.org/Person">
       <div class="author-avatar" aria-hidden="true">
-        <img src="{{asset('images/icon.png')}}" alt="logo">
+        <img src="{{ asset('images/icon.png') }}" alt="InboxOro logo">
       </div>
       <div class="author-info">
         <div class="author-name" itemprop="name">InboxOro Team</div>

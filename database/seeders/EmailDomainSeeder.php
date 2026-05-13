@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 
 class EmailDomainSeeder extends Seeder
 {
+    // php artisan db:seed --class=EmailDomainSeeder
     public function run(): void
     {
         $domains = [

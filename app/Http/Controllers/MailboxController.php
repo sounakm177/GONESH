@@ -111,7 +111,9 @@ class MailboxController extends Controller
  
     public function inbox(Request $request): JsonResponse
     {
+        dd('demo');
         $mailbox = $this->resolveActiveMailbox($request);
+
         if (! $mailbox) {
             return response()->json(['error' => 'mailbox_expired'], 410);
         }

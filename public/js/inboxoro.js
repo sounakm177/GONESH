@@ -358,7 +358,6 @@ function mountEmailIframe(html, iframeId) {
 <body>${html}</body>
 </html>`;
 
-console.log('html',html);
   /* Write into the frame */
   const iDoc = iframe.contentDocument || iframe.contentWindow.document;
   iDoc.open();

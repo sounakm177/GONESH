@@ -214,7 +214,7 @@ Route::get('attachment/{attachment}/download', [MailboxController::class, 'attac
 if (app()->environment('local')) {
 
     Route::get('/test/send-email', function (Request $request) {
-        $sessionId = "be1552d3795015b5e7e99b060064f5dac538af29479552dafb648bf56c1b7d45";
+        $sessionId = "ccb2ea164a4aef4b9f228a03e5ab0cb720b5dc38bc7cc1cf76d9d1ab00dd27d2";
 
         $mailbox = PublicMailbox::latest()
             ->firstOrFail();

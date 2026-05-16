@@ -125,6 +125,7 @@ class MailboxService
 
         $paginator = $query->paginate($perPage, ['*'], 'page', $page);
 
+        dump($paginator->items());
         $emails = collect($paginator->items())->map(function ($email) {
 
             $senderName = $email->senderName();

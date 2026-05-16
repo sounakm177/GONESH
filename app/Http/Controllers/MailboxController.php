@@ -111,7 +111,6 @@ class MailboxController extends Controller
  
     public function inbox(Request $request): JsonResponse
     {
-        dd('demo');
         $mailbox = $this->resolveActiveMailbox($request);
 
         if (! $mailbox) {
@@ -123,6 +122,8 @@ class MailboxController extends Controller
             $request->query('search'),
             (int) $request->query('page', 1),
         );
+
+        dd($inbox);
 
         return response()->json($inbox)->withHeaders(['Cache-Control' => 'no-store']);
     }

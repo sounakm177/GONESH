@@ -123,7 +123,6 @@ class MailboxController extends Controller
             (int) $request->query('page', 1),
         );
 
-        dd($inbox);
 
         return response()->json($inbox)->withHeaders(['Cache-Control' => 'no-store']);
     }

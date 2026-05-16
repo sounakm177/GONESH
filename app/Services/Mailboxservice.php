@@ -124,8 +124,6 @@ class MailboxService
         }
 
         $paginator = $query->paginate($perPage, ['*'], 'page', $page);
-
-        dd($paginator->items());
         
         $emails = collect($paginator->items())->map(function ($email) {
 

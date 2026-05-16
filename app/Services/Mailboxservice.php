@@ -56,6 +56,7 @@ class MailboxService
 
     public function getInbox(PublicMailbox $mailbox, ?string $search = null, int $page = 1, int $perPage = 30): array
     {
+        return ['sounak'];
         $query = $mailbox->emails()
             ->select([
                 'id', 'mailbox_id', 'sender', 'subject',
@@ -95,7 +96,6 @@ class MailboxService
 
         return [
             'emails'       => $emails,
-            'sounak'       => 'sdounak',
             'total'        => $paginator->total(),
             'unread'       => $mailbox->emails()->unread()->count(),
             'has_more'     => $paginator->hasMorePages(),

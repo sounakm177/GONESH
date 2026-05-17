@@ -61,10 +61,10 @@
         <div class="h-stat-l">Auto Delete</div>
       </div>
 
-      <div class="h-stat">
+      <!-- <div class="h-stat">
         <div class="h-stat-n">{{ $domains->count() }}</div>
         <div class="h-stat-l">Domains</div>
-      </div>
+      </div> -->
     </div>
   </div>
 </div>

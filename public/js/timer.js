@@ -35,6 +35,8 @@ let maxSeconds = INBOX_ORO.maxSeconds ?? 1800; // 30 min
 ───────────────────────────────────────────────────────────── */
 function updateTimerDisplay() {
   const remaining = getSecondsRemaining();
+
+  console.log(remaining,'remaining');
   const str = `${pad(Math.floor(remaining / 60))}:${pad(remaining % 60)}`;
 
   $('tnum').textContent   = str;
@@ -42,6 +44,7 @@ function updateTimerDisplay() {
 
   // Progress bar width = remaining / max * 100%
   const pct = Math.min(100, (remaining / maxSeconds) * 100);
+  console.log(pct, 'percentage');
   const bar = $('tbar');
   if (bar) bar.style.width = pct + '%';
 

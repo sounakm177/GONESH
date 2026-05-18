@@ -354,7 +354,6 @@ class MayTwentyBlogSeeder extends Seeder
 
 <p>With platforms like <strong>InboxOro</strong>, users can instantly create temporary inboxes for fast, secure, and privacy-focused email verification workflows.</p>
 
-<p><em>This article was written manually for educational and informational purposes with a strong focus on SEO quality, readability, human-first writing, and safe content practices.</em></p>
 HTML;
 }
 }

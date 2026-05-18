@@ -338,8 +338,6 @@ class MayNineTeenBlogSeeder extends Seeder
 <p>Temporary email services help users receive verification emails while reducing unnecessary exposure of personal contact information.</p>
 
 <p>With platforms like <strong>InboxOro</strong>, users can instantly create disposable inboxes for safer, cleaner, and more privacy-focused online registrations.</p>
-
-<p><em>This article was written manually for informational and educational purposes with a strong focus on privacy, SEO quality, readability, and human-first content structure.</em></p>
 HTML;
 }
 

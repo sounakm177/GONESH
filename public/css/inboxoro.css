@@ -158,7 +158,28 @@ nav {
   animation:     blink 1.2s step-end infinite;
 }
 
-.hero-copy-title {
+.hero-copy-title{
+  font-family: 'Bebas Neue', sans-serif;
+
+  font-size: clamp(1.35rem, 3vw, 3.2rem);
+
+  color: #fff;
+  letter-spacing: .04em;
+
+  line-height: 1.15;
+
+  margin: 0;
+
+  font-weight: normal;
+
+  max-width: 900px;
+
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+
+/* .hero-copy-title {
   font-family:    'Bebas Neue', sans-serif;
   font-size:      1.35rem;
   color:          #fff;
@@ -167,7 +188,7 @@ nav {
 
   margin: 0;
   font-weight: normal;
-}
+} */
 .hero-copy-title .gold { color: var(--Y); }
 
 .hero-copy-sub {

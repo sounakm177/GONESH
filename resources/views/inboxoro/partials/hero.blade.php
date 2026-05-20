@@ -41,9 +41,19 @@
         <div class="h-stat-l">Emails Today</div>
       </div> -->
 
-      <div class="h-stat">
+      <!-- <div class="h-stat">
         <div class="h-stat-n">&lt;1s</div>
         <div class="h-stat-l">Setup Time</div>
+      </div> -->
+
+      <!-- <div class="h-stat">
+        <div class="h-stat-n">Unlimited</div>
+        <div class="h-stat-l">Temp Emails</div>
+      </div> -->
+
+      <div class="h-stat">
+        <div class="h-stat-n">Secure</div>
+        <div class="h-stat-l">OTP Receive</div>
       </div>
 
       <!-- <div class="h-stat">
@@ -59,6 +69,11 @@
       <div class="h-stat">
         <div class="h-stat-n">10 Min</div>
         <div class="h-stat-l">Auto Delete</div>
+      </div>
+
+      <div class="h-stat">
+        <div class="h-stat-n">24/7</div>
+        <div class="h-stat-l">Instant Inbox</div>
       </div>
 
       <!-- <div class="h-stat">

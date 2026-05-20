@@ -1,4 +1,4 @@
-<div class="domain-tabs" id="dtabs">
+<!-- <div class="domain-tabs" id="dtabs">
   @foreach($domains as $i => $d)
     <button
       class="dtab {{ $i === 0 ? 'active' : '' }}"
@@ -7,4 +7,4 @@
       {{ $d->domain }}{{ $d->is_premium ? ' ★' : '' }}
     </button>
   @endforeach
-</div>
+</div> -->

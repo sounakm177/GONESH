@@ -98,7 +98,8 @@ class MailboxController extends Controller
         ]);
 
         $sessionId = $this->getSessionId($request);
-        $mailbox   = $this->mailboxService->createMailbox($sessionId, $validated['domain'] ?? null);
+        $mailbox   = $this->mailboxService->createMailbox($sessionId, null);
+        // $mailbox   = $this->mailboxService->createMailbox($sessionId, $validated['domain'] ?? null);
 
         return response()->json([
             'email'      => $mailbox->email,

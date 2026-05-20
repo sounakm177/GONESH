@@ -8,11 +8,26 @@ use Illuminate\Support\Facades\Cache;
 
 class EmailDomain extends Model
 {
-    protected $fillable = ['domain', 'label', 'is_active', 'is_premium', 'sort_order'];
+    
+    protected $fillable = [
+        'domain',
+        'label',
+        'is_active',
+        'is_premium',
+        'sort_order',
+
+        // new fields
+        'health_score',
+        'blocked_score',
+        'daily_received',
+        'last_used_at',
+    ];
 
     protected $casts = [
-        'is_active'  => 'boolean',
-        'is_premium' => 'boolean',
+        'is_active'      => 'boolean',
+        'is_premium'     => 'boolean',
+
+        'last_used_at'   => 'datetime',
     ];
 
     // ── Relationships ────────────────────────────────────────────────
@@ -49,5 +64,15 @@ class EmailDomain extends Model
     public static function bustCache(): void
     {
         Cache::tags(['email_domains'])->flush();
+    }
+
+    public function scopeHealthy(Builder $query): Builder
+    {
+        return $query->where('health_score', '>=', 70);
+    }
+
+    public function scopeNotBlocked(Builder $query): Builder
+    {
+        return $query->where('blocked_score', '<', 80);
     }
 }

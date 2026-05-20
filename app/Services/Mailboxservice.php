@@ -137,14 +137,48 @@ class MailboxService
         return (bool) $mailbox->emails()->where('id', $emailId)->update(['is_read' => false]);
     }
 
+    // private function resolveDomain(?string $preferDomain): EmailDomain
+    // {
+    //     if ($preferDomain) {
+    //         $domain = EmailDomain::active()->where('domain', $preferDomain)->first();
+    //         if ($domain) return $domain;
+    //     }
+
+    //     return EmailDomain::active()->free()->orderBy('sort_order')->firstOrFail();
+    // }
+
     private function resolveDomain(?string $preferDomain): EmailDomain
     {
         if ($preferDomain) {
-            $domain = EmailDomain::active()->where('domain', $preferDomain)->first();
-            if ($domain) return $domain;
+            $domain = EmailDomain::active()
+                ->where('domain', $preferDomain)
+                ->first();
+
+            if ($domain) {
+                return $domain;
+            }
         }
 
-        return EmailDomain::active()->free()->orderBy('sort_order')->firstOrFail();
+        $domain = EmailDomain::active()
+            ->healthy()
+            ->notBlocked()
+            ->orderBy('last_used_at')
+            ->first();
+
+        if (! $domain) {
+            $domain = EmailDomain::active()
+                ->inRandomOrder()
+                ->firstOrFail();
+        }
+
+        // update usage tracking
+        $domain->increment('daily_received');
+
+        $domain->update([
+            'last_used_at' => now(),
+        ]);
+
+        return $domain;
     }
 
     private function generateUniqueEmail(string $domain): string
@@ -155,7 +189,17 @@ class MailboxService
             $adj    = self::LOCAL_ADJECTIVES[array_rand(self::LOCAL_ADJECTIVES)];
             $noun   = self::LOCAL_NOUNS[array_rand(self::LOCAL_NOUNS)];
             $num    = random_int(1000, 9999);
-            $local  = "{$adj}.{$noun}{$num}";
+            // $local  = "{$adj}.{$noun}{$num}";
+
+            $formats = [
+                "{$adj}.{$noun}{$num}",
+                "{$noun}{$num}",
+                "{$adj}{$noun}{$num}",
+            ];
+
+            $local = $formats[array_rand($formats)];
+
+
             $email  = "{$local}@{$domain}";
             $exists = PublicMailbox::where('email', $email)->exists();
             $attempts++;

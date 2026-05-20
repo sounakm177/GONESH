@@ -165,30 +165,15 @@ nav {
 
   color: #fff;
   letter-spacing: .04em;
-
   line-height: 1.15;
-
   margin: 0;
-
   font-weight: normal;
-
   max-width: 900px;
-
   overflow-wrap: break-word;
   word-break: break-word;
 }
 
 
-/* .hero-copy-title {
-  font-family:    'Bebas Neue', sans-serif;
-  font-size:      1.35rem;
-  color:          #fff;
-  letter-spacing: .04em;
-  line-height:    1.05;
-
-  margin: 0;
-  font-weight: normal;
-} */
 .hero-copy-title .gold { color: var(--Y); }
 
 .hero-copy-sub {

@@ -1,7 +1,7 @@
 <div class="gen-block">
 
   <div class="gen-top">
-    <span class="gen-label">Temporary Email</span>
+    <span class="gen-label">TEMPORARY ADDRESS</span>
     <div class="live-pill">
       <div class="live-dot"></div>
       ACTIVE

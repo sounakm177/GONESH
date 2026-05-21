@@ -11,7 +11,7 @@
       </span>
       <div class="live-pill">
         <div class="live-dot"></div>
-        Live updates
+        Live Inbox
       </div>
     </div>
 

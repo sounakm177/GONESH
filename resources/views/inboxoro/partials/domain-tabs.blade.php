@@ -8,3 +8,15 @@
     </button>
   @endforeach
 </div> -->
+
+<div class="domain-tabs" id="dtabs">
+
+    <button class="dtab active" type="button">
+       FREE TEMP EMAIL
+    </button>
+
+    <!-- <button class="dtab active" type="button">
+        OTP ACCESS
+    </button> -->
+
+</div>

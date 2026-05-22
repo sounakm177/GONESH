@@ -14,7 +14,7 @@
 
 <nav>
   <a href="/" class="nav-logo">
-    <img src="{{asset('/images/logo.svg')}}" alt="Inboxoro Temporary Email" class="logo-img">
+    <img src="{{asset('/images/logo.png')}}" alt="Inboxoro Temporary Email" class="logo-img">
     <span class="badge">FREE</span>
   </a>
 

@@ -72,6 +72,7 @@
   </script>
 
   @include('inboxoro.partials.js-bootstrap', ['mailbox' => $mailbox])
+  <script src="{{ asset('js/nav.js') }}" defer></script>
   <script src="{{ asset('js/inboxoro.js') }}" defer></script>
   <script src="{{ asset('js/inboxoro-mobile.js') }}" defer></script>
   <script src="{{ asset('js/timer.js') }}" defer></script>

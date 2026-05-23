@@ -18,7 +18,6 @@ let searchTimer    = null;
 let secsRemaining  = INBOX_ORO.expiresIn;
 let timerInterval  = null;
 
-
 /* ══════════════════════════════════════════════════════════════
    UTILITIES
 ══════════════════════════════════════════════════════════════ */

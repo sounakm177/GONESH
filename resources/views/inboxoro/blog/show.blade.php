@@ -49,7 +49,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="{{ asset('css/blog-view.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/inboxoro.css') }}">
+
 
   <script type="application/ld+json">
         {!! isset($schema) ? json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : '{}' !!}
@@ -377,135 +378,120 @@
         </div>
     </aside>
 
-</div><!-- /post-layout -->
-
-<!-- FOOTER
-<footer class="site-footer">
-  <a href="/" class="foot-logo">inbox<span>Oro</span></a>
-  <div class="foot-links">
-    <a href="/">Home</a>
-    <a href="/blog">Blog</a>
-    <a href="/privacy">Privacy</a>
-    <a href="/terms">Terms</a>
-    <a href="/api">API</a>
-  </div>
-  <div class="foot-copy">© 2026 inboxOro. All rights reserved.</div>
-</footer> -->
+</div>
 
 @include('inboxoro.partials.footer')
 
- <script async src="https://www.googletagmanager.com/gtag/js?id=G-SMT1LQHYBS"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-SMT1LQHYBS');
-  </script>
-
-
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SMT1LQHYBS"></script>
+<script src="{{ asset('js/nav.js') }}" defer></script>
 <script>
-/* ── Read progress bar ── */
-(function () {
-  const bar = document.getElementById('read-progress');
-  if (!bar) return;
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-  const updateProgress = () => {
-    const d = document.documentElement;
-    const scrollTop = d.scrollTop || document.body.scrollTop;
-    const height = d.scrollHeight - d.clientHeight;
+  gtag('config', 'G-SMT1LQHYBS');
 
-    if (height <= 0) return;
+  /* ── Read progress bar ── */
+  (function () {
+    const bar = document.getElementById('read-progress');
+    if (!bar) return;
 
-    const pct = (scrollTop / height) * 100;
-    bar.style.width = Math.min(pct, 100) + '%';
-    bar.setAttribute('aria-valuenow', Math.round(pct));
-  };
+    const updateProgress = () => {
+      const d = document.documentElement;
+      const scrollTop = d.scrollTop || document.body.scrollTop;
+      const height = d.scrollHeight - d.clientHeight;
 
-  window.addEventListener('scroll', updateProgress, { passive: true });
-})();
+      if (height <= 0) return;
 
+      const pct = (scrollTop / height) * 100;
+      bar.style.width = Math.min(pct, 100) + '%';
+      bar.setAttribute('aria-valuenow', Math.round(pct));
+    };
 
-/* ── Scroll reveal ── */
-(function () {
-  const elements = document.querySelectorAll('.rv');
-  if (!elements.length) return;
-
-  const io = new IntersectionObserver((entries, observer) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('in');
-        observer.unobserve(e.target);
-      }
-    });
-  }, {
-    threshold: 0.06,
-    rootMargin: '0px 0px -30px 0px'
-  });
-
-  elements.forEach(el => io.observe(el));
-})();
+    window.addEventListener('scroll', updateProgress, { passive: true });
+  })();
 
 
-/* ── TOC active link on scroll ── */
-(function () {
-  const headings = document.querySelectorAll('.post-content h2[id]');
-  const tocLinks = document.querySelectorAll('.toc-list a, .stoc-list a');
+  /* ── Scroll reveal ── */
+  (function () {
+    const elements = document.querySelectorAll('.rv');
+    if (!elements.length) return;
 
-  if (!headings.length || !tocLinks.length) return;
-
-  const ioToc = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        const id = '#' + e.target.id;
-
-        tocLinks.forEach(link => {
-          link.classList.toggle(
-            'active',
-            link.getAttribute('href') === id
-          );
-        });
-      }
-    });
-  }, {
-    rootMargin: '-30% 0px -60% 0px'
-  });
-
-  headings.forEach(h => ioToc.observe(h));
-})();
-
-
-/* ── Copy link ── */
-function copyLink(url = window.location.href) {
-  const label = document.getElementById('copy-label');
-
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(url)
-      .then(() => {
-        if (label) {
-          label.textContent = 'Copied!';
-          setTimeout(() => label.textContent = 'Copy Link', 2000);
+    const io = new IntersectionObserver((entries, observer) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          observer.unobserve(e.target);
         }
-      })
-      .catch(() => fallbackCopy(url));
-  } else {
-    fallbackCopy(url);
-  }
+      });
+    }, {
+      threshold: 0.06,
+      rootMargin: '0px 0px -30px 0px'
+    });
 
-  function fallbackCopy(text) {
-    const textarea = document.createElement('textarea');
-    textarea.value = text;
-    document.body.appendChild(textarea);
-    textarea.select();
-    try { document.execCommand('copy'); } catch (e) {}
-    document.body.removeChild(textarea);
+    elements.forEach(el => io.observe(el));
+  })();
 
-    if (label) {
-      label.textContent = 'Copied!';
-      setTimeout(() => label.textContent = 'Copy Link', 2000);
+
+  /* ── TOC active link on scroll ── */
+  (function () {
+    const headings = document.querySelectorAll('.post-content h2[id]');
+    const tocLinks = document.querySelectorAll('.toc-list a, .stoc-list a');
+
+    if (!headings.length || !tocLinks.length) return;
+
+    const ioToc = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const id = '#' + e.target.id;
+
+          tocLinks.forEach(link => {
+            link.classList.toggle(
+              'active',
+              link.getAttribute('href') === id
+            );
+          });
+        }
+      });
+    }, {
+      rootMargin: '-30% 0px -60% 0px'
+    });
+
+    headings.forEach(h => ioToc.observe(h));
+  })();
+
+
+  /* ── Copy link ── */
+  function copyLink(url = window.location.href) {
+    const label = document.getElementById('copy-label');
+
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(url)
+        .then(() => {
+          if (label) {
+            label.textContent = 'Copied!';
+            setTimeout(() => label.textContent = 'Copy Link', 2000);
+          }
+        })
+        .catch(() => fallbackCopy(url));
+    } else {
+      fallbackCopy(url);
+    }
+
+    function fallbackCopy(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      document.body.appendChild(textarea);
+      textarea.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(textarea);
+
+      if (label) {
+        label.textContent = 'Copied!';
+        setTimeout(() => label.textContent = 'Copy Link', 2000);
+      }
     }
   }
-}
 </script>
 
 </body>

@@ -31,6 +31,7 @@
 
   <!-- Keywords (light usage only) -->
   <meta name="keywords" content="temporary email, fake email, OTP online, disposable email, email privacy, spam protection, inbox guides">
+  <link rel="stylesheet" href="{{ asset('css/inboxoro.css') }}">
   <link rel="stylesheet" href="{{ asset('css/blog.css') }}">
   
   <!-- Structured Data: Blog (Collection Page Style) -->
@@ -180,7 +181,7 @@
   </div>
 
   {{-- PAGINATION --}}
-  <div class="pagination">
+  <div class="paginations">
     {{ $posts->links() }}
   </div>
 
@@ -223,22 +224,22 @@
   </aside>
 
 </main>
-
 @include('inboxoro.partials.footer')
- <script async src="https://www.googletagmanager.com/gtag/js?id=G-SMT1LQHYBS"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
 
-    gtag('config', 'G-SMT1LQHYBS');
-  </script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SMT1LQHYBS"></script>
+<script src="{{ asset('js/nav.js') }}" defer></script>
+
 <script>
-  
-window.addEventListener('scroll',()=>{
-  const d=document.documentElement;
-  document.getElementById('readBar').style.width=(d.scrollTop/(d.scrollHeight-d.clientHeight)*100)+'%';
-});
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-SMT1LQHYBS');
+
+  window.addEventListener('scroll',()=>{
+    const d=document.documentElement;
+    document.getElementById('readBar').style.width=(d.scrollTop/(d.scrollHeight-d.clientHeight)*100)+'%';
+  });
 </script>
 
 </body>

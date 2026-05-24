@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\MailboxService;
 use App\Models\SeoPage;
+use App\Models\BlogPost;
 use App\Models\EmailDomain;
-
 
 
 class SeoController extends Controller
@@ -43,6 +43,11 @@ class SeoController extends Controller
         $data = $this->getCommonData($request);
 
         $data['popular'] = SeoPage::where('category', $page->category)->inRandomOrder()->limit(12)->get();
+        $data['featuredBlogs'] = BlogPost::select('id', 'slug', 'title')
+            ->where('is_featured', true)
+            ->inRandomOrder()
+            ->take(5)
+            ->get();
  
         $data['seo_page'] = $page;
         

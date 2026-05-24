@@ -57,7 +57,6 @@
 
     </div>{{-- /seo-links-card --}}
 
-
     {{-- ── Pro tip card ── --}}
     <div class="pro-card">
       <div class="pro-t">💡 Tip</div>
@@ -68,6 +67,73 @@
         Generate New Email →
       </a>
     </div>
+
+<!-- FEATURED ARTICLES -->
+
+<div class="seo-links-card featured-articles-card">
+
+    <div class="seo-card-header">
+        <span class="seo-card-label">FEATURED ARTICLES</span>
+    </div>
+
+    <ul class="seo-link-list">
+
+        @foreach($featuredBlogs as $page)
+            <li>
+                <a href="{{ url('blog/'.$page->slug) }}"
+                   title="{{ $page->h1 }}"
+                   aria-label="{{ $page->h1 }}">
+
+                    <svg width="11" height="11"
+                         fill="none"
+                         viewBox="0 0 24 24"
+                         stroke="currentColor"
+                         stroke-width="2.5">
+
+                        <path stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M9 5l7 7-7 7"/>
+                    </svg>
+
+                    <span>{{ $page->title }}</span>
+                </a>
+            </li>
+        @endforeach
+
+    </ul>
+
+    <div class="seo-card-tip">
+
+        <div class="seo-tip-label">
+
+            <svg width="12"
+                 height="12"
+                 fill="none"
+                 viewBox="0 0 24 24"
+                 stroke="currentColor"
+                 stroke-width="2.5">
+
+                <path stroke-linecap="round"
+                      d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707
+                         M21 12h-1M4 12H3m3.343-5.657l-.707-.707
+                         m2.828 9.9a5 5 0 117.072 0l-.548.547
+                         A3.374 3.374 0 0012 18.469V19a2 2 0 11-4 0v-.531
+                         c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+            </svg>
+
+            Privacy Tip
+
+        </div>
+
+        <p>
+            Use a unique temporary email for every signup to reduce spam,
+            protect your identity, and keep your real inbox clean.
+        </p>
+
+    </div>
+
+</div>
+
 
     {{-- ── SEO BLOCK 2: What is Temp Email (replaces Ad 300×600) ── --}}
     {{-- Ad 300×600 --}}

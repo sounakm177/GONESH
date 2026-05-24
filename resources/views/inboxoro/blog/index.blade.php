@@ -227,6 +227,7 @@
 @include('inboxoro.partials.footer')
 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-SMT1LQHYBS"></script>
+<script src="{{ asset('js/nav.js') }}" defer></script>
 
 <script>
   window.dataLayer = window.dataLayer || [];

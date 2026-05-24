@@ -348,6 +348,7 @@
 <!-- FOOTER -->
 @include('inboxoro.partials.footer')
 
+<script src="{{ asset('js/nav.js') }}" defer></script>
 <script>
   /* ── Scroll reveal ── */
   const io = new IntersectionObserver(entries => {

@@ -639,7 +639,6 @@
 
 <!-- ══ FOOTER ════════════════════════════════════════════════════ -->
 @include('inboxoro.partials.footer')
-<script src="{{ asset('js/nav.js') }}" defer></script>
 <script>
   // ── Read progress bar ──────────────────────────────────────────
   const progressBar = document.getElementById('readProgress');

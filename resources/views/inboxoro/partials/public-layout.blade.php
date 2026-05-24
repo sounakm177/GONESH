@@ -46,9 +46,9 @@
     </noscript>
 
     @vite(['resources/js/app.js'])
-    <link rel="stylesheet" href="{{ asset('css/newinbox.css') }}">
+    <!-- <link rel="stylesheet" href="{{ asset('css/newinbox.css') }}"> -->
     <link rel="stylesheet" href="{{ asset('css/inboxoro.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/timer.css') }}">
+    <!-- <link rel="stylesheet" href="{{ asset('css/timer.css') }}"> -->
     @stack('styles')
 
     <script type="application/ld+json">
@@ -74,8 +74,8 @@
   @include('inboxoro.partials.js-bootstrap', ['mailbox' => $mailbox])
   <script src="{{ asset('js/nav.js') }}" defer></script>
   <script src="{{ asset('js/inboxoro.js') }}" defer></script>
-  <script src="{{ asset('js/inboxoro-mobile.js') }}" defer></script>
-  <script src="{{ asset('js/timer.js') }}" defer></script>
+  <!-- <script src="{{ asset('js/inboxoro-mobile.js') }}" defer></script> -->
+  <!-- <script src="{{ asset('js/timer.js') }}" defer></script> -->
   {{-- Extra page JS --}}
   @stack('scripts')
 </body>

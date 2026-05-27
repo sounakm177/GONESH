@@ -10,10 +10,10 @@ use App\Services\BlogService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 
-class MayTwentyOneBlogSeed extends Seeder
+class MayOneBlog extends Seeder
 {
     
-    // php artisan db:seed --class=MayTwentyOneBlogSeed    
+    // php artisan db:seed --class=MayOneBlog    
     
     public function run(): void
     {

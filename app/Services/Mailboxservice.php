@@ -24,7 +24,7 @@ class MailboxService
         'claw','haze','gust','fern',
     ];
 
-    public function resolveForSession(string $sessionId, ?string $preferDomain = null): PublicMailbox
+    public function resolveForSession(string $sessionId, ?string $preferDomain = null): array
     {
         return DB::transaction(function () use ($sessionId, $preferDomain) {
             $mailbox = PublicMailbox::active()
@@ -34,10 +34,16 @@ class MailboxService
                 ->first();
 
             if ($mailbox) {
-                return $mailbox;
+                return [
+                    'mailbox' => $mailbox,
+                    'is_new' => false,
+                ];
             }
 
-            return $this->createMailbox($sessionId, $preferDomain);
+            return [
+                'mailbox' => $this->createMailbox($sessionId, $preferDomain),
+                'is_new' => true,
+            ];
         });
     }
 

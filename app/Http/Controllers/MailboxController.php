@@ -22,8 +22,11 @@ class MailboxController extends Controller
     public function index(Request $request)
     {
         $sessionId = $this->getSessionId($request);
-        $mailbox   = $this->mailboxService->resolveForSession($sessionId);
+        $result = $this->mailboxService->resolveForSession($sessionId);
 
+        $mailbox = $result['mailbox'];
+        $popupMessage = $mailbox->popupMessage($result['is_new']);
+        
         $domains = EmailDomain::cachedActive();
         
         $inbox = $this->mailboxService->getInbox($mailbox, perPage: 10);
@@ -92,7 +95,7 @@ class MailboxController extends Controller
             ->get();
 
         return response()
-            ->view('inboxoro.index', compact('mailbox', 'domains', 'inbox','schema','popular', 'featuredBlogs'))
+            ->view('inboxoro.index', compact('mailbox', 'domains', 'inbox','schema','popular', 'featuredBlogs', 'popupMessage'))
             ->header('Cache-Control', 'no-store, no-cache, must-revalidate');
     }
 
@@ -105,6 +108,7 @@ class MailboxController extends Controller
 
         $sessionId = $this->getSessionId($request);
         $mailbox   = $this->mailboxService->createMailbox($sessionId, null);
+        $popupMessage = $mailbox->popupMessage(true);
         // $mailbox   = $this->mailboxService->createMailbox($sessionId, $validated['domain'] ?? null);
 
         return response()->json([
@@ -112,6 +116,7 @@ class MailboxController extends Controller
             'mailbox_id' => $mailbox->id,
             'expires_at' => $mailbox->expires_at->toISOString(),
             'expires_in' => $mailbox->secondsRemaining(),
+            'popupMessage'=> $popupMessage,
         ])->withHeaders(['Cache-Control' => 'no-store']);
     }
 

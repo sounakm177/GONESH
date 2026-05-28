@@ -87,7 +87,7 @@ function showToast(msg = 'COPIED') {
   const span = t.querySelector('span');
   if (span) span.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+  setTimeout(() => t.classList.remove('show'), 3000);
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -153,6 +153,9 @@ async function generateNew(domain = null) {
 
     reconnectReverb(data.mailbox_id);
     resetInboxUI();
+
+    showToast('Your temporary email has been created successfully.');
+
 
     // Spin the refresh icon
     const ic = $('ric');
@@ -984,6 +987,7 @@ function copyLink(url = window.location.href) {
       return;
     }
     subscribeToMailbox(INBOX_ORO.mailboxId);
+    showToast(INBOX_ORO.popupMessage);
   });
 
 })();

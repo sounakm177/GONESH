@@ -20,13 +20,16 @@ class SeoController extends Controller
     private function getCommonData(Request $request)
     {
         $sessionId = $this->getSessionId($request);
-        $mailbox   = $this->mailboxService->resolveForSession($sessionId);
+        $result = $this->mailboxService->resolveForSession($sessionId);
+
+        $mailbox = $result['mailbox'];
+        $popupMessage = $mailbox->popupMessage($result['is_new']);
 
         $domains = EmailDomain::cachedActive();
 
         $inbox = $this->mailboxService->getInbox($mailbox, perPage: 10);
 
-        return compact('domains', 'mailbox', 'inbox');
+        return compact('domains', 'mailbox', 'inbox', 'popupMessage');
     }
 
     private function getSessionId(Request $request): string

@@ -95,4 +95,23 @@ class PublicMailbox extends Model
         $secs = (int) now()->diffInSeconds($this->maxExpiry(), false);
         return max(0, $secs);
     }
+
+    public function popupMessage(bool $isNew = false): string
+    {
+        $remainingMinutes = ceil($this->secondsRemaining() / 60);
+
+        if ($isNew) {
+            return "Your temporary email is ready. Active for 10 minutes.";
+        }
+
+        $hasReachedMaxExpiry = $this->expires_at->gte(
+            $this->created_at->copy()->addMinutes(30)
+        );
+
+        if (! $hasReachedMaxExpiry) {
+            return "Email expires in {$remainingMinutes} minutes. You may extend the duration.";
+        }
+
+        return "Email expires in {$remainingMinutes} minutes. Maximum duration reached.";
+    }
 }

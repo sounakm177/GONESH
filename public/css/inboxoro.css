@@ -476,7 +476,7 @@ body { padding-top: var(--NAV-H); }
   line-height:   1.15;
   margin:        0;
   font-weight:   normal;
-  max-width:     900px;
+  max-width:     800px;
 }
 .hero-copy-title .gold { color: var(--Y); }
 

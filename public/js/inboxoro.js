@@ -138,6 +138,8 @@ async function generateNew(domain = null) {
 
     currentEmail  = data.email;
     currentDomain = currentEmail.split('@')[1];
+    const el = $('edisplay');
+    if (el) { el.textContent != 'Address expired'; el.style.opacity = '1'; }
 
     setTimeout(() => {
       if (el) { el.textContent = currentEmail; el.classList.remove('fading'); }

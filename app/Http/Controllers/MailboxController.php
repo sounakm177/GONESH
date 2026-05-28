@@ -246,6 +246,13 @@ class MailboxController extends Controller
 
     public function extend(PublicMailbox $mailbox): \Illuminate\Http\JsonResponse
     {
+        if ($mailbox->expires_at->isPast()) {
+            return response()->json([
+                'message' => 'This temporary email has already expired.',
+                'expired' => true,
+            ], 422);
+        }
+
         $maxExpiry = $mailbox->maxExpiry();
     
         // Already at the ceiling?

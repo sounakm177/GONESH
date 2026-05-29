@@ -51,7 +51,12 @@ class InboundEmailService
             'received_at'  => now(),
         ]);
 
-        SecurityLog::record('message_received', $mailbox->email);
+        SecurityLog::recordInbound(
+            eventType: 'message_received',
+            email:     $mailbox->email,
+            ip:        $parsed['origin_ip'] ?? '0.0.0.0',
+            userAgent: $parsed['from'],
+        );
 
         foreach ($parsed['attachments'] as $att) {
             $this->storeAttachment($email->id, $att);
@@ -83,6 +88,7 @@ class InboundEmailService
             'body'         => '',
             'content_type' => 'text/plain',
             'attachments'  => [],
+            'origin_ip'    => $this->extractOriginIp($headerBlock),
         ];
 
         if ($this->isMultipart($contentType)) {
@@ -256,5 +262,24 @@ class InboundEmailService
             'file_size' => $size,
             'mime_type' => $att['content_type'],
         ]);
+    }
+
+    private function extractOriginIp(string $headerBlock): ?string
+    {
+        // "Received: from mail.example.com (1.2.3.4) by ..."
+        // Try to find the LAST (oldest) Received header = true origin
+        preg_match_all('/^Received:.*?\((\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\)/im', $headerBlock, $matches);
+
+        if (!empty($matches[1])) {
+            // Last match = outermost hop = original sender IP
+            return end($matches[1]);
+        }
+
+        // Fallback: X-Originating-IP header (some providers add this)
+        if (preg_match('/^X-Originating-IP:\s*([\d\.]+)/im', $headerBlock, $m)) {
+            return trim($m[1]);
+        }
+
+        return null;
     }
 }

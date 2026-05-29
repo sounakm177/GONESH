@@ -26,4 +26,18 @@ class SecurityLog extends Model
             'request_path'  => request()->path(),
         ]);
     }
+
+    /**
+     * For inbound emails — IP comes from email headers, not HTTP request.
+     */
+    public static function recordInbound(string $eventType, ?string $email, string $ip, ?string $userAgent = null): void
+    {
+        static::create([
+            'ip_address'    => $ip,
+            'user_agent'    => $userAgent,
+            'event_type'    => $eventType,
+            'email_address' => $email,
+            'request_path'  => 'inbound-smtp',
+        ]);
+    }
 }

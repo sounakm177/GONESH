@@ -153,7 +153,7 @@
 
         <div class="seo-guide-block">
           <div class="seo-guide-title">What is Temporary Email?</div>
-          <p>A temporary email is a disposable address that lets you receive OTPs and verification emails without ever exposing your real inbox to spam or trackers.</p>
+          <p>A temporary email is a disposable address that lets you receive OTPs and verification emails without using your personal inbox for temporary signups.</p>
           <a href="/temporary-email" class="seo-guide-link">Learn More →</a>
         </div>
 
@@ -164,7 +164,7 @@
           <ol class="seo-how-list">
             <li>
               <span class="seo-step-num">01</span>
-              Generate a burner address instantly
+              Generate a temporary address instantly
             </li>
             <li>
               <span class="seo-step-num">02</span>
@@ -200,7 +200,7 @@
             </li>
             <li>
               <span class="seo-check">✓</span>
-              Zero IP logs or tracking
+              Minimal temporary security logging
             </li>
             <li>
               <span class="seo-check">✓</span>

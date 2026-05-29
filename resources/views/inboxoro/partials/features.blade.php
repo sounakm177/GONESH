@@ -52,7 +52,7 @@
       </svg>
     </div>
     <div class="feat-t">Private & Secure</div>
-    <div class="feat-d">No tracking. Emails are automatically removed.</div>
+    <div class="feat-d">Minimal data retention. Emails auto-delete after expiration.</div>
   </div>
 
   <div class="feat-item">
@@ -155,7 +155,7 @@
         <circle cx="12" cy="12" r="10"/>
         <path d="M2 12h20M12 2a15 15 0 0 1 0 20"/>
       </svg>
-      <span>Works perfectly for Discord, Instagram, Facebook, Gmail verification &amp; more</span>
+      <span>Compatible with many signup and email verification workflows.</span>
     </li>
 
     <!-- Privacy -->
@@ -163,7 +163,7 @@
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
       </svg>
-      <span>Zero tracking. Zero logs. Your real inbox stays clean.</span>
+      <span>Privacy-focused temporary inboxes with automatic expiration. Your real inbox stays clean.</span>
     </li>
 
     </ul>

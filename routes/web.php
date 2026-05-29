@@ -157,9 +157,8 @@ Route::get('/{slug}', [SeoController::class, 'show'])
      ->where('slug', '[a-z0-9-]+') 
      ->name('seo.page');
 
-
 // ── Mailbox AJAX (all require session) ───────────────────────────────────────
-Route::middleware(['web', 'throttle:60,1'])->prefix('mailbox')->name('mailbox.')->group(function () {
+Route::middleware(['web', 'check.blocked', 'throttle:temp-mail'])->prefix('mailbox')->name('mailbox.')->group(function () {
 
     // Generate new address
     Route::post('generate',      [MailboxController::class, 'generate'])->name('generate');

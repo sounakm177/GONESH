@@ -62,8 +62,8 @@
       </div> -->
 
       <div class="h-stat">
-        <div class="h-stat-n">0 Logs</div>
-        <div class="h-stat-l">No Tracking</div>
+        <div class="h-stat-n">Privacy First</div>
+        <div class="h-stat-l">Limited Logs</div>
       </div>
 
       <div class="h-stat">

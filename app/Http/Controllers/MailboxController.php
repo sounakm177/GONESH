@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use App\Models\BlogPost;
 use App\Models\SeoPage;
+use App\Models\SecurityLog;
+use App\Models\BlockedIp;
 
 class MailboxController extends Controller
 {
@@ -108,6 +110,9 @@ class MailboxController extends Controller
 
         $sessionId = $this->getSessionId($request);
         $mailbox   = $this->mailboxService->createMailbox($sessionId, null);
+
+        SecurityLog::record('generate_email', $mailbox->email);
+
         $popupMessage = $mailbox->popupMessage(true);
         // $mailbox   = $this->mailboxService->createMailbox($sessionId, $validated['domain'] ?? null);
 
@@ -128,6 +133,8 @@ class MailboxController extends Controller
         if (! $mailbox) {
             return response()->json(['error' => 'mailbox_expired'], 410);
         }
+
+        SecurityLog::record('inbox_open', $mailbox->email);
 
         $inbox = $this->mailboxService->getInbox(
             $mailbox,
@@ -281,39 +288,6 @@ class MailboxController extends Controller
             'expires_in' => $mailbox->secondsRemaining(),
         ]);
     }
-    
-    // public function pause(PublicMailbox $mailbox)
-    // {
-    //     if ($mailbox->isExpired()) {
-    //         return response()->json(['message' => 'Mailbox has expired'], 410);
-    //     }
-    
-    //     // Already paused — just return current state
-    //     if ($mailbox->is_paused) {
-    //         return response()->json([
-    //             'is_paused'  => true,
-    //             'expires_in' => $mailbox->secondsRemaining(),
-    //             'paused_at'  => $mailbox->paused_at->toIso8601String(),
-    //         ]);
-    //     }
-    
-    //     $mailbox->is_paused = true;
-    //     $mailbox->paused_at = now();
-    //     $mailbox->save();
-
-
-    //     dd([
-    //         'before_save' => $mailbox->getOriginal('expires_at'),
-    //         'current' => $mailbox->expires_at,
-    //     ]);
-       
-    //     return response()->json([
-    //         'message'    => 'Timer paused',
-    //         'is_paused'  => true,
-    //         'expires_in' => $mailbox->secondsRemaining(),
-    //         'paused_at'  => $mailbox->paused_at->toIso8601String(),
-    //     ]);
-    // }
 
     public function pause(PublicMailbox $mailbox)
     {
@@ -351,43 +325,6 @@ class MailboxController extends Controller
             ]
         ]);
     }
-    
-    // public function resume(PublicMailbox $mailbox): \Illuminate\Http\JsonResponse
-    // {
-    //     if ($mailbox->isExpired()) {
-    //         return response()->json(['message' => 'Mailbox has expired'], 410);
-    //     }
-    
-    //     // Not paused — just return current state
-    //     if (! $mailbox->is_paused || ! $mailbox->paused_at) {
-    //         return response()->json([
-    //             'is_paused'  => false,
-    //             'expires_in' => $mailbox->secondsRemaining(),
-    //         ]);
-    //     }
-    
-    //     $maxExpiry     = $mailbox->maxExpiry();
-    //     $pausedSeconds = now()->diffInSeconds($mailbox->paused_at);
-    
-    //     // Shift expires_at forward by however long we were paused
-    //     $newExpiry = $mailbox->expires_at->copy()->addSeconds($pausedSeconds);
-    
-    //     $mailbox->expires_at = $newExpiry->gt($maxExpiry)
-    //         ? $maxExpiry
-    //         : $newExpiry;
-    
-    //     $mailbox->is_paused = false;
-    //     $mailbox->paused_at = null;
-    //     $mailbox->save();
-    
-    //     return response()->json([
-    //         'message'    => 'Timer resumed',
-    //         'is_paused'  => false,
-    //         'at_max'     => $mailbox->expires_at->gte($maxExpiry),
-    //         'expires_at' => $mailbox->expires_at->toIso8601String(),
-    //         'expires_in' => $mailbox->secondsRemaining(),
-    //     ]);
-    // }
 
     public function resume(PublicMailbox $mailbox): \Illuminate\Http\JsonResponse
     {
@@ -402,20 +339,6 @@ class MailboxController extends Controller
             ]);
         }
 
-        // ── THE FIX ─────────────────────────────────────────────────
-        // When paused, expires_at is frozen — the remaining time is
-        // (expires_at - paused_at). On resume we shift expires_at
-        // forward by exactly that frozen-remaining amount so the
-        // countdown picks up from the same number it showed when paused.
-        //
-        // Example:
-        //   paused_at  = 09:04  (user clicked pause)
-        //   expires_at = 09:10  (6 min left when paused)
-        //   resumed    = 09:05  (1 min later)
-        //   new expires_at = now + 6 min = 09:11  ✓  (still 6 min left)
-        // ─────────────────────────────────────────────────────────────
-
-        // Seconds that were remaining at the moment of pause (frozen value)
         $frozenRemaining = $mailbox->paused_at->diffInSeconds($mailbox->expires_at);
 
         // New expiry = now + those same remaining seconds

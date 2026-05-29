@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Events\NewEmailReceived;
 use App\Models\PublicEmail;
+use App\Models\SecurityLog;
 use App\Models\PublicEmailAttachment;
 use App\Models\PublicMailbox;
 use Illuminate\Support\Facades\Log;
@@ -49,6 +50,8 @@ class InboundEmailService
             'is_read'      => false,
             'received_at'  => now(),
         ]);
+
+        SecurityLog::record('message_received', $mailbox->email);
 
         foreach ($parsed['attachments'] as $att) {
             $this->storeAttachment($email->id, $att);

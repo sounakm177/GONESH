@@ -73,7 +73,7 @@ class MayThirty126Blog extends Seeder
                 'title'               => 'Best Temporary Email for Small Businesses and Startups',
                 'slug'                => 'best-temporary-email-for-small-businesses-and-startups',
                 'excerpt'             => 'Learn how temporary email services help startups and small businesses manage testing, verification, and inbox organization.',
-                'featured_image'      => 'best-temporary-email-for-small-businesses-and-startups.jpg',
+                'featured_image'      => 'best-temporary-email-for-small-businesses-and-startups.png',
                 'featured_image_alt'  => 'Professional startup team using temporary email workflows',
                 'author_name'         => 'InboxOro Team',
                 'meta_title'          => 'Best Temporary Email for Small Businesses and Startups',

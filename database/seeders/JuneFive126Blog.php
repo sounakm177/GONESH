@@ -21,12 +21,12 @@ class JuneFive126Blog extends Seeder
 
         // ── Fetch category ids ────────────────────────────────────
 
-        // BlogCategory::create([
-        //     'name'       => 'Technology',
-        //     'slug'       => 'technology',
-        //     'color'      => '#33b208',
-        //     'sort_order' => 10,
-        // ]);
+        BlogCategory::create([
+            'name'       => 'Entertainment',
+            'slug'       => 'entertainment',
+            'color'      => '#33b208',
+            'sort_order' => 12,
+        ]);
 
         $cats = BlogCategory::pluck('id', 'slug');
 

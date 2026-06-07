@@ -288,6 +288,11 @@
       </p>
 
       <p>
+          InboxOro is not affiliated with or endorsed by any third-party brands mentioned on this page. 
+          All trademarks belong to their respective owners.
+      </p>
+
+      <p>
       This is a privacy and testing utility and does not guarantee anonymity. For more details, please review our
       <a href="/privacy-policy" style="color:var(--Y);">Privacy Policy</a> and
       <a href="/terms" style="color:var(--Y);">Terms of Service</a>.

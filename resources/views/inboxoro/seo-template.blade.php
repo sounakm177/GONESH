@@ -214,12 +214,10 @@
                     Emails received in temporary inboxes are automatically deleted after expiration. We are not responsible for any loss of access to accounts or services where a temporary email address was used.
                     </p>
                     
-                    @if($seo_page->is_brand)
-                        <p>
-                            InboxOro is not affiliated with or endorsed by any third-party brands mentioned on this page. 
-                            All trademarks belong to their respective owners.
-                        </p>
-                    @endif
+                    <p>
+                        InboxOro is not affiliated with or endorsed by any third-party brands mentioned on this page. 
+                        All trademarks belong to their respective owners.
+                    </p>
 
                     <p>
                     This is a privacy and testing utility and does not guarantee anonymity. For more details, please review our

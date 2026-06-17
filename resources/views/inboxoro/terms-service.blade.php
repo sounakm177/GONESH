@@ -162,7 +162,7 @@
           <div class="section-num">02</div>
           <h2 class="section-title">Acceptance of Terms</h2>
         </div>
-        <p>Your access to and use of InboxOro constitutes your full and unconditional acceptance of these Terms, along with our <a href="/privacy">Privacy Policy</a>, which is incorporated herein by reference.</p>
+        <p>Your access to and use of InboxOro constitutes your full and unconditional acceptance of these Terms, along with our <a href="/privacy-policy">Privacy Policy</a>, which is incorporated herein by reference.</p>
         <h3>Eligibility</h3>
         <ul class="tos-list">
           <li>You must be <strong>at least 13 years of age</strong> to use this Service. If you are under 13, you are not permitted to access or use InboxOro under any circumstances.</li>

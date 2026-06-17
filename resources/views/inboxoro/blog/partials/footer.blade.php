@@ -4,7 +4,7 @@
   <div class="foot-links">
     <a href="/">Home</a>
     <a href="/blog">Blog</a>
-    <a href="/privacy">Privacy</a>
+    <a href="/privacy-policy">Privacy</a>
     <a href="/terms">Terms</a>
     <!-- <a href="/api">API</a> -->
   </div>

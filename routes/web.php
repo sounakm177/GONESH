@@ -23,6 +23,10 @@ Route::get('/sounak', function(){
     return view('dashboard.dash');
 });
 
+Route::get('/inbox', function(){
+    return view('dashboard.inbox');
+});
+
 Route::get('/login', function(){
     return view('dashboard.login');
 });

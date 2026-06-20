@@ -627,7 +627,7 @@ body { display:flex; flex-direction:column; overflow:hidden; cursor:none; }
       <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
       <span class="sb-item-label">Overview</span>
     </a>
-    <a class="sb-item" href="#">
+    <a class="sb-item" href="{{url('inbox')}}">
       <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
       <span class="sb-item-label">Inbox</span>
       <span class="sb-badge">3</span>

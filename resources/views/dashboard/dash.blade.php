@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>DROPIT — Dashboard</title>
+<title>InboxOro — Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
 <style>
 /* ════════════════════════════════════════════════
@@ -962,14 +962,14 @@ body.sb-collapsed .sb-collapse-btn svg { transform: rotate(180deg); }
 
       <div class="sb-label">Main</div>
 
-      <a class="sb-item active" href="#" data-tip="Overview">
+      <a class="sb-item active" href="sounak" data-tip="Overview">
         <div class="sb-item-icon">
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
         </div>
         <span class="sb-item-label">Overview</span>
       </a>
 
-      <a class="sb-item" href="{{url('inbox')}}" data-tip="Inbox">
+      <a class="sb-item" href="{{url('inbox-sounak')}}" data-tip="Inbox">
         <div class="sb-item-icon">
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
         </div>

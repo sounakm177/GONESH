@@ -865,7 +865,7 @@ body.sb-collapsed .sb-collapse-btn svg { transform: rotate(180deg); }
 }
 
 @media (min-width: 640px) {
-  .main { padding: 28px 24px 56px; }
+  .main { padding: 28px 24px 28px; }
   .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
 }
 
@@ -882,7 +882,7 @@ body.sb-collapsed .sb-collapse-btn svg { transform: rotate(180deg); }
   .sb-collapse-btn { display: flex; }
 
   /* Desktop: topbar toggle acts as sidebar collapse toggle */
-  .main { padding: 28px 28px 60px; }
+  .main { padding: 28px 28px 28px; }
 
   .stat-grid { grid-template-columns: repeat(4, 1fr); }
 
@@ -890,7 +890,7 @@ body.sb-collapsed .sb-collapse-btn svg { transform: rotate(180deg); }
 }
 
 @media (min-width: 1100px) {
-  /* .main { padding: 32px 36px 64px; } */
+  .main { padding: 32px 25px 32px 25px; }
 }
 </style>
 <style>
@@ -1457,14 +1457,14 @@ body.sb-collapsed .sb-collapse-btn svg { transform: rotate(180deg); }
 
       <div class="sb-label">Main</div>
 
-      <a class="sb-item active" href="#" data-tip="Overview">
+      <a class="sb-item active" href="{{url('sounak')}}" data-tip="Overview">
         <div class="sb-item-icon">
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
         </div>
         <span class="sb-item-label">Overview</span>
       </a>
 
-      <a class="sb-item" href="{{url('inbox')}}" data-tip="Inbox">
+      <a class="sb-item" href="{{url('inbox-sounak')}}" data-tip="Inbox">
         <div class="sb-item-icon">
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
         </div>
@@ -1535,12 +1535,8 @@ body.sb-collapsed .sb-collapse-btn svg { transform: rotate(180deg); }
       
       <!-- ── Active address bar ── -->
         <div class="addr-strip">
-          <div>
-              <div>
-                <div class="page-title">INBOX</div>
-              </div>
-          </div>
-        <div class="addr-strip-email">
+          <div class="page-title">INBOX</div>
+          <div class="addr-strip-email">
           <div class="addr-strip-live">
             <div class="addr-live-dot"></div>
             LIVE

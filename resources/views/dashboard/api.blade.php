@@ -1934,20 +1934,20 @@ const PERMS_DEFS = [
 ];
 
 let API_KEYS = [
-//   {
-//     id:1, name:'Laravel Application', prefix:'sdf',
-//     masked:'sdf',
-//     full:'dslfksda',
-//     created:'June 20, 2026', last_used:'Today', status:'active',
-//     perms:['read_inboxes','read_messages','generate_emails'],
-//   },
-//   {
-//     id:2, name:'Testing Project', prefix:'sk_test',
-//     masked:'sk_test_••••••••••••••••7c2b',
-//     full:'sk_test_7c2b8d3e4f5a6b7c8d9e0f1a2b3c4d5e',
-//     created:'June 15, 2026', last_used:'Yesterday', status:'active',
-//     perms:['read_inboxes','read_messages'],
-//   },
+  {
+    id:1, name:'Laravel Application', prefix:'sk_text',
+    masked:'ska_text_••••••••••••••••3f8a',
+    full:'ska_text_3f8a9b2c1d4e5f6a7b8c9d0e1f2a3b4c',
+    created:'June 20, 2026', last_used:'Today', status:'active',
+    perms:['read_inboxes','read_messages','generate_emails'],
+  },
+  {
+    id:2, name:'Testing Project', prefix:'sk_test',
+    masked:'sk_test_••••••••••••••••7c2b',
+    full:'sk_test_7c2b8d3e4f5a6b7c8d9e0f1a2b3c4d5e',
+    created:'June 15, 2026', last_used:'Yesterday', status:'active',
+    perms:['read_inboxes','read_messages'],
+  },
 ];
 let nextKeyId    = 3;
 let deletingId   = null;

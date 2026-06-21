@@ -1936,8 +1936,8 @@ const PERMS_DEFS = [
 let API_KEYS = [
   {
     id:1, name:'Laravel Application', prefix:'sk_live',
-    masked:'sk_live_••••••••••••••••3f8a',
-    full:'sk_live_3f8a9b2c1d4e5f6a7b8c9d0e1f2a3b4c',
+    masked:'ska_live_••••••••••••••••3f8a',
+    full:'ska_live_3f8a9b2c1d4e5f6a7b8c9d0e1f2a3b4c',
     created:'June 20, 2026', last_used:'Today', status:'active',
     perms:['read_inboxes','read_messages','generate_emails'],
   },

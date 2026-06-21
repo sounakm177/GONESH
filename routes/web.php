@@ -35,6 +35,10 @@ Route::get('/address-sounak', function(){
     return view('dashboard.address');
 });
 
+Route::get('/api-sounak', function(){
+    return view('dashboard.api');
+});
+
 Route::get('/login', function(){
     return view('dashboard.login');
 });

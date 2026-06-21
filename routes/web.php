@@ -23,6 +23,10 @@ Route::get('/sounak', function(){
     return view('dashboard.dash');
 });
 
+Route::get('/domain-sounak', function(){
+    return view('dashboard.domain');
+});
+
 Route::get('/inbox-sounak', function(){
     return view('dashboard.inbox');
 });

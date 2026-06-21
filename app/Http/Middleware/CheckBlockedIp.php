@@ -16,9 +16,9 @@ class CheckBlockedIp
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (BlockedIp::isBlocked($request->ip())) {
-            return response()->json(['error' => 'access_denied'], 403);
-        }
+        // if (BlockedIp::isBlocked($request->ip())) {
+        //     return response()->json(['error' => 'access_denied'], 403);
+        // }
 
         return $next($request);
     }

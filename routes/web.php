@@ -39,6 +39,10 @@ Route::get('/api-sounak', function(){
     return view('dashboard.api');
 });
 
+Route::get('/smtp-sounak', function(){
+    return view('dashboard.smtp');
+});
+
 Route::get('/login', function(){
     return view('dashboard.login');
 });

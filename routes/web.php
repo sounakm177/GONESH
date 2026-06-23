@@ -19,28 +19,14 @@ use Carbon\Carbon;
 use App\Models\BlogPost;
 
 
-Route::get('/sounak', function(){
-    return view('dashboard.dash');
-});
-
-Route::get('/domain-sounak', function(){
-    return view('dashboard.domain');
-});
-
-Route::get('/inbox-sounak', function(){
-    return view('dashboard.inbox');
-});
-
-Route::get('/address-sounak', function(){
-    return view('dashboard.address');
-});
-
-Route::get('/api-sounak', function(){
-    return view('dashboard.api');
-});
-
-Route::get('/smtp-sounak', function(){
-    return view('dashboard.smtp');
+Route::name('dashboard.')->group(function () {
+    Route::get('/sounak',            fn() => view('dashboard.dash'))->name('overview');
+    Route::get('/inbox-sounak',      fn() => view('dashboard.inbox'))->name('inbox');
+    Route::get('/address-sounak',    fn() => view('dashboard.address'))->name('address');
+    Route::get('/domain-sounak',     fn() => view('dashboard.domain'))->name('domain');
+    Route::get('/api-sounak',        fn() => view('dashboard.api'))->name('api');
+    Route::get('/smtp-sounak',       fn() => view('dashboard.smtp'))->name('smtp');
+    Route::get('/setting-sounak',    fn() => view('dashboard.setting'))->name('setting');
 });
 
 Route::get('/login', function(){

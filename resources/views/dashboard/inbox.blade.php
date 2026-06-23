@@ -191,6 +191,7 @@
   flex:     1;
   overflow: hidden;
   min-height: 0;
+  position: relative;
 }
 
 /* Left: email list */
@@ -911,22 +912,25 @@ function openMailDetail(id) {
   if (row) row.classList.add('selected');
 
   // Populate detail
-  document.getElementById('d-subject').textContent = em.subject;
-  document.getElementById('d-avatar').textContent  = em.avatar;
-  document.getElementById('d-avatar').style.background = em.color;
-  document.getElementById('d-name').textContent    = em.sender;
-  document.getElementById('d-email').innerHTML     = '&lt;' + em.email + '&gt;';
-  document.getElementById('d-to').textContent      = document.getElementById('edisplay').textContent;
-  document.getElementById('d-time').textContent    = em.time;
-  document.getElementById('d-body').innerHTML      = em.body;
+  var f;
+  (f = document.getElementById('d-subject')) && (f.textContent = em.subject);
+  (f = document.getElementById('d-avatar'))  && (f.textContent = em.avatar);
+  if (f = document.getElementById('d-avatar')) f.style.background = em.color;
+  (f = document.getElementById('d-name'))    && (f.textContent = em.sender);
+  (f = document.getElementById('d-email'))   && (f.innerHTML = '&lt;' + em.email + '&gt;');
+  var eDisplay = document.getElementById('edisplay');
+  (f = document.getElementById('d-to'))      && eDisplay && (f.textContent = eDisplay.textContent);
+  (f = document.getElementById('d-time'))    && (f.textContent = em.time);
+  (f = document.getElementById('d-body'))    && (f.innerHTML = em.body);
 
   // Show detail
-  document.getElementById('detail-empty').style.display   = 'none';
-  const dc = document.getElementById('detail-content');
-  dc.style.display = 'flex';
+  (f = document.getElementById('detail-empty')) && (f.style.display = 'none');
+  var dc = document.getElementById('detail-content');
+  if (dc) dc.style.display = 'flex';
 
   // Info col update
-  document.querySelector('.inbox-info-col .info-stat:first-child .info-stat-val').textContent = em.sender;
+  var infoVal = document.querySelector('.inbox-info-col .info-stat-val');
+  if (infoVal) infoVal.textContent = em.sender;
 
   // Mobile: slide in
   document.getElementById('inbox-3col').classList.add('mob-detail');

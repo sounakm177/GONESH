@@ -25,8 +25,13 @@
   border: 1px solid var(--BD);
   border-radius: 12px;
   overflow: hidden;
-  position: sticky;
-  top: calc(56px + 20px);
+  position: static;
+}
+@media (min-width: 860px) {
+  .settings-nav {
+    position: sticky;
+    top: calc(56px + 20px);
+  }
 }
 .settings-nav-title {
   padding: 12px 16px;
@@ -46,7 +51,24 @@
   width: 100%; text-align: left; font-family: var(--BODY);
   border-bottom: 1px solid var(--BD2);
 }
+@media (max-width: 859px) {
+  .settings-nav {
+    display: flex; overflow-x: auto; gap: 0;
+    border-radius: 10px; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .settings-nav::-webkit-scrollbar { display: none; }
+  .settings-nav-title { display: none; }
+  .settings-nav-item {
+    flex: 0 0 auto; width: auto; white-space: nowrap;
+    border-left: none; border-bottom: 2px solid transparent;
+    padding: 10px 14px; font-size: .76rem;
+  }
+  .settings-nav-item.active { border-left-color: transparent; border-bottom-color: var(--Y); }
+  .settings-nav-item.danger.active { border-left-color: transparent; border-bottom-color: var(--RED); }
+}
 .settings-nav-item:last-child { border-bottom: none; }
+@media (max-width: 859px) { .settings-nav-item { border-bottom: 2px solid transparent; } }
 .settings-nav-item:hover  { background: var(--BD2); color: var(--INK); }
 .settings-nav-item.active { background: rgba(250,204,21,.06); color: var(--INK); border-left-color: var(--Y); font-weight: 600; }
 .settings-nav-item.danger { color: var(--RED); }
@@ -439,35 +461,35 @@
   <!-- ── Side navigation ── -->
   <div class="settings-nav">
     <div class="settings-nav-title">Navigation</div>
-    <button class="settings-nav-item active" onclick="scrollTo('sec-account',this)">
+    <button class="settings-nav-item active" onclick="scrollToSection('sec-account',this)">
       <span class="nav-ic"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg></span>
       Account
     </button>
-    <button class="settings-nav-item" onclick="scrollTo('sec-security',this)">
+    <button class="settings-nav-item" onclick="scrollToSection('sec-security',this)">
       <span class="nav-ic"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg></span>
       Security
     </button>
-    <button class="settings-nav-item" onclick="scrollTo('sec-sessions',this)">
+    <button class="settings-nav-item" onclick="scrollToSection('sec-sessions',this)">
       <span class="nav-ic"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h16a2 2 0 012 2v10a2 2 0 01-2 2h-2"/></svg></span>
       Sessions
     </button>
-    <button class="settings-nav-item" onclick="scrollTo('sec-email-prefs',this)">
+    <button class="settings-nav-item" onclick="scrollToSection('sec-email-prefs',this)">
       <span class="nav-ic"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg></span>
       Email Preferences
     </button>
-    <button class="settings-nav-item" onclick="scrollTo('sec-domain',this)">
+    <button class="settings-nav-item" onclick="scrollToSection('sec-domain',this)">
       <span class="nav-ic"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg></span>
       Default Domain
     </button>
-    <button class="settings-nav-item" onclick="scrollTo('sec-api',this)">
+    <button class="settings-nav-item" onclick="scrollToSection('sec-api',this)">
       <span class="nav-ic"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg></span>
       API Preferences
     </button>
-    <button class="settings-nav-item" onclick="scrollTo('sec-plan',this)">
+    <button class="settings-nav-item" onclick="scrollToSection('sec-plan',this)">
       <span class="nav-ic"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg></span>
       Plan
     </button>
-    <button class="settings-nav-item danger" onclick="scrollTo('sec-danger',this)">
+    <button class="settings-nav-item danger" onclick="scrollToSection('sec-danger',this)">
       <span class="nav-ic"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg></span>
       Danger Zone
     </button>
@@ -496,7 +518,8 @@
           <div class="avatar-info">
             <div class="avatar-name" id="avatar-display-name">John Doe</div>
             <div class="avatar-email" id="avatar-display-email">john@example.com</div>
-            <div class="avatar-change" onclick="showToast('Avatar upload coming soon!')">Change photo</div>
+            <div class="avatar-change" onclick="document.getElementById('avatar-input').click()">Change photo</div>
+            <input type="file" id="avatar-input" accept="image/png,image/jpeg,image/webp" style="display:none" onchange="changeAvatar(this)"/>
           </div>
         </div>
         <!-- Fields -->
@@ -812,7 +835,7 @@
       </div>
       <div class="scard-footer">
         <div style="font-size:.76rem;color:var(--MU);">Upgrade for unlimited aliases, 30-day history & more.</div>
-        <button class="btn-primary" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);" onclick="showToast('Redirecting to upgrade page…')">
+        <button class="btn-primary" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);" onclick="openUpgradeModal()">
           <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
           Upgrade to Pro
         </button>
@@ -860,34 +883,67 @@ let currentDomain = 'dropit.io';
 const DOMAINS = ['dropit.io','burnbox.dev','zaptmp.net','voidmail.cc','mailsink.app'];
 
 /* ── Side nav scroll ── */
-function scrollTo(id, btn) {
-  document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});
-  document.querySelectorAll('.settings-nav-item').forEach(b => b.classList.remove('active'));
+window.scrollToSection = function(id, btn) {
+  document.querySelectorAll('.settings-nav-item').forEach(function(b) { b.classList.remove('active'); });
   btn.classList.add('active');
-}
+  var el = document.getElementById(id);
+  var main = document.querySelector('.main');
+  if (el && main) {
+    var top = el.getBoundingClientRect().top - main.getBoundingClientRect().top + main.scrollTop - 100;
+    main.scrollTo({top: top, behavior: 'smooth'});
+  }
+};
 
 /* Highlight active nav on scroll */
 const sections = ['sec-account','sec-security','sec-sessions','sec-email-prefs','sec-domain','sec-api','sec-plan','sec-danger'];
-window.addEventListener('scroll', () => {
-  const offset = 120;
-  let active = sections[0];
-  sections.forEach(id => {
-    const el = document.getElementById(id);
-    if (el && el.getBoundingClientRect().top < offset) active = id;
-  });
-  const idx = sections.indexOf(active);
-  document.querySelectorAll('.settings-nav-item').forEach((btn, i) => {
-    btn.classList.toggle('active', i === idx);
-  });
-}, {passive:true});
+(function() {
+  var main = document.querySelector('.main');
+  if (!main) return;
+  main.addEventListener('scroll', function() {
+    var scrollPos = main.scrollTop;
+    var active = sections[0];
+    var mainRect = main.getBoundingClientRect();
+    sections.forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) {
+        var top = el.getBoundingClientRect().top - mainRect.top;
+        if (top < 120) active = id;
+      }
+    });
+    var idx = sections.indexOf(active);
+    document.querySelectorAll('.settings-nav-item').forEach(function(btn, i) {
+      btn.classList.toggle('active', i === idx);
+    });
+  }, {passive:true});
+})();
 
 /* ── Account ── */
 function updateAvatar() {
-  const name = document.getElementById('field-name').value.trim();
-  const parts = name.split(' ').filter(Boolean);
-  const initials = parts.length >= 2 ? parts[0][0]+parts[parts.length-1][0] : (parts[0]||'?').substring(0,2);
+  var name = document.getElementById('field-name').value.trim();
+  var parts = name.split(' ').filter(Boolean);
+  var initials = parts.length >= 2 ? parts[0][0]+parts[parts.length-1][0] : (parts[0]||'?').substring(0,2);
   document.getElementById('avatar-initials').textContent = initials.toUpperCase();
   document.getElementById('avatar-display-name').textContent = name || 'Your Name';
+}
+
+function changeAvatar(inp) {
+  var file = inp.files && inp.files[0];
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) { showToast('Image must be under 2MB', 'err'); return; }
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var circle = document.getElementById('avatar-initials');
+    circle.textContent = '';
+    circle.style.backgroundImage = 'url(' + e.target.result + ')';
+    circle.style.backgroundSize = 'cover';
+    circle.style.backgroundPosition = 'center';
+    circle.style.backgroundRepeat = 'no-repeat';
+    circle.style.border = '2px solid var(--BD)';
+    circle.style.borderRadius = '50%';
+    showToast('Photo updated!');
+  };
+  reader.readAsDataURL(file);
+  inp.value = '';
 }
 
 function validateEmail(inp) {

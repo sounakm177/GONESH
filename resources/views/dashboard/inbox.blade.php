@@ -504,6 +504,12 @@
 @media (min-width: 1100px) {
   .inbox-info-col { display:flex; }
 }
+
+@media (min-width: 1100px) {
+    .main {
+        padding: 32px 25px 32px 25px;
+    }
+}
 </style>
 @endpush
 

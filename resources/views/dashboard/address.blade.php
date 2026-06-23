@@ -195,87 +195,119 @@
 .act-btn.edit:hover      { background: rgba(59,130,246,.08); color: var(--B);     border-color: rgba(59,130,246,.3); }
 .act-btn.del:hover       { background: rgba(239,68,68,.08);  color: var(--RED);   border-color: rgba(239,68,68,.3); }
 
-/* ── Modal (Create / Edit) ── */
+/* ── Empty state ── */
+.empty-state {
+  display: none; flex-direction: column; align-items: center;
+  justify-content: center; padding: 56px 20px; gap: 14px; text-align: center;
+}
+.empty-state.show { display: flex; }
+.empty-icon {
+  width: 58px; height: 58px; background: var(--BD2);
+  border-radius: 14px; display: flex; align-items: center;
+  justify-content: center; color: var(--MU2);
+}
+.empty-title { font-family: var(--DISP); font-size: 1.3rem; letter-spacing: .03em; color: var(--INK); }
+.empty-sub   { font-size: .82rem; color: var(--MU); max-width: 280px; line-height: 1.6; }
+
+/* ── Hidden on small screens ── */
+.col-forward,
+.col-received,
+.col-last-used { display: none; }
+@media (min-width: 640px)  { .col-forward  { display: table-cell; } }
+@media (min-width: 860px)  { .col-received { display: table-cell; } }
+@media (min-width: 1080px) { .col-last-used { display: table-cell; } }
+
+/* ══════════════════════════════════════════════
+   MODALS  (Create + Edit Alias)
+══════════════════════════════════════════════ */
 .modal-overlay {
-  display: none;
-  position: fixed; inset: 0; background: rgba(0,0,0,.55);
-  align-items: center; justify-content: center;
-  z-index: 500; padding: 16px;
-  backdrop-filter: blur(2px);
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,.5); backdrop-filter: blur(3px);
+  display: none; align-items: center; justify-content: center; padding: 20px;
 }
-.modal-overlay.open { display: flex; }
+.modal-overlay.open { display: flex; animation: fade-bg .2s ease both; }
+@keyframes fade-bg { from{opacity:0} to{opacity:1} }
+
 .modal-box {
-  background: var(--SURF);
-  border-radius: 14px;
-  width: min(100%, 480px);
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 12px 48px rgba(0,0,0,.25);
-  animation: modal-in .2s ease both;
+  background: var(--SURF); border-radius: 14px;
+  border: 1px solid var(--BD); width: 100%; max-width: 480px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.18);
+  animation: modal-up .22s cubic-bezier(.34,1.56,.64,1) both;
 }
-@keyframes modal-in { from{opacity:0;transform:translateY(20px) scale(.96)} to{opacity:1;transform:translateY(0) scale(1)} }
+@keyframes modal-up { from{transform:translateY(12px) scale(.97);opacity:0} to{transform:none;opacity:1} }
+
 .modal-hd {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 16px 20px; border-bottom: 1px solid var(--BD2);
+  padding: 18px 20px; border-bottom: 1px solid var(--BD2);
 }
-.modal-title { font-weight: 700; font-size: .95rem; color: var(--INK); }
+.modal-title {
+  font-family: var(--DISP); font-size: 1.15rem;
+  letter-spacing: .04em; color: var(--INK);
+}
 .modal-close {
-  width: 28px; height: 28px; display: flex; align-items: center;
-  justify-content: center; border-radius: 6px; color: var(--MU);
-  transition: background .12s;
+  width: 32px; height: 32px; display: flex; align-items: center;
+  justify-content: center; border-radius: 8px; border: 1px solid var(--BD);
+  background: transparent; color: var(--MU); cursor: pointer;
+  transition: background .12s, color .12s;
 }
 .modal-close:hover { background: var(--BD2); color: var(--INK); }
-.modal-body { padding: 16px 20px; display: flex; flex-direction: column; gap: 16px; }
+
+.modal-body { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+
 .field { display: flex; flex-direction: column; gap: 5px; }
 .field label {
   font-family: var(--MONO); font-size: .6rem; font-weight: 700;
   letter-spacing: .08em; text-transform: uppercase; color: var(--MU);
 }
-.field input, .field select {
-  border: 1px solid var(--BD); border-radius: 8px;
-  padding: 10px 12px; font-family: var(--BODY); font-size: .88rem;
-  color: var(--INK); outline: none; background: var(--SURF);
-  transition: border-color .15s;
+.field input,
+.field select {
+  padding: 10px 14px; border: 1px solid var(--BD); border-radius: 8px;
+  font-family: var(--BODY); font-size: 16px; color: var(--INK);
+  background: var(--SURF); outline: none;
+  transition: border-color .15s, box-shadow .15s;
 }
-.field input:focus, .field select:focus { border-color: var(--Y); }
-.field input.err { border-color: var(--RED); }
-.field-hint { font-size: .7rem; color: var(--MU2); margin-top: 2px; }
-.field-err { display: none; font-size: .68rem; color: var(--RED); margin-top: 3px; }
+.field input:focus,
+.field select:focus {
+  border-color: var(--Y); box-shadow: 0 0 0 3px rgba(250,204,21,.15);
+}
+.field input.err  { border-color: var(--RED); box-shadow: 0 0 0 3px rgba(239,68,68,.1); }
+.field-hint { font-size: .72rem; color: var(--MU2); line-height: 1.5; }
+.field-err  { font-size: .72rem; color: var(--RED); font-weight: 500; display: none; }
 .field-err.show { display: block; }
 
-/* alias input row */
+/* alias@domain combo */
 .alias-input-row {
-  display: flex; align-items: center; gap: 0;
-  border: 1px solid var(--BD); border-radius: 8px;
-  overflow: hidden; background: var(--SURF);
-  transition: border-color .15s;
+  display: flex; border: 1px solid var(--BD); border-radius: 8px;
+  overflow: hidden; transition: border-color .15s, box-shadow .15s;
+  background: var(--SURF);
 }
-.alias-input-row:focus-within { border-color: var(--Y); }
-.alias-input-row.err { border-color: var(--RED); }
+.alias-input-row:focus-within {
+  border-color: var(--Y); box-shadow: 0 0 0 3px rgba(250,204,21,.15);
+}
+.alias-input-row.err {
+  border-color: var(--RED); box-shadow: 0 0 0 3px rgba(239,68,68,.1);
+}
 .alias-prefix {
-  flex: 1; border: none !important; border-radius: 0 !important;
-  padding: 10px 12px !important; font-family: var(--MONO) !important;
-  font-size: .88rem !important; color: var(--INK) !important;
-  outline: none; min-width: 0;
+  flex: 1; padding: 10px 14px; border: none; outline: none;
+  font-family: var(--MONO); font-size: 15px; color: var(--INK);
+  background: transparent;
 }
 .alias-at {
-  padding: 0 2px; font-family: var(--MONO); font-size: .88rem;
-  color: var(--MU2); flex-shrink: 0; user-select: none;
+  display: flex; align-items: center;
+  font-family: var(--MONO); font-size: .78rem; color: var(--MU2);
+  padding: 0 6px; background: var(--BD2); border-left: 1px solid var(--BD);
+  flex-shrink: 0;
 }
 .alias-domain-sel {
-  border: none !important; border-radius: 0 !important;
-  border-left: 1px solid var(--BD2) !important;
-  padding: 10px 8px 10px 10px !important;
-  font-family: var(--MONO) !important;
-  font-size: .82rem !important;
-  background: var(--BG) !important;
-  cursor: pointer; max-width: 140px;
+  border: none; outline: none; background: var(--BD2);
+  font-family: var(--MONO); font-size: .76rem; color: var(--INK);
+  padding: 0 12px 0 4px; cursor: pointer; height: 100%;
 }
 
-/* toggle row */
+/* status toggle in modal */
 .toggle-row {
-  display: flex; align-items: center; gap: 14px;
-  background: var(--BD2); border-radius: 10px; padding: 12px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px; border: 1px solid var(--BD); border-radius: 8px;
 }
 .toggle-lbl { font-size: .84rem; font-weight: 500; color: var(--INK); }
 .toggle-sub { font-size: .72rem; color: var(--MU); margin-top: 2px; }

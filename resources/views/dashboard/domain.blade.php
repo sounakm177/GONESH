@@ -438,6 +438,7 @@
 }
 #toast.show { transform: translateY(0); opacity: 1; }
 .toast-dot { width: 7px; height: 7px; background: var(--GREEN); border-radius: 50%; }
+
 </style>
 @endpush
 

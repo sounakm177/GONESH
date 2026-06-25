@@ -511,7 +511,143 @@
         padding: 32px 25px 32px 25px;
     }
 }
+
+
+@media (max-width: 899px) {
+  /* The layout locks html/body with overflow:hidden.
+     On mobile we need normal scroll so the inbox-page-wrap
+     can grow taller than the viewport when the list is long. */
+  html, body { overflow: auto !important; }
+
+  /* main already gets overflow-y:auto from the layout; that's fine
+     on desktop. On mobile we let the native page scroll take over
+     so momentum scrolling / pull-to-refresh work. */
+  .main { overflow: visible !important; }
+
+  /* inbox-page-wrap: let it grow to fit content instead of being
+     pinned to the viewport height */
+  .inbox-page-wrap {
+    height: auto !important;
+    min-height: calc(100dvh - 56px); /* 56px = topbar */
+  }
+
+  /* The 3-col area should NOT be flex:1 (which collapses to 0 when
+     the parent has no fixed height). Give it an explicit min-height
+     so the list is always readable. */
+  .inbox-3col {
+    flex: none !important;
+    min-height: 480px;
+    height: auto !important;
+  }
+
+  /* The email list scroll area: let it grow naturally on mobile */
+  .email-scroll { overflow-y: visible !important; flex: none !important; }
+
+  /* The detail column goes full-screen on mobile (position:absolute)
+     so it's already independent — no change needed there. */
+}
+
+/* 2. Desktop fix: ensure the full viewport height is used so the
+      3-col inbox fills the space without an extra scrollbar. */
+@media (min-width: 900px) {
+  /* Remove the extra bottom padding from .main so the inbox
+     can reach all the way to the bottom of the viewport. */
+  .main.inbox-main-override {
+    padding-bottom: 0 !important;
+    overflow: hidden !important; /* keep the inner panels scrollable */
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* inbox-page-wrap fills whatever .main gives it */
+  .inbox-page-wrap {
+    flex: 1;
+    min-height: 0;    /* required in a flex child to allow shrinking */
+    height: 100%;
+    overflow: hidden;
+  }
+
+  /* 3-col fills the wrap */
+  .inbox-3col {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* The email list column: the scrollable area should be flex:1
+     so it fills its column and clips at the bottom */
+  .inbox-list-col {
+    height: 100%;
+    overflow: hidden;
+  }
+  .email-scroll {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+  }
+
+  /* The detail column needs to fill the middle and scroll the body */
+  .inbox-detail-col {
+    height: 100%;
+    overflow: hidden;
+  }
+}
+
+/* 3. Email body height — the single most common cause of the body
+      appearing "too small". The chain must be:
+        .inbox-detail-col (flex column, height 100%)
+          └─ #detail-content (flex column, flex:1, min-height:0)
+               └─ .detail-body (flex:1, overflow-y:auto, min-height:0) */
+#detail-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;   /* ← this is the key — without it flex:1 won't shrink */
+  overflow: hidden;
+}
+
+.detail-body {
+  flex: 1;
+  min-height: 0;   /* ← same here */
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px;
+  font-size: .88rem;
+  line-height: 1.75;
+  color: #374151;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+.detail-body::-webkit-scrollbar       { width: 4px; }
+.detail-body::-webkit-scrollbar-thumb { background: var(--BD); border-radius: 2px; }
+
+/* 4. Right info sidebar should also scroll independently */
+.inbox-info-col {
+  overflow-y: auto;
+  height: 100%;
+}
+.inbox-info-col::-webkit-scrollbar       { width: 3px; }
+.inbox-info-col::-webkit-scrollbar-thumb { background: var(--BD); border-radius: 2px; }
+
+/* 5. The timer bar: remove the CSS animation shorthand that fights
+      with the JS-driven width updates. Use transition instead. */
+.timer-strip-fill {
+  height: 100%;
+  background: var(--Y);
+  border-radius: 2px;
+  width: 68%;                    /* JS overwrites this every second */
+  transition: width .9s linear;  /* smooth, JS-compatible */
+  animation: none !important;    /* disable the CSS shrink animation */
+}
+
+/* 6. Prevent the inbox-page-wrap border from causing a double
+      scrollbar on very small heights */
+.inbox-page-wrap {
+  box-sizing: border-box;
+}
 </style>
+
+<!-- overflow-y: auto !important; -->
 @endpush
 
 @section('content')

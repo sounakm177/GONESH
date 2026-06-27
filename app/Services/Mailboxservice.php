@@ -164,12 +164,14 @@ class MailboxService
                 return $domain;
             }
         }
-
+        
         $domain = EmailDomain::active()
             ->healthy()
             ->notBlocked()
             ->orderBy('last_used_at')
-            ->first();
+            ->limit(5)
+            ->get()
+            ->random();
 
         if (! $domain) {
             $domain = EmailDomain::active()
@@ -177,15 +179,14 @@ class MailboxService
                 ->firstOrFail();
         }
 
-        // update usage tracking
-        $domain->increment('daily_received');
-
-        $domain->update([
-            'last_used_at' => now(),
+        EmailDomain::whereKey($domain->id)->update([
+            'daily_received' => DB::raw('daily_received + 1'),
+            'last_used_at'   => now(),
         ]);
 
         return $domain;
     }
+    
 
     private function generateUniqueEmail(string $domain): string
     {

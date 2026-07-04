@@ -50,11 +50,11 @@ class MailboxService
     public function createMailbox(string $sessionId, ?string $preferDomain = null): PublicMailbox
     {
         $domain = $this->resolveDomain($preferDomain);
-        $email  = $this->generateUniqueEmail($domain->domain);
+        $email  = $this->generateUniqueEmail($domain->name);
 
         return PublicMailbox::create([
             'email'      => $email,
-            'domain'     => $domain->domain,
+            'domain'     => $domain->name,
             'session_id' => $sessionId,
             'expires_at' => now()->addMinutes(self::TTL_MINUTES),
         ]);
@@ -157,7 +157,7 @@ class MailboxService
     {
         if ($preferDomain) {
             $domain = EmailDomain::active()
-                ->where('domain', $preferDomain)
+                ->where('name', $preferDomain)
                 ->first();
 
             if ($domain) {

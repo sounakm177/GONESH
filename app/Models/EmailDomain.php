@@ -2,21 +2,27 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Cache;
 
 class EmailDomain extends Model
 {
-    
-    protected $fillable = [
-        'domain',
-        'label',
-        'is_active',
-        'is_premium',
-        'sort_order',
+    use HasFactory;
 
-        // new fields
+    protected $fillable = [
+        'name',
+        'display_name',
+        'type',
+        'is_system',
+        'created_by_user_id',
+        'status',
+        'mx_verified',
+        'priority',
         'health_score',
         'blocked_score',
         'daily_received',
@@ -24,46 +30,58 @@ class EmailDomain extends Model
     ];
 
     protected $casts = [
-        'is_active'      => 'boolean',
-        'is_premium'     => 'boolean',
-
-        'last_used_at'   => 'datetime',
+        'is_system' => 'boolean',
+        'mx_verified' => 'boolean',
+        'health_score' => 'integer',
+        'blocked_score' => 'integer',
+        'daily_received' => 'integer',
+        'priority' => 'integer',
+        'last_used_at' => 'datetime',
     ];
 
-    // ── Relationships ────────────────────────────────────────────────
-    public function mailboxes()
+    public function creator(): BelongsTo
     {
-        return $this->hasMany(PublicMailbox::class, 'domain', 'domain');
+        return $this->belongsTo(User::class, 'created_by_user_id');
     }
 
-    // ── Scopes ───────────────────────────────────────────────────────
+    public function userDomains(): HasMany
+    {
+        return $this->hasMany(UserDomain::class);
+    }
+
+    public function domainMetric(): HasOne
+    {
+        return $this->hasOne(DomainMetric::class);
+    }
+
+    public function mailboxes(): HasMany
+    {
+        return $this->hasMany(PublicMailbox::class, 'domain', 'name');
+    }
+
     public function scopeActive(Builder $query): Builder
     {
-        return $query->where('is_active', true);
+        return $query->where('status', 'active');
     }
 
     public function scopeFree(Builder $query): Builder
     {
-        return $query->where('is_premium', false);
+        return $query->where('type', 'free');
     }
 
-    // ── Static helpers ───────────────────────────────────────────────
-
-    /**
-     * Cached active domain list — avoids a DB hit on every page load.
-     * Cache busts automatically via cache tag 'email_domains'.
-     */
-    public static function cachedActive(): \Illuminate\Support\Collection
+    public function scopePro(Builder $query): Builder
     {
-        return Cache::tags(['email_domains'])->rememberForever(
-            'active_domains',
-            fn () => static::active()->orderBy('sort_order')->get(['id', 'domain', 'label', 'is_premium'])
-        );
+        return $query->where('type', 'pro');
     }
 
-    public static function bustCache(): void
+    public function scopeSystem(Builder $query): Builder
     {
-        Cache::tags(['email_domains'])->flush();
+        return $query->where('is_system', true);
+    }
+
+    public function scopeVerified(Builder $query): Builder
+    {
+        return $query->where('mx_verified', true);
     }
 
     public function scopeHealthy(Builder $query): Builder
@@ -74,5 +92,43 @@ class EmailDomain extends Model
     public function scopeNotBlocked(Builder $query): Builder
     {
         return $query->where('blocked_score', '<', 80);
+    }
+
+    public static function cachedActive(): \Illuminate\Support\Collection
+    {
+        return Cache::tags(['email_domains'])->rememberForever(
+            'active_domains',
+            fn() => static::active()->orderBy('priority')->get(['id', 'name', 'display_name', 'type'])
+        );
+    }
+
+    public static function bustCache(): void
+    {
+        Cache::tags(['email_domains'])->flush();
+    }
+
+    public function isFree(): bool
+    {
+        return $this->type === 'free';
+    }
+
+    public function isPro(): bool
+    {
+        return $this->type === 'pro';
+    }
+
+    public function isCustom(): bool
+    {
+        return $this->type === 'custom';
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status === 'active';
+    }
+
+    public function isMaintenance(): bool
+    {
+        return $this->status === 'maintenance';
     }
 }

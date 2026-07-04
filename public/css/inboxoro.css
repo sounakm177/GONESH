@@ -409,7 +409,7 @@ body { padding-top: var(--NAV-H); }
     border-radius: 6px;
   }
   .nav-link:hover,
-  .nav-links a:hover  { background:rgba(255,255,255,.07); color:var(--Y); padding-left:12px; }
+  .nav-links a:hover  { background:rgba(255,255,255,.07); color:var(--Y) !important; padding-left:12px; }
   .nav-link.active,
   .nav-links a.active { background:rgba(250,204,21,.1); }
 

@@ -11,6 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasColumn('email_domains', 'health_score')) {
+            return;
+        }
+
         Schema::table('email_domains', function (Blueprint $table) {
               // Reputation / health tracking
             $table->unsignedTinyInteger('health_score')
@@ -35,11 +39,12 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
+        if (!Schema::hasColumn('email_domains', 'health_score')) {
+            return;
+        }
+
         Schema::table('email_domains', function (Blueprint $table) {
              $table->dropColumn([
                 'health_score',

@@ -21,7 +21,7 @@ return new class extends Migration
 
             $table->index(['session_id', 'expires_at']);
             $table->foreign('domain')
-                  ->references('domain')
+                  ->references('name')
                   ->on('email_domains')
                   ->onDelete('cascade');
         });

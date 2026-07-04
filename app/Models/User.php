@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -47,6 +48,21 @@ class User extends Authenticatable implements MustVerifyEmail
     public function profile(): HasOne
     {
         return $this->hasOne(UserProfile::class);
+    }
+
+    public function userMetric(): HasOne
+    {
+        return $this->hasOne(UserMetric::class);
+    }
+
+    public function userDomains(): HasMany
+    {
+        return $this->hasMany(UserDomain::class);
+    }
+
+    public function createdDomains(): HasMany
+    {
+        return $this->hasMany(EmailDomain::class, 'created_by_user_id');
     }
 
     public function isActive(): bool

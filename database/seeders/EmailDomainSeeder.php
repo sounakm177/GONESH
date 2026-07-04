@@ -7,20 +7,19 @@ use Illuminate\Support\Facades\DB;
 
 class EmailDomainSeeder extends Seeder
 {
-    // php artisan db:seed --class=EmailDomainSeeder
     public function run(): void
     {
         $domains = [
-            ['domain' => 'inboxoro.com',  'label' => 'InboxOro',  'is_active' => true,  'is_premium' => false, 'sort_order' => 1],
-            ['domain' => 'burnbox.dev',   'label' => 'BurnBox',   'is_active' => true,  'is_premium' => false, 'sort_order' => 2],
-            ['domain' => 'zaptmp.net',    'label' => 'ZapTmp',    'is_active' => true,  'is_premium' => false, 'sort_order' => 3],
-            ['domain' => 'voidmail.cc',   'label' => 'VoidMail',  'is_active' => true,  'is_premium' => false, 'sort_order' => 4],
-            ['domain' => 'mailsink.app',  'label' => 'MailSink',  'is_active' => true,  'is_premium' => true,  'sort_order' => 5],
+            ['name' => 'inboxoro.com',  'display_name' => 'InboxOro',  'type' => 'free', 'status' => 'active', 'priority' => 1],
+            ['name' => 'burnbox.dev',   'display_name' => 'BurnBox',   'type' => 'free', 'status' => 'active', 'priority' => 2],
+            ['name' => 'zaptmp.net',    'display_name' => 'ZapTmp',    'type' => 'free', 'status' => 'active', 'priority' => 3],
+            ['name' => 'voidmail.cc',   'display_name' => 'VoidMail',  'type' => 'free', 'status' => 'active', 'priority' => 4],
+            ['name' => 'mailsink.app',  'display_name' => 'MailSink',  'type' => 'pro',  'status' => 'active', 'priority' => 5],
         ];
 
         foreach ($domains as $domain) {
             DB::table('email_domains')->updateOrInsert(
-                ['domain' => $domain['domain']],
+                ['name' => $domain['name']],
                 array_merge($domain, [
                     'created_at' => now(),
                     'updated_at' => now(),

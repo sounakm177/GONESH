@@ -24,7 +24,7 @@ class PublicMailbox extends Model
 
     public function domain(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(EmailDomain::class, 'domain', 'domain');
+        return $this->belongsTo(EmailDomain::class, 'domain', 'name');
     }
 
     // ── Scopes ───────────────────────────────────────────────────────

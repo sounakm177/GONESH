@@ -37,14 +37,14 @@
       <span class="nav-link-label">Blog</span>
     </a>
 
-    <!-- <a href="/api" class="nav-link">
+    <a href="/api" class="nav-link">
       <span class="nav-link-icon">
         <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
         </svg>
       </span>
       <span class="nav-link-label">API</span>
-    </a> -->
+    </a>
 
     <a href="/about" class="nav-link">
       <span class="nav-link-icon">
@@ -65,12 +65,12 @@
     </a>
 
     <!-- Sign In CTA -->
-    <!-- <a href="/login" class="nav-cta" style="color:#000000">
+    <a href="/login" class="nav-cta" style="color:#000000">
       <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
         <path stroke-linecap="round" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
       </svg>
       Sign In
-    </a> -->
+    </a>
 
   </div>
 </nav>

@@ -19,23 +19,23 @@ use Carbon\Carbon;
 use App\Models\BlogPost;
 
 
-Route::name('dashboard.')->group(function () {
-    Route::get('/sounak',            fn() => view('dashboard.dash'))->name('overview');
-    Route::get('/inbox-sounak',      fn() => view('dashboard.inbox'))->name('inbox');
-    Route::get('/address-sounak',    fn() => view('dashboard.address'))->name('address');
-    Route::get('/domain-sounak',     fn() => view('dashboard.domain'))->name('domain');
-    Route::get('/api-sounak',        fn() => view('dashboard.api'))->name('api');
-    Route::get('/smtp-sounak',       fn() => view('dashboard.smtp'))->name('smtp');
-    Route::get('/setting-sounak',    fn() => view('dashboard.setting'))->name('setting');
+Route::middleware('auth')->name('dashboard.')->group(function () {
+    Route::get('/dashboard',         fn() => view('dashboard.dash'))->name('overview');
+    Route::get('/inbox',             fn() => view('dashboard.inbox'))->name('inbox');
+    Route::get('/addresses',         fn() => view('dashboard.address'))->name('address');
+    Route::get('/domains',           fn() => view('dashboard.domain'))->name('domain');
+    Route::get('/api-keys',          fn() => view('dashboard.api'))->name('api');
+    Route::get('/smtp',              fn() => view('dashboard.smtp'))->name('smtp');
+    Route::get('/settings',          fn() => view('dashboard.setting'))->name('setting');
 });
 
-Route::get('/login', function(){
-    return view('dashboard.login');
-});
+// Route::get('/login', function(){
+//     return view('dashboard.login');
+// });
 
-Route::get('/register', function(){
-    return view('dashboard.register');
-});
+// Route::get('/register', function(){
+//     return view('dashboard.register');
+// });
 
 
 Route::get('/', [MailboxController::class, 'index'])->name('home');
@@ -159,9 +159,31 @@ Route::get('/blog-sitemap.xml', function () {
         ->header('Content-Type', 'text/xml');
 });
 
-Route::get('/{slug}', [SeoController::class, 'show'])
-     ->where('slug', '[a-z0-9-]+') 
-     ->name('seo.page');
+// ── Auth routes (must come before catch-all) ──────────────────────────────────
+require __DIR__.'/auth.php';
+
+/* ── Social Login (Google, GitHub) ── */
+Route::prefix('auth')->name('auth.')->group(function () {
+    Route::get('{provider}/redirect', [\App\Http\Controllers\Auth\SocialiteController::class, 'redirect'])
+        ->whereIn('provider', ['google', 'github'])
+        ->middleware('guest')
+        ->name('redirect');
+    Route::get('{provider}/callback', [\App\Http\Controllers\Auth\SocialiteController::class, 'callback'])
+        ->whereIn('provider', ['google', 'github'])
+        ->name('callback');
+});
+
+Route::get('/{slug}', function ($slug) {
+    $page = \App\Models\SeoPage::where('slug', $slug)->where('is_active', true)->first();
+    if (! $page) {
+        return redirect()->route('login');
+    }
+    return app(\App\Http\Controllers\Public\SeoController::class)->show($slug, request());
+})->where('slug', '[a-z0-9-]+')->name('seo.page');
+
+Route::fallback(function () {
+    return redirect()->route('login');
+});
 
 // ── Mailbox AJAX (all require session) ───────────────────────────────────────
 Route::middleware(['web', 'check.blocked', 'throttle:temp-mail'])->prefix('mailbox')->name('mailbox.')->group(function () {
@@ -200,97 +222,6 @@ Route::get('attachment/{attachment}/download', [MailboxController::class, 'attac
     ->name('attachment.download')
     ->whereNumber('attachment')
     ->middleware(['web', 'throttle:30,1']);
-
-/////
-
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
-
-// Route::middleware('auth')->group(function () {
-//     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-//     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-//     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-// });
-
-// require __DIR__.'/auth.php';
-
-
-if (app()->environment('local')) {
-
-    Route::get('/test/send-email', function (Request $request) {
-        $sessionId = "ccb2ea164a4aef4b9f228a03e5ab0cb720b5dc38bc7cc1cf76d9d1ab00dd27d2";
-
-        $mailbox = PublicMailbox::latest()
-            ->firstOrFail();
-
-        $email = PublicEmail::create([
-            'mailbox_id'   => $mailbox->id,
-            'sender'       => '"GitHub" <noreply@github.com>',
-            'subject'      => 'Test Email — OTP: ' . rand(100000, 999999),
-            'body'         => '<p>Hello! Your OTP is: <span style="font-size:2rem;font-weight:bold;background:#FACC15;padding:8px 16px;">' . rand(100000, 999999) . '</span></p>',
-            'content_type' => 'text/html',
-            'is_read'      => false,
-            'received_at'  => now(),
-        ]);
-
-
-        NewEmailReceived::dispatch($email, $mailbox);
-
-        return response()->json([
-            'ok'      => true,
-            'to'      => $mailbox->email,
-            'subject' => $email->subject,
-        ]);
-    });
-
-    Route::get('/test/send-emails', function (Request $request) {
-        // $sessionId = hash('sha256', $request->session()->getId());
-        $mailbox   = PublicMailbox::latest()->firstOrFail();
-
-        $senders = [
-            '"Google" <no-reply@accounts.google.com>',
-            '"Shopify" <otp@shopify.com>',
-            '"GitHub" <noreply@github.com>',
-            '"Stripe" <support@stripe.com>',
-            '"Notion" <hello@notion.so>',
-        ];
-        $subjects = [
-            'Verify your account — OTP: ' . rand(100000, 999999),
-            'Your one-time password: '    . rand(100000, 999999),
-            'Welcome! Confirm your email',
-            'Your payout of $'            . rand(10, 500) . ' is on its way',
-            'A file has been shared with you',
-        ];
-
-        $sent = [];
-        for ($i = 0; $i < min(5, 10); $i++) {
-            $email = PublicEmail::create([
-                'mailbox_id'   => $mailbox->id,
-                'sender'       => $senders[array_rand($senders)],
-                'subject'      => $subjects[array_rand($subjects)],
-                'body'         => '<p>Test email #' . ($i + 1) . '. Lorem ipsum content here.</p>',
-                'content_type' => 'text/html',
-                'is_read'      => false,
-                'received_at'  => now()->subSeconds($i * 15),
-            ]);
-            NewEmailReceived::dispatch($email, $mailbox);
-            $sent[] = $email->subject;
-        }
-
-        return response()->json([
-            'ok'   => true,
-            'to'   => $mailbox->email,
-            'sent' => count($sent),
-            'subjects' => $sent,
-        ]);
-    });
-
-}
-
-
-
-
 
 
 

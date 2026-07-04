@@ -215,24 +215,6 @@ body { display:flex; flex-direction:column; min-height:100vh; cursor:none; }
         <div class="field-error" id="confirm-err">Passwords do not match.</div>
       </div>
 
-      <!-- Plan -->
-      <div class="field" style="margin-bottom:18px;">
-        <label class="field-label">Choose Plan</label>
-        <div class="plan-row">
-          <label class="plan-card selected" id="plan-free" onclick="selectPlan('free')">
-            <input type="radio" name="plan" value="free" checked/>
-            <div class="plan-name">FREE</div>
-            <div class="plan-price">$0 / forever</div>
-          </label>
-          <label class="plan-card" id="plan-pro" onclick="selectPlan('pro')">
-            <input type="radio" name="plan" value="pro"/>
-            <div class="plan-badge">POPULAR</div>
-            <div class="plan-name">PRO</div>
-            <div class="plan-price">$4.99 / mo</div>
-          </label>
-        </div>
-      </div>
-
       <!-- Terms -->
       <div class="check-row">
         <input type="checkbox" id="terms"/>

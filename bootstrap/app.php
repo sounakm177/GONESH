@@ -16,6 +16,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'check.blocked' => \App\Http\Middleware\CheckBlockedIp::class,
         ]);
     })
-    ->withExceptions(function (Exceptions $exceptions): void {
+        ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();

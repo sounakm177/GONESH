@@ -1504,7 +1504,7 @@ body.sb-collapsed .sb-collapse-btn svg { transform: rotate(180deg); }
             <div class="dd-item"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg>Activity Log</div>
           </div>
           <div class="dd-section">
-            <div class="dd-item danger" onclick="location.href='login.html'"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>Sign Out</div>
+            <div class="dd-item danger" onclick="event.stopPropagation();document.getElementById('logout-form').submit();"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>Sign Out</div>
           </div>
         </div>
       </div>
@@ -1592,6 +1592,8 @@ body.sb-collapsed .sb-collapse-btn svg { transform: rotate(180deg); }
 
 
 
+<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none">@csrf</form>
+
 <script>
 const sidebar     = document.getElementById('sidebar');
 const backdrop    = document.getElementById('sb-backdrop');
@@ -1649,6 +1651,13 @@ function toast(msg) {
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2400);
 }
+
+/* ═══ FLASH ALERTS ═══ */
+@if(session('success'))
+document.addEventListener('DOMContentLoaded', function(){
+  toast(@js(session('success')));
+});
+@endif
 
 /* ═══ UPGRADE MODAL ═══ */
 var upgradeStep = 1, upgradeBilling = 'monthly', upgradePlan = 'pro';

@@ -17,17 +17,58 @@ class AuthenticationTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_users_can_authenticate_using_the_login_screen(): void
+    public function test_users_can_authenticate_using_the_login_screen_with_email(): void
     {
         $user = User::factory()->create();
 
         $response = $this->post('/login', [
-            'email' => $user->email,
+            'login' => $user->email,
             'password' => 'password',
         ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
+        $response->assertRedirect(route('dashboard.overview', absolute: false));
+    }
+
+    public function test_remember_me_cookie_is_set(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->post('/login', [
+            'login' => $user->email,
+            'password' => 'password',
+            'remember' => 'on',
+        ]);
+
+        $response->assertRedirect(route('dashboard.overview', absolute: false));
+        $this->assertAuthenticated();
+
+        $user->refresh();
+        $this->assertNotNull($user->remember_token);
+    }
+
+    public function test_login_with_empty_fields_fails_validation(): void
+    {
+        $response = $this->post('/login', [
+            'login' => '',
+            'password' => '',
+        ]);
+
+        $response->assertSessionHasErrors(['login', 'password']);
+        $this->assertGuest();
+    }
+
+    public function test_users_can_authenticate_using_the_login_screen_with_username(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->post('/login', [
+            'login' => $user->username,
+            'password' => 'password',
+        ]);
+
+        $this->assertAuthenticated();
+        $response->assertRedirect(route('dashboard.overview', absolute: false));
     }
 
     public function test_users_can_not_authenticate_with_invalid_password(): void
@@ -35,8 +76,31 @@ class AuthenticationTest extends TestCase
         $user = User::factory()->create();
 
         $this->post('/login', [
-            'email' => $user->email,
+            'login' => $user->email,
             'password' => 'wrong-password',
+        ]);
+
+        $this->assertGuest();
+    }
+
+    public function test_users_can_not_authenticate_with_invalid_username(): void
+    {
+        $response = $this->post('/login', [
+            'login' => 'nonexistent@example.com',
+            'password' => 'password',
+        ]);
+
+        $response->assertSessionHasErrors('login');
+        $this->assertGuest();
+    }
+
+    public function test_banned_users_cannot_login(): void
+    {
+        $user = User::factory()->banned()->create();
+
+        $response = $this->post('/login', [
+            'login' => $user->email,
+            'password' => 'password',
         ]);
 
         $this->assertGuest();
@@ -50,5 +114,24 @@ class AuthenticationTest extends TestCase
 
         $this->assertGuest();
         $response->assertRedirect('/');
+    }
+
+    public function test_login_throttle_is_enforced(): void
+    {
+        $user = User::factory()->create();
+
+        for ($i = 0; $i < 5; $i++) {
+            $this->post('/login', [
+                'login' => $user->email,
+                'password' => 'wrong-password',
+            ]);
+        }
+
+        $response = $this->post('/login', [
+            'login' => $user->email,
+            'password' => 'wrong-password',
+        ]);
+
+        $response->assertSessionHasErrors('login');
     }
 }

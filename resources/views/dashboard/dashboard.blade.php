@@ -494,6 +494,9 @@ body { display:flex; flex-direction:column; overflow:hidden; cursor:none; }
   border-bottom: 1px solid #F3F4F6;
   transition:  background .1s;
   cursor:      pointer;
+  font-size: .8rem;
+  font-weight: 100;
+  font-family: none;
 }
 .dd-item:hover        { background:#FFFBEB; }
 .dd-item:last-child   { border-bottom:none; }

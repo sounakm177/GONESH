@@ -195,7 +195,8 @@ svg    { flex-shrink: 0; }
   font-family: var(--DISP); font-size: 1.05rem; font-weight: 700; color: var(--INK);
 }
 .dd-profile-info { min-width: 0; }
-.dd-profile-name { font-weight: 700; font-size: .86rem; color: var(--INK); }
+.dd-profile-name { font-weight: 700; font-size: .86rem; color: var(--INK);   font-size: .8rem;
+  font-family: none; }
 .dd-profile-email { font-size: .72rem; color: var(--MU); font-family: var(--MONO); margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .dd-profile-plan {
   display: inline-flex; align-items: center; gap: 4px;
@@ -215,6 +216,9 @@ svg    { flex-shrink: 0; }
   color:       var(--INK);
   transition:  background .12s;
   cursor:      pointer;
+  font-size: .8rem;
+  font-weight: 100;
+  font-family: none;
 }
 .dd-item:hover { background: var(--BD2); }
 .dd-item svg   { color: var(--MU); flex-shrink: 0; }

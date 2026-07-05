@@ -3,6 +3,7 @@
 namespace App\Services\Auth;
 
 use App\Events\UserRegistered;
+use App\Models\Plan;
 use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Database\Eloquent\Collection;
@@ -24,6 +25,7 @@ class UserRegistrationService
             ]);
 
             $this->createDefaultProfile($user);
+            $this->assignFreePlan($user);
 
             event(new UserRegistered($user));
 
@@ -51,5 +53,18 @@ class UserRegistrationService
         }
 
         return $username;
+    }
+
+    public function assignFreePlan(User $user): void
+    {
+        $plan = Plan::where('slug', 'free')->first();
+
+        if ($plan) {
+            $user->subscriptions()->create([
+                'plan_id' => $plan->id,
+                'status' => 'active',
+                'starts_at' => now(),
+            ]);
+        }
     }
 }

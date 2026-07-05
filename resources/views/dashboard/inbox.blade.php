@@ -645,6 +645,43 @@
 .inbox-page-wrap {
   box-sizing: border-box;
 }
+
+/* ── Mobile responsive refinements ── */
+@media (max-width: 480px) {
+  .addr-strip { padding: 12px 8px 6px; gap: 4px; }
+  .addr-strip-email { padding: 6px 8px; }
+  .addr-copy-btn, .addr-new-btn { font-size: .66rem; padding: 5px 8px; }
+  .addr-strip .page-title { font-size: .8rem; }
+  .timer-strip { padding: 4px 8px; flex-wrap: wrap; gap: 4px; }
+  .timer-strip-btns { width: 100%; justify-content: flex-end; margin-top: 2px; }
+  .timer-ctrl-btn { font-size: .55rem; padding: 3px 7px; }
+  .domain-tab { font-size: .58rem; padding: 7px 8px; }
+  .list-toolbar { padding: 8px 10px; }
+  .list-toolbar-title { font-size: .76rem; }
+  .list-search { padding: 6px 10px; }
+  .list-tab { font-size: .55rem; padding: 6px 7px; }
+  .email-scroll .erow { padding: 10px; gap: 8px; }
+  .e-sender { font-size: .74rem; max-width: 100px; }
+  .e-subject { font-size: .72rem; }
+  .e-preview { font-size: .66rem; }
+  .detail-subject { font-size: 1.1rem; }
+  .detail-header { padding: 12px 14px 10px; }
+  .detail-body { padding: 14px; font-size: .82rem; }
+  .detail-toolbar { padding: 8px 10px; }
+  .dtl-btn { font-size: .68rem; padding: 5px 8px; }
+  .inbox-info-col { display: none !important; }
+  .list-footer { font-size: .55rem; padding: 5px 10px; }
+}
+
+@media (max-width: 899px) {
+  .addr-strip .addr-new-btn { display: none; }
+  .addr-strip .btn-primary.yellow { display: flex; }
+}
+
+@media (min-width: 900px) {
+  .addr-strip .addr-new-btn { display: flex; }
+  .addr-strip .btn-primary.yellow { display: none; }
+}
 </style>
 
 <!-- overflow-y: auto !important; -->
@@ -702,14 +739,9 @@
         </div>
         <span class="timer-strip-num" id="tnum">08:12</span>
         <div class="timer-strip-btns">
-          <button class="timer-ctrl-btn" id="btn-extend" title="Add 10 minutes">
+          <button class="timer-ctrl-btn" onclick="extendTimer()" title="Add 10 minutes">
             <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M12 4v16m8-8H4"/></svg>
             +10m
-          </button>
-          <button class="timer-ctrl-btn" id="btn-pause" onclick="togglePauseInbox()" title="Pause timer">
-            <svg id="icon-pause" width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M10 9v6m4-6v6"/></svg>
-            <svg id="icon-play" width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="display:none;"><path stroke-linecap="round" d="M5 3l14 9-14 9V3z"/></svg>
-            <span id="paused-badge" style="display:none;color:var(--Y);">PAUSED</span>
           </button>
         </div>
       </div>
@@ -939,6 +971,45 @@
 
       </div><!-- /inbox-3col -->
     </div><!-- /inbox-page-wrap -->
+
+    <!-- ═══ CONFIRM ACTION MODAL ═══ -->
+    <div class="modal-overlay" id="confirm-modal" style="z-index:900;">
+      <div class="modal-box" style="max-width:360px;">
+        <div class="modal-hd">
+          <div class="modal-title">Confirm</div>
+        </div>
+        <div class="modal-body" style="padding:20px;gap:0;">
+          <p id="confirm-msg" style="font-size:.88rem;color:var(--INK);line-height:1.5;"></p>
+        </div>
+        <div class="modal-ft">
+          <button class="btn-ghost" onclick="closeConfirmModal()" style="padding:10px 20px;font-size:.8rem;">Cancel</button>
+          <button class="btn-primary" id="confirm-yes-btn" onclick="confirmActionYes()" style="padding:10px 20px;font-size:.8rem;background:var(--RED);color:#fff;">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ EXPIRES IN MODAL ═══ -->
+    <div class="modal-overlay" id="expires-modal" style="z-index:800;">
+      <div class="modal-box" style="max-width:380px;">
+        <div class="modal-hd">
+          <div class="modal-title">Set Expiration</div>
+          <button class="modal-close" onclick="cancelExpiresModal()">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p style="font-size:.82rem;color:var(--MU);line-height:1.5;">
+            Choose how long this address should stay active.
+          </p>
+          <div id="expires-options" style="display:flex;flex-direction:column;gap:8px;margin-top:4px;"></div>
+        </div>
+        <div class="modal-ft">
+          <button class="btn-primary yellow" id="expires-confirm-btn" onclick="confirmExpiresSelection()" style="width:100%;justify-content:center;padding:12px;">
+            Confirm
+          </button>
+        </div>
+      </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -946,6 +1017,20 @@
 /* ══════════════════════════════════════════════════
    INBOX PAGE LOGIC
 ══════════════════════════════════════════════════ */
+
+@php
+    $_sub = auth()->user()?->subscriptions()->active()->first();
+    $_plan = $_sub?->plan;
+    $isProInbox = $_plan && $_plan->slug === 'pro';
+@endphp
+
+const IS_PRO      = @json($isProInbox);
+const EXPIRES_OPT = [
+  { label: '60 Minutes',  value: 3600,  pro: false },
+  { label: '12 Hours',    value: 43200, pro: false },
+  { label: '24 Hours',    value: 86400, pro: false },
+  { label: 'Unlimited',   value: -1,    pro: true  },
+];
 
 const EMAILS = [
   { id:1, sender:'Google',   email:'noreply@accounts.google.com', avatar:'G', color:'#4285F4', time:'2 min ago',  subject:'Verify your Google account',     body:'<p>Hi there,</p><p>We received a request to verify your Google Account email address.</p><p>Your verification code is:</p><div class="otp-box">847 291</div><p>This code expires in <strong>10 minutes</strong>. Do not share it with anyone.</p><hr style="border:none;border-top:1px solid var(--BD);margin:20px 0;"/><p style="font-size:.76rem;color:var(--MU2);">Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043</p>', unread:true  },
@@ -956,10 +1041,11 @@ const EMAILS = [
 ];
 
 let currentMailId = 1;
-let timerSecs     = 492; // 8:12
+let timerSecs     = 492;
+let timerMaxSecs  = 492;
 let timerInt      = null;
-let isPausedInbox = false;
 let searchDelayInbox = null;
+let pendingGenCallback = null;
 
 // ── Timer ──
 function padInbox(n) { return String(n).padStart(2, '0'); }
@@ -967,7 +1053,6 @@ function padInbox(n) { return String(n).padStart(2, '0'); }
 function startTimerInbox() {
   clearInterval(timerInt);
   timerInt = setInterval(() => {
-    if (isPausedInbox) return;
     if (timerSecs > 0) timerSecs--;
     else { clearInterval(timerInt); document.getElementById('edisplay').textContent = 'Address expired'; return; }
     updateTimerUI();
@@ -978,23 +1063,95 @@ function updateTimerUI() {
   const m = padInbox(Math.floor(timerSecs / 60));
   const s = padInbox(timerSecs % 60);
   document.getElementById('tnum').textContent  = m + ':' + s;
-  const pct = Math.min(100, (timerSecs / 600) * 100);
+  const pct = timerMaxSecs > 0 ? Math.min(100, (timerSecs / timerMaxSecs) * 100) : 0;
   document.getElementById('tbar').style.width  = pct + '%';
-  // color warning
   document.getElementById('tbar').style.background = timerSecs < 120 ? 'var(--RED)' : 'var(--Y)';
 }
 
-function togglePauseInbox() {
-  isPausedInbox = !isPausedInbox;
-  document.getElementById('icon-pause').style.display = isPausedInbox ? 'none'   : 'inline';
-  document.getElementById('icon-play').style.display  = isPausedInbox ? 'inline' : 'none';
-  const badge = document.getElementById('paused-badge');
-  if (badge) badge.style.display = isPausedInbox ? 'inline' : 'none';
-  toast(isPausedInbox ? 'Timer paused' : 'Timer resumed');
+function extendTimer() {
+  timerSecs += 600;
+  if (timerSecs > timerMaxSecs) timerMaxSecs = timerSecs;
+  updateTimerUI();
+  toast('Added 10 minutes');
+}
+
+// ── Expires In modal ──
+function showExpiresModal(callback) {
+  pendingGenCallback = callback;
+  var list = document.getElementById('expires-options');
+  list.innerHTML = EXPIRES_OPT.map(function(o) {
+    var enabled = IS_PRO || !o.pro;
+    return '<div class="domain-option expires-opt" onclick="' + (enabled ? "pickExpiresOpt(this," + o.value + ")" : "") + '" style="' + (enabled ? '' : 'cursor:not-allowed;opacity:.5;') + '" data-value="' + o.value + '">' +
+      '<div style="flex:1;display:flex;align-items:center;justify-content:space-between;">' +
+        '<span class="domain-option-name">' + o.label + '</span>' +
+        (o.pro && !IS_PRO ? '<span style="font-family:var(--MONO);font-size:.58rem;font-weight:700;padding:2px 7px;border-radius:5px;background:rgba(124,58,237,.12);color:#7C3AED;">Pro</span>' : '') +
+      '</div>' +
+      '<div class="domain-check"></div>' +
+    '</div>';
+  }).join('');
+  selectedExpiresValue = null;
+  document.getElementById('expires-confirm-btn').disabled = true;
+  document.getElementById('expires-confirm-btn').style.opacity = '.5';
+  document.getElementById('expires-modal').classList.add('open');
+}
+
+var selectedExpiresValue = null;
+
+function pickExpiresOpt(el, val) {
+  document.querySelectorAll('.expires-opt').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+  selectedExpiresValue = val;
+  var btn = document.getElementById('expires-confirm-btn');
+  btn.disabled = false;
+  btn.style.opacity = '1';
+}
+
+function confirmExpiresSelection() {
+  if (selectedExpiresValue === null) return;
+  document.getElementById('expires-modal').classList.remove('open');
+  if (pendingGenCallback) {
+    pendingGenCallback(selectedExpiresValue);
+    pendingGenCallback = null;
+  }
+}
+
+function cancelExpiresModal() {
+  document.getElementById('expires-modal').classList.remove('open');
+  pendingGenCallback = null;
+}
+
+// ── Confirm action modal ──
+var pendingConfirmCallback = null;
+
+function showConfirmModal(msg, callback, btnLabel) {
+  pendingConfirmCallback = callback;
+  document.getElementById('confirm-msg').textContent = msg;
+  document.getElementById('confirm-yes-btn').textContent = btnLabel || 'Confirm';
+  document.getElementById('confirm-modal').classList.add('open');
+}
+
+function closeConfirmModal() {
+  document.getElementById('confirm-modal').classList.remove('open');
+  pendingConfirmCallback = null;
+}
+
+function confirmActionYes() {
+  document.getElementById('confirm-modal').classList.remove('open');
+  if (pendingConfirmCallback) {
+    var cb = pendingConfirmCallback;
+    pendingConfirmCallback = null;
+    cb();
+  }
 }
 
 // ── Generate new ──
 function genNewInbox() {
+  showExpiresModal(function(expiresSecs) {
+    doGenerateInbox(expiresSecs);
+  });
+}
+
+function doGenerateInbox(expiresSecs) {
   const DOMAINS = ['dropit.io','burnbox.dev','zaptmp.net','voidmail.cc','mailsink.app'];
   const ADJ     = ['silent','ghost','turbo','vapor','swift','lunar','neon','flux'];
   const NOU     = ['fox','wolf','tide','bolt','hawk','mint','storm','byte'];
@@ -1003,9 +1160,10 @@ function genNewInbox() {
   const el  = document.getElementById('edisplay');
   el.style.opacity = '.3';
   setTimeout(() => { el.textContent = em; el.style.opacity = '1'; }, 220);
-  timerSecs = 600; updateTimerUI();
+  timerSecs = expiresSecs > 0 ? expiresSecs : 999999;
+  timerMaxSecs = timerSecs;
+  startTimerInbox(); updateTimerUI();
   toast('New address generated');
-  // Spin icon
   const ic = document.getElementById('new-spin');
   ic.style.transition = 'transform .4s'; ic.style.transform = 'rotate(360deg)';
   setTimeout(() => { ic.style.transition = 'none'; ic.style.transform = ''; }, 420);
@@ -1082,12 +1240,14 @@ function closeMailDetail() {
 }
 
 function deleteCurrentMail() {
-  const row = document.querySelector(`.erow[data-id="${currentMailId}"]`);
-  if (row) { row.style.opacity = '0'; row.style.transform = 'translateX(12px)'; row.style.transition = 'all .25s'; setTimeout(() => row.remove(), 260); }
-  document.getElementById('detail-empty').style.display = 'flex';
-  document.getElementById('detail-content').style.display = 'none';
-  document.getElementById('inbox-3col').classList.remove('mob-detail');
-  toast('Message deleted');
+  showConfirmModal('Delete this message?', function() {
+    const row = document.querySelector(`.erow[data-id="${currentMailId}"]`);
+    if (row) { row.style.opacity = '0'; row.style.transform = 'translateX(12px)'; row.style.transition = 'all .25s'; setTimeout(() => row.remove(), 260); }
+    document.getElementById('detail-empty').style.display = 'flex';
+    document.getElementById('detail-content').style.display = 'none';
+    document.getElementById('inbox-3col').classList.remove('mob-detail');
+    toast('Message deleted');
+  });
 }
 
 function markUnreadCurrent() {
@@ -1104,23 +1264,26 @@ function markUnreadCurrent() {
 }
 
 function markAllReadInbox() {
-  EMAILS.forEach(e => e.unread = false);
-  document.querySelectorAll('.erow.unread').forEach(r => {
-    r.classList.remove('unread');
-    const dot = r.querySelector('.udot-sm'); if (dot) dot.className = 'rdot-sm';
-  });
-  document.getElementById('ucnt').textContent = '';
-  toast('All messages marked as read');
+  showConfirmModal('Mark all messages as read?', function() {
+    EMAILS.forEach(e => e.unread = false);
+    document.querySelectorAll('.erow.unread').forEach(r => {
+      r.classList.remove('unread');
+      const dot = r.querySelector('.udot-sm'); if (dot) dot.className = 'rdot-sm';
+    });
+    document.getElementById('ucnt').textContent = '';
+    toast('All messages marked as read');
+  }, 'Mark Read');
 }
 
 function deleteAllInbox() {
-  if (!confirm('Delete all messages?')) return;
-  document.getElementById('email-list').innerHTML = '<div class="no-mail"><svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="#FACC15" stroke-width="1"><path stroke-linecap=\\"round\\" d=\\"M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z\\"/></svg><p>No messages yet</p></div>';
-  document.getElementById('detail-empty').style.display = 'flex';
-  document.getElementById('detail-content').style.display = 'none';
-  document.getElementById('ucnt').textContent = '';
-  document.getElementById('inbox-3col').classList.remove('mob-detail');
-  toast('All messages deleted');
+  showConfirmModal('Delete all messages?', function() {
+    document.getElementById('email-list').innerHTML = '<div class="no-mail"><svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="#FACC15" stroke-width="1"><path stroke-linecap=\\"round\\" d=\\"M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z\\"/></svg><p>No messages yet</p></div>';
+    document.getElementById('detail-empty').style.display = 'flex';
+    document.getElementById('detail-content').style.display = 'none';
+    document.getElementById('ucnt').textContent = '';
+    document.getElementById('inbox-3col').classList.remove('mob-detail');
+    toast('All messages deleted');
+  });
 }
 
 function refreshInboxList() {

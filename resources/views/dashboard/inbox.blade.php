@@ -970,6 +970,29 @@
       </div>
     </div>
 
+    <!-- ═══ SELECT DOMAIN MODAL ═══ -->
+    <div class="modal-overlay" id="domain-modal" style="z-index:850;">
+      <div class="modal-box" style="max-width:380px;">
+        <div class="modal-hd">
+          <div class="modal-title">Select Domain</div>
+          <button class="modal-close" onclick="cancelDomainModal()">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p style="font-size:.82rem;color:var(--MU);line-height:1.5;">
+            Choose a domain for your new temporary address.
+          </p>
+          <div id="domain-options" style="display:flex;flex-direction:column;gap:8px;margin-top:4px;"></div>
+        </div>
+        <div class="modal-ft">
+          <button class="btn-primary yellow" id="domain-confirm-btn" onclick="confirmDomainSelection()" style="width:100%;justify-content:center;padding:12px;">
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- ═══ EXPIRES IN MODAL ═══ -->
     <div class="modal-overlay" id="expires-modal" style="z-index:800;">
       <div class="modal-box" style="max-width:380px;">
@@ -1033,11 +1056,19 @@ let searchDelayInbox = null;
 let pendingGenCallback = null;
 let selectedExpiresValue = null;
 let pendingConfirmCallback = null;
+let selectedDomain = null;
+let pendingDomainCallback = null;
 
 /* ── Helpers ── */
 function padInbox(n) { return String(n).padStart(2, '0'); }
 function randAddr() {
   const dom = DOMAINS[Math.floor(Math.random() * DOMAINS.length)];
+  const adj = ADJ[Math.floor(Math.random() * ADJ.length)];
+  const nou = NOU[Math.floor(Math.random() * NOU.length)];
+  const num = Math.floor(Math.random() * 9000 + 1000);
+  return adj + '.' + nou + num + '@' + dom;
+}
+function addrForDomain(dom) {
   const adj = ADJ[Math.floor(Math.random() * ADJ.length)];
   const nou = NOU[Math.floor(Math.random() * NOU.length)];
   const num = Math.floor(Math.random() * 9000 + 1000);
@@ -1096,15 +1127,14 @@ function renderActiveInbox() {
 }
 
 /* ── Create inbox ── */
-function createInbox(expiresSecs) {
-  var addr = randAddr();
-  var dom = addr.split('@')[1];
+function createInbox(domain, expiresSecs) {
+  var addr = addrForDomain(domain);
   var ib = {
     id: ++inboxIdCounter,
     address: addr,
     timerSecs: expiresSecs > 0 ? expiresSecs : 999999,
     timerMaxSecs: expiresSecs > 0 ? expiresSecs : 999999,
-    domain: dom,
+    domain: domain,
     emails: JSON.parse(JSON.stringify(SAMPLE_EMAILS)),
     currentMailId: 1,
   };
@@ -1222,11 +1252,54 @@ function renderEmailDetail() {
   (f = document.getElementById('d-body'))    && (f.innerHTML = em.body);
 }
 
-/* ── Generate new inbox (via expires modal) ── */
+/* ── Generate new inbox (domain → expires modals) ── */
 function genNewInbox() {
-  showExpiresModal(function(expiresSecs) {
-    createInbox(expiresSecs);
+  showDomainModal(function(domain) {
+    showExpiresModal(function(expiresSecs) {
+      createInbox(domain, expiresSecs);
+    });
   });
+}
+
+/* ── Domain selection modal ── */
+function showDomainModal(callback) {
+  pendingDomainCallback = callback;
+  var list = document.getElementById('domain-options');
+  list.innerHTML = DOMAINS.map(function(d) {
+    return '<div class="domain-option" onclick="pickDomainOpt(this,\'' + d + '\')" data-domain="' + d + '">' +
+      '<span class="domain-option-name" style="font-size:.82rem;">@' + d + '</span>' +
+      '<div class="domain-check"></div>' +
+    '</div>';
+  }).join('');
+  selectedDomain = null;
+  var btn = document.getElementById('domain-confirm-btn');
+  btn.disabled = true;
+  btn.style.opacity = '.5';
+  document.getElementById('domain-modal').classList.add('open');
+}
+
+function pickDomainOpt(el, domain) {
+  document.querySelectorAll('#domain-options .domain-option').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+  selectedDomain = domain;
+  var btn = document.getElementById('domain-confirm-btn');
+  btn.disabled = false;
+  btn.style.opacity = '1';
+}
+
+function confirmDomainSelection() {
+  if (!selectedDomain) return;
+  document.getElementById('domain-modal').classList.remove('open');
+  if (pendingDomainCallback) {
+    var cb = pendingDomainCallback;
+    pendingDomainCallback = null;
+    cb(selectedDomain);
+  }
+}
+
+function cancelDomainModal() {
+  document.getElementById('domain-modal').classList.remove('open');
+  pendingDomainCallback = null;
 }
 
 /* ── Expires In modal ── */

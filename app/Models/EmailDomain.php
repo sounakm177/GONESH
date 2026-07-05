@@ -59,6 +59,11 @@ class EmailDomain extends Model
         return $this->hasMany(PublicMailbox::class, 'domain', 'name');
     }
 
+    public function addresses(): HasMany
+    {
+        return $this->hasMany(Address::class);
+    }
+
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('status', 'active');

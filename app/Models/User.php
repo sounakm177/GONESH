@@ -65,6 +65,16 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(EmailDomain::class, 'created_by_user_id');
     }
 
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    public function addresses(): HasMany
+    {
+        return $this->hasMany(Address::class);
+    }
+
     public function isActive(): bool
     {
         return $this->status === 'active';

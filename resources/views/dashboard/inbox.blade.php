@@ -983,7 +983,7 @@
           <p style="font-size:.82rem;color:var(--MU);line-height:1.5;">
             Choose a domain for your new temporary address.
           </p>
-          <div id="domain-options" style="display:flex;flex-direction:column;gap:8px;margin-top:4px;"></div>
+          <div id="domain-options" style="display:flex;flex-direction:column;gap:8px;margin-top:4px;max-height:260px;overflow-y:auto;padding-right:4px;"></div>
         </div>
         <div class="modal-ft">
           <button class="btn-primary yellow" id="domain-confirm-btn" onclick="confirmDomainSelection()" style="width:100%;justify-content:center;padding:12px;">

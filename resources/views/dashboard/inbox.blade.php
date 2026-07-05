@@ -624,32 +624,7 @@ body.inbox-fs .inbox-page-wrap {
 body.inbox-fs .quick-reply {
   display:none !important;
 }
-body.inbox-fs .fs-exit-btn {
-  display:flex !important;
-}
 
-/* ── Fullscreen exit button (only visible in fullscreen) ── */
-.fs-exit-btn {
-  display:none;
-  position:fixed;
-  top:12px;
-  right:12px;
-  z-index:9999;
-  background:var(--INK);
-  color:#fff;
-  border:none;
-  font-family:var(--MONO);
-  font-size:.7rem;
-  font-weight:700;
-  padding:8px 14px;
-  border-radius:8px;
-  cursor:pointer;
-  align-items:center;
-  gap:6px;
-  box-shadow:0 4px 16px rgba(0,0,0,.2);
-  transition:background .12s, transform .1s;
-}
-.fs-exit-btn:hover {background:#000; transform:translateY(-1px);}
 
 /* ── Animations ── */
 @keyframes slide-in-right {
@@ -795,12 +770,13 @@ body.inbox-fs .fs-exit-btn {
 
       <!-- ── Address bar ── -->
       <div class="addr-strip">
+        <div class="page-title">INBOX</div>
         <div class="addr-strip-email">
           <div class="addr-strip-live">
             <div class="addr-live-dot"></div>
             LIVE
           </div>
-          <div class="addr-strip-txt" id="edisplay">ghost.wolf2847@dropit.io</div>
+          <div class="addr-strip-txt" id="edisplay"></div>
         </div>
         <button class="addr-copy-btn" id="cbtn" onclick="copyEmailInbox()">
           <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -993,10 +969,6 @@ body.inbox-fs .fs-exit-btn {
             </div>
 
             <!-- Email viewer (centered) -->
-            <button class="fs-exit-btn" onclick="toggleFullscreen()">
-              <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
-              Exit Fullscreen
-            </button>
             <div class="email-viewer" id="email-viewer">
               <div class="email-content">
                 <!-- Email body -->
@@ -1159,7 +1131,13 @@ function toggleInboxList() {
 
 /* ── Toggle fullscreen (hide site chrome only) ── */
 function toggleFullscreen() {
-  document.body.classList.toggle('inbox-fs');
+  var isFs = document.body.classList.toggle('inbox-fs');
+  var btn = document.getElementById('fs-btn');
+  if (!btn) return;
+  btn.innerHTML = isFs
+    ? '<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>'
+    : '<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/></svg>';
+  btn.title = isFs ? 'Exit fullscreen' : 'Fullscreen';
 }
 
 /* ── Toggle sender details panel ── */

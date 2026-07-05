@@ -9,7 +9,7 @@ class PlanSeeder extends Seeder
 {
     public function run(): void
     {
-        Plan::firstOrCreate(
+        Plan::updateOrCreate(
             ['slug' => 'free'],
             [
                 'name' => 'Free',
@@ -18,7 +18,7 @@ class PlanSeeder extends Seeder
                 'billing_cycle' => 'monthly',
                 'max_addresses' => 1,
                 'max_aliases' => 0,
-                'max_domains' => 0,
+                'max_domains' => 1,
                 'max_api_requests_per_day' => 100,
                 'max_smtp_sandboxes' => 0,
                 'email_history_days' => 30,
@@ -26,7 +26,7 @@ class PlanSeeder extends Seeder
             ]
         );
 
-        Plan::firstOrCreate(
+        Plan::updateOrCreate(
             ['slug' => 'pro'],
             [
                 'name' => 'Pro',

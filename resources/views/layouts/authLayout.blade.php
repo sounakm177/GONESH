@@ -1171,6 +1171,36 @@ body.sb-collapsed .sb-collapse-btn svg { transform: rotate(180deg); }
 }
 .search-link:hover { background: var(--BD2); }
 .search-link svg { color: var(--MU); }
+
+/* ═══ DOMAIN SELECTION MODAL ═══ */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 500;
+  background: rgba(0,0,0,.5); backdrop-filter: blur(6px);
+  display: none; align-items: center; justify-content: center; padding: 16px;
+}
+.modal-overlay.open { display: flex; animation: fade-bg .18s ease both; }
+@keyframes fade-bg { from{opacity:0}to{opacity:1} }
+.modal-box {
+  background: var(--SURF); border-radius: 14px; border: 1px solid var(--BD);
+  width: 100%; max-width: 440px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.18);
+  animation: modal-up .22s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes modal-up { from{transform:translateY(10px) scale(.97);opacity:0}to{transform:none;opacity:1} }
+.modal-hd { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--BD2); }
+.modal-title { font-family: var(--DISP); font-size: 1.1rem; letter-spacing: .04em; color: var(--INK); }
+.modal-body { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+.modal-ft   { padding: 14px 20px; border-top: 1px solid var(--BD2); display: flex; gap: 8px; justify-content: flex-end; }
+.domain-option {
+  display: flex; align-items: center; gap: 12px; padding: 11px 14px;
+  border: 1.5px solid var(--BD); border-radius: 9px; cursor: pointer;
+  transition: border-color .12s, background .12s;
+}
+.domain-option:hover { border-color: #D1D5DB; background: var(--BD2); }
+.domain-option.selected { border-color: var(--Y); background: rgba(250,204,21,.06); }
+.domain-option-name { font-family: var(--MONO); font-size: .82rem; font-weight: 700; color: var(--INK); flex: 1; }
+.domain-check { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--BD); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.domain-option.selected .domain-check { background: var(--Y); border-color: var(--Y); }
 </style>
 @stack('styles')
 </head>
@@ -1594,6 +1624,34 @@ body.sb-collapsed .sb-collapse-btn svg { transform: rotate(180deg); }
 
 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none">@csrf</form>
 
+<!-- ═══ DOMAIN SELECTION MODAL (first-time setup) ═══ -->
+<div class="modal-overlay" id="domain-selection-modal" style="z-index:700;">
+  <div class="modal-box" style="max-width:500px;">
+    <div class="modal-hd" style="border-bottom:none;padding-bottom:0;">
+      <div class="modal-title" style="font-size:1.3rem;">Choose Your Domains</div>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:.82rem;color:var(--MU);margin-bottom:4px;line-height:1.5;">
+        Select one or more domains for your temporary email addresses. The first one will be your default.
+      </p>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;">
+        <span id="domain-selection-counter" style="font-size:.72rem;color:var(--MU);font-family:var(--MONO);"></span>
+        <span style="font-size:.68rem;color:var(--MU2);">Select up to <span id="domain-selection-max"></span></span>
+      </div>
+      <div id="domain-selection-list" style="display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto;padding-right:4px;">
+        <div style="text-align:center;padding:20px;color:var(--MU2);font-size:.82rem;">Loading domains...</div>
+      </div>
+      <div id="domain-selection-error" style="display:none;font-size:.78rem;color:var(--RED);margin-top:6px;"></div>
+    </div>
+    <div class="modal-ft" style="border-top:none;padding-top:0;">
+      <button class="btn-primary yellow" id="domain-selection-save-btn" disabled style="opacity:.5;cursor:not-allowed;width:100%;justify-content:center;padding:12px;" onclick="saveDomainSelection()">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg>
+        Save &amp; Continue
+      </button>
+    </div>
+  </div>
+</div>
+
 <script>
 const sidebar     = document.getElementById('sidebar');
 const backdrop    = document.getElementById('sb-backdrop');
@@ -1824,6 +1882,164 @@ document.addEventListener('click', function(e) {
     document.getElementById('notif-dd').classList.remove('open');
   }
 });
+
+/* ═══ DOMAIN SELECTION MODAL ═══ */
+var domainSelectionDomains = [];
+var domainSelectionMax = 0;
+var selectedDomainIds = [];
+
+function openDomainSelectionModal() {
+  document.getElementById('domain-selection-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  loadAvailableDomains();
+}
+
+function closeDomainSelectionModal() {
+  document.getElementById('domain-selection-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function loadAvailableDomains() {
+  var list = document.getElementById('domain-selection-list');
+  list.innerHTML = '<div style="text-align:center;padding:20px;color:var(--MU2);font-size:.82rem;">Loading domains...</div>';
+
+  fetch('{{ route('dashboard.domains.available') }}')
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      domainSelectionDomains = data.domains || [];
+      domainSelectionMax = data.max_domains || 0;
+      document.getElementById('domain-selection-max').textContent = domainSelectionMax === -1 ? '∞' : domainSelectionMax;
+      renderDomainSelectionList();
+    })
+    .catch(function() {
+      list.innerHTML = '<div style="text-align:center;padding:16px;color:var(--RED);font-size:.82rem;">Failed to load domains. <button class="btn-ghost" onclick="loadAvailableDomains()" style="margin-top:6px;">Retry</button></div>';
+    });
+}
+
+function renderDomainSelectionList() {
+  var list = document.getElementById('domain-selection-list');
+  if (!domainSelectionDomains.length) {
+    list.innerHTML = '<div style="text-align:center;padding:16px;color:var(--MU2);font-size:.82rem;">No domains available.</div>';
+    updateDomainCounter();
+    return;
+  }
+
+  list.innerHTML = domainSelectionDomains.map(function(d) {
+    var isPro = d.type !== 'free';
+    var canSelect = d.can_select;
+    var isSelected = selectedDomainIds.indexOf(d.id) !== -1;
+
+    var optionClass = 'domain-option' + (isSelected ? ' selected' : '');
+    var cursorStyle = canSelect ? 'cursor:pointer;' : 'cursor:not-allowed;opacity:.5;';
+
+    return '<div class="' + optionClass + '" style="' + cursorStyle + '" data-id="' + d.id + '" onclick="' + (canSelect ? "toggleDomainSelection(" + d.id + ")" : "") + '">' +
+      '<div style="flex:1;display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0;">' +
+        '<span class="domain-option-name" style="font-size:.86rem;">@' + d.name + '</span>' +
+        '<span style="font-family:var(--MONO);font-size:.56rem;font-weight:800;padding:2px 8px;border-radius:6px;flex-shrink:0;' +
+          (isPro
+            ? 'background:rgba(124,58,237,.12);color:#7C3AED;'
+            : 'background:rgba(16,185,129,.1);color:var(--GREEN);') +
+        '">' + d.plan_badge + '</span>' +
+      '</div>' +
+      '<div class="domain-check">' +
+        (isSelected
+          ? '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>'
+          : '') +
+      '</div>' +
+    '</div>';
+  }).join('');
+  updateDomainCounter();
+}
+
+function toggleDomainSelection(id) {
+  var idx = selectedDomainIds.indexOf(id);
+  if (idx !== -1) {
+    selectedDomainIds.splice(idx, 1);
+  } else {
+    if (domainSelectionMax !== -1 && selectedDomainIds.length >= domainSelectionMax) {
+      document.getElementById('domain-selection-error').textContent = 'You can select up to ' + (domainSelectionMax === -1 ? 'unlimited' : domainSelectionMax) + ' domain(s).';
+      document.getElementById('domain-selection-error').style.display = 'block';
+      return;
+    }
+    selectedDomainIds.push(id);
+  }
+  document.getElementById('domain-selection-error').style.display = 'none';
+  updateDomainSaveBtn();
+  renderDomainSelectionList();
+}
+
+function updateDomainCounter() {
+  var el = document.getElementById('domain-selection-counter');
+  if (selectedDomainIds.length) {
+    el.textContent = selectedDomainIds.length + ' selected';
+  } else {
+    el.textContent = '';
+  }
+}
+
+function updateDomainSaveBtn() {
+  var btn = document.getElementById('domain-selection-save-btn');
+  if (selectedDomainIds.length) {
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
+  } else {
+    btn.disabled = true;
+    btn.style.opacity = '.5';
+    btn.style.cursor = 'not-allowed';
+  }
+}
+
+function saveDomainSelection() {
+  if (!selectedDomainIds.length) return;
+
+  var btn = document.getElementById('domain-selection-save-btn');
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+
+  fetch('{{ route('dashboard.domains.default') }}', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+    body: JSON.stringify({ email_domain_ids: selectedDomainIds }),
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data) {
+    if (data.success) {
+      closeDomainSelectionModal();
+      toast('Domains saved!');
+    } else {
+      document.getElementById('domain-selection-error').textContent = data.error || 'Failed to save.';
+      document.getElementById('domain-selection-error').style.display = 'block';
+      btn.disabled = false;
+      btn.innerHTML = '<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg> Save &amp; Continue';
+    }
+  })
+  .catch(function() {
+    document.getElementById('domain-selection-error').textContent = 'Network error. Please try again.';
+    document.getElementById('domain-selection-error').style.display = 'block';
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg> Save &amp; Continue';
+  });
+}
+
+/* ── Check if user needs domain selection on page load ── */
+@php
+    $user = auth()->user();
+    $needsDomainSelection = $user && app(\App\Services\Dashboard\DomainSelectionService::class)->needsDomainSelection($user);
+@endphp
+@if($needsDomainSelection)
+document.addEventListener('DOMContentLoaded', function() {
+  openDomainSelectionModal();
+});
+
+/* Prevent Escape key from closing the domain selection modal */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && document.getElementById('domain-selection-modal').classList.contains('open')) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+});
+@endif
 </script>
 @stack('scripts')
 </body>

@@ -27,6 +27,11 @@ Route::middleware('auth')->name('dashboard.')->group(function () {
     Route::get('/api-keys',          fn() => view('dashboard.api'))->name('api');
     Route::get('/smtp',              fn() => view('dashboard.smtp'))->name('smtp');
     Route::get('/settings',          fn() => view('dashboard.setting'))->name('setting');
+
+    Route::get('/domains/available', [\App\Http\Controllers\Dashboard\DomainSelectionController::class, 'available'])
+        ->name('domains.available');
+    Route::post('/domains/default', [\App\Http\Controllers\Dashboard\DomainSelectionController::class, 'store'])
+        ->name('domains.default');
 });
 
 // Route::get('/login', function(){

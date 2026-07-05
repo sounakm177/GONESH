@@ -1061,6 +1061,8 @@ let pendingDomainCallback = null;
 let currentFilter = 'all';
 let currentSearch = '';
 let currentRawUrl = '';
+const VS_BUFFER = 10;    // extra rows above/below viewport
+let vsItemHeight = 64;   // estimated row height, recalculated on render
 
 /* ── Helpers ── */
 function padInbox(n) { return String(n).padStart(2, '0'); }
@@ -1122,6 +1124,8 @@ function renderActiveInbox() {
 
   document.getElementById('edisplay').textContent = ib.address;
   updateTimerUI();
+  renderSenderInfo(null, ib);
+  vsReset(ib.id);
   loadEmails();
 }
 
@@ -1211,14 +1215,16 @@ function loadEmails() {
     ib.emails = data.emails || [];
     ib.unreadCount = data.unread || 0;
     ib.totalEmails = data.total || 0;
+    ib._vsScroll = 0;
     renderEmailList();
     renderEmailDetail();
+    renderSenderInfo(ib.emails.find(function(e){ return e.id === ib.currentMailId; }) || null, ib);
   })['catch'](function() {
     toast('Failed to load emails');
   });
 }
 
-/* ── Email list ── */
+/* ── Virtual-scrolled email list ── */
 function renderEmailList() {
   var ib = activeInbox();
   if (!ib) return;
@@ -1226,14 +1232,101 @@ function renderEmailList() {
   var cnt = document.getElementById('list-count');
   var badge = document.getElementById('ucnt');
   var unread = ib.unreadCount || 0;
+  var total = ib.emails.length;
 
-  scroll.innerHTML = ib.emails.map(function(em) {
+  cnt.innerHTML = '<svg width="9" height="9" fill="var(--GREEN)" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5"/></svg> ' + total + ' messages' + (unread ? ' · ' + unread + ' unread' : '');
+  badge.textContent = unread > 0 ? unread : '';
+
+  if (total === 0) {
+    scroll.innerHTML = '<div class="no-mail"><svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg><p>No messages yet</p></div>';
+    scroll._vsInit = false;
+    scroll._vsEst = null;
+    scroll._vsFirst = -1;
+    scroll._vsLast = -1;
+    return;
+  }
+
+  // Store total height reference
+  ib._vsTotal = total;
+
+  // Estimate row height from first render
+  if (!scroll._vsEst) {
+    var probe = document.createElement('div');
+    probe.className = 'erow';
+    probe.style.position = 'absolute'; probe.style.visibility = 'hidden'; probe.style.width = '100%';
+    probe.innerHTML = '<div class="erow-left"><div class="erow-avatar" style="background:#000;">X</div><div class="rdot-sm"></div></div><div class="erow-body"><div class="erow-top-row"><span class="e-sender">X</span><span class="e-time">X</span></div><div class="e-subject">X</div><div class="e-preview">X</div></div>';
+    scroll.appendChild(probe);
+    vsItemHeight = probe.offsetHeight || 64;
+    scroll.removeChild(probe);
+    scroll._vsEst = vsItemHeight;
+  }
+
+  // Build virtual-scroll structure on first render
+  if (!scroll._vsInit) {
+    scroll.style.setProperty('overflow-y', 'auto', 'important');
+    scroll.style.position = 'relative';
+    scroll.innerHTML = '<div class="vs-spacer-top"></div><div class="vs-rows"></div><div class="vs-spacer-bot"></div>';
+    scroll.addEventListener('scroll', vsScrollHandler);
+    scroll._vsInit = true;
+  }
+
+  scroll._vsIbId = ib.id;
+  vsOnScroll(ib);
+}
+
+function vsScrollHandler() {
+  var scroll = document.getElementById('email-list');
+  if (!scroll || !scroll._vsIbId) return;
+  var ib = getInbox(scroll._vsIbId);
+  if (!ib) return;
+  vsRenderVisible(scroll, ib);
+}
+
+function vsOnScroll(ib) {
+  var scroll = document.getElementById('email-list');
+  if (!scroll) return;
+  scroll._vsIbId = ib.id;
+  vsRenderVisible(scroll, ib);
+}
+
+function vsRenderVisible(scroll, ib) {
+  var st = scroll.scrollTop;
+  var ch = scroll.clientHeight;
+  var total = ib._vsTotal || ib.emails.length;
+  if (total === 0) return;
+  var rowH = vsItemHeight || 64;
+
+  var first = Math.max(0, Math.floor(st / rowH) - VS_BUFFER);
+  var last = Math.min(total, Math.ceil((st + ch) / rowH) + VS_BUFFER);
+  var topPad = first * rowH;
+  var botPad = (total - last) * rowH;
+
+  var topEl = scroll.querySelector('.vs-spacer-top');
+  var rowsEl = scroll.querySelector('.vs-rows');
+  var botEl = scroll.querySelector('.vs-spacer-bot');
+  if (!topEl || !rowsEl || !botEl) return;
+  topEl.style.height = topPad + 'px';
+  botEl.style.height = botPad + 'px';
+
+  // Only re-render if the window changed
+  if (scroll._vsFirst === first && scroll._vsLast === last) return;
+  scroll._vsFirst = first;
+  scroll._vsLast = last;
+
+  var frag = document.createDocumentFragment();
+  for (var i = first; i < last; i++) {
+    var em = ib.emails[i];
+    if (!em) continue;
     var sel = em.id === ib.currentMailId ? ' selected' : '';
     var unr = em.unread ? ' unread' : '';
     var dot = em.unread
       ? '<div class="udot-sm"></div>'
       : '<div class="rdot-sm"></div>';
-    return '<div class="erow' + unr + sel + '" data-id="' + em.id + '" onclick="openMailDetail(' + em.id + ')">' +
+    var div = document.createElement('div');
+    div.className = 'erow' + unr + sel;
+    div.setAttribute('data-id', em.id);
+    div.onclick = function(id) { return function() { openMailDetail(id); }; }(em.id);
+    div.innerHTML =
       '<div class="erow-left">' +
         '<div class="erow-avatar" style="background:' + em.color + ';">' + em.avatar + '</div>' +
         dot +
@@ -1245,11 +1338,25 @@ function renderEmailList() {
         '</div>' +
         '<div class="e-subject">' + escapeHtml(em.subject) + '</div>' +
         '<div class="e-preview">' + escapeHtml((em.body || '').replace(/<[^>]*>/g,'').slice(0,60)) + '…</div>' +
-      '</div>' +
-    '</div>';
-  }).join('');
-  cnt.innerHTML = '<svg width="9" height="9" fill="var(--GREEN)" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5"/></svg> ' + ib.emails.length + ' messages' + (unread ? ' · ' + unread + ' unread' : '');
-  badge.textContent = unread > 0 ? unread : '';
+      '</div>';
+    frag.appendChild(div);
+  }
+  rowsEl.innerHTML = '';
+  rowsEl.appendChild(frag);
+}
+
+function vsReset(id) {
+  var scroll = document.getElementById('email-list');
+  if (scroll) {
+    scroll._vsInit = false;
+    scroll._vsEst = null;
+    scroll._vsFirst = -1;
+    scroll._vsLast = -1;
+    scroll._vsIbId = null;
+    if (scroll.scrollTo) scroll.scrollTo(0, 0);
+  }
+  var ib = id ? getInbox(id) : activeInbox();
+  if (ib) ib._vsScroll = 0;
 }
 
 function escapeHtml(str) {
@@ -1267,6 +1374,7 @@ function renderEmailDetail() {
   if (!em) {
     document.getElementById('detail-empty').style.display = 'flex';
     document.getElementById('detail-content').style.display = 'none';
+    renderSenderInfo(null, ib);
     return;
   }
   document.getElementById('detail-empty').style.display = 'none';
@@ -1305,6 +1413,7 @@ function escapeAttr(str) {
 }
 
 function renderSenderInfo(em, ib) {
+  if (!ib) return;
   var fn = document.getElementById('info-from');
   var fd = document.getElementById('info-domain');
   var fr = document.getElementById('info-received');
@@ -1313,13 +1422,13 @@ function renderSenderInfo(em, ib) {
   var fa = document.getElementById('info-address');
   var fdom = document.getElementById('info-addr-domain');
 
-  if (fn) fn.textContent = em.sender || '—';
+  if (fn) fn.textContent = (em && em.sender) || '—';
   if (fd) {
-    var parts = (em.email || '').split('@');
+    var parts = ((em && em.email) || '').split('@');
     fd.textContent = parts.length > 1 ? parts[1] : '—';
   }
-  if (fr) fr.textContent = em.time || '—';
-  if (ft) ft.textContent = ib.emails ? ib.emails.length : 0;
+  if (fr) fr.textContent = (em && em.time) || '—';
+  if (ft) ft.textContent = (ib.emails && ib.emails.length) || 0;
   if (fu) fu.textContent = ib.unreadCount || 0;
   if (fa) fa.textContent = ib.address ? ib.address.split('@')[0] : '—';
   if (fdom) fdom.textContent = ib.domain || '—';
@@ -1503,6 +1612,7 @@ function deleteCurrentMail() {
       document.getElementById('detail-content').style.display = 'none';
       document.getElementById('inbox-3col').classList.remove('mob-detail');
       renderEmailList();
+      renderSenderInfo(null, ib);
       toast('Message deleted');
     })['catch'](function() { toast('Failed to delete message'); });
   });
@@ -1519,6 +1629,7 @@ function markUnreadCurrent() {
     var em = ib.emails.find(function(e){ return e.id === ib.currentMailId; });
     if (em) em.unread = true;
     renderEmailList();
+    renderSenderInfo(null, ib);
     toast('Marked as unread');
   })['catch'](function() { toast('Failed to mark as unread'); });
 }
@@ -1535,6 +1646,7 @@ function markAllReadInbox() {
       ib.emails.forEach(function(e){ e.unread = false; });
       ib.unreadCount = 0;
       renderEmailList();
+      renderSenderInfo(null, ib);
       toast('All messages marked as read');
     })['catch'](function() { toast('Failed to mark all as read'); });
   }, 'Mark Read');
@@ -1555,6 +1667,7 @@ function deleteAllInbox() {
       document.getElementById('detail-empty').style.display = 'flex';
       document.getElementById('detail-content').style.display = 'none';
       renderEmailList();
+      renderSenderInfo(null, ib);
       toast('All messages deleted');
     })['catch'](function() { toast('Failed to delete all messages'); });
   });

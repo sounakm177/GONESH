@@ -32,6 +32,13 @@ Route::middleware('auth')->name('dashboard.')->group(function () {
         ->name('domains.available');
     Route::post('/domains/default', [\App\Http\Controllers\Dashboard\DomainSelectionController::class, 'store'])
         ->name('domains.default');
+
+    Route::prefix('inboxes')->name('inboxes.')->group(function () {
+        Route::get('/',                 [\App\Http\Controllers\Dashboard\InboxController::class, 'index'])->name('index');
+        Route::post('/',                [\App\Http\Controllers\Dashboard\InboxController::class, 'store'])->name('store');
+        Route::delete('{address}',      [\App\Http\Controllers\Dashboard\InboxController::class, 'destroy'])->name('destroy');
+        Route::get('domains',           [\App\Http\Controllers\Dashboard\InboxController::class, 'domains'])->name('domains');
+    });
 });
 
 // Route::get('/login', function(){

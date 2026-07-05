@@ -1029,22 +1029,13 @@
     $isProInbox = $_plan && $_plan->slug === 'pro';
 @endphp
 
-const IS_PRO      = @json($isProInbox);
-const DOMAINS     = ['dropit.io','burnbox.dev','zaptmp.net','voidmail.cc','mailsink.app'];
-const ADJ         = ['silent','ghost','turbo','vapor','swift','lunar','neon','flux'];
-const NOU         = ['fox','wolf','tide','bolt','hawk','mint','storm','byte'];
+const CSRF_TOKEN  = '{{ csrf_token() }}';
+let IS_PRO        = @json($isProInbox);
 const EXPIRES_OPT = [
   { label: '60 Minutes',  value: 3600,  pro: false },
   { label: '12 Hours',    value: 43200, pro: false },
   { label: '24 Hours',    value: 86400, pro: false },
   { label: 'Unlimited',   value: -1,    pro: true  },
-];
-const SAMPLE_EMAILS = [
-  { id:1, sender:'Google',   email:'noreply@accounts.google.com', avatar:'G', color:'#4285F4', time:'2 min ago',  subject:'Verify your Google account',     body:'<p>Hi there,</p><p>We received a request to verify your Google Account email address.</p><p>Your verification code is:</p><div class="otp-box">847 291</div><p>This code expires in <strong>10 minutes</strong>. Do not share it with anyone.</p><hr style="border:none;border-top:1px solid var(--BD);margin:20px 0;"/><p style="font-size:.76rem;color:var(--MU2);">Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043</p>', unread:true  },
-  { id:2, sender:'Shopify',  email:'noreply@shopify.com',         avatar:'S', color:'#7C3AED', time:'14 min ago', subject:'Your OTP code is 382910',          body:'<p>Hi,</p><p>Use the following OTP to complete your Shopify sign-in:</p><div class="otp-box">382 910</div><p>This code is valid for 15 minutes. If you did not request this, please ignore this email.</p>', unread:true  },
-  { id:3, sender:'Notion',   email:'hello@mail.notion.so',        avatar:'N', color:'#10B981', time:'38 min ago', subject:'Confirm your Notion email',        body:'<p>Hey there,</p><p>Thanks for signing up for Notion. Please confirm your email address to get started.</p><a href="#" style="display:inline-block;background:#000;color:#fff;padding:10px 22px;border-radius:6px;font-size:.84rem;font-weight:600;margin:14px 0;text-decoration:none;">Confirm Email →</a><p style="font-size:.76rem;color:var(--MU2);">This link expires in 24 hours. If you didn\'t sign up, you can safely ignore this.</p>', unread:true  },
-  { id:4, sender:'Twitter',  email:'info@twitter.com',            avatar:'T', color:'#1DA1F2', time:'1 hr ago',   subject:'New login to your Twitter account', body:'<p>Hi,</p><p>We noticed a new sign-in to your Twitter account from:</p><p><strong>Chrome on macOS</strong> · IP 192.168.1.1 · United States</p><p>If this was you, no action is needed. If not, please secure your account immediately.</p><a href="#" style="color:#1DA1F2;">Review account activity →</a>', unread:false },
-  { id:5, sender:'Amazon',   email:'auto-confirm@amazon.com',     avatar:'A', color:'#F59E0B', time:'2 hrs ago',  subject:'Your order has been confirmed',     body:'<p>Hello,</p><p>Thank you for your order! Your order <strong>#112-8827741-1234567</strong> has been confirmed and is being prepared for shipment.</p><p>Estimated delivery: <strong>June 22–24, 2026</strong></p><a href="#" style="color:#F59E0B;">Track your order →</a>', unread:false },
 ];
 
 /* ── State ── */
@@ -1061,36 +1052,24 @@ let pendingDomainCallback = null;
 
 /* ── Helpers ── */
 function padInbox(n) { return String(n).padStart(2, '0'); }
-function randAddr() {
-  const dom = DOMAINS[Math.floor(Math.random() * DOMAINS.length)];
-  const adj = ADJ[Math.floor(Math.random() * ADJ.length)];
-  const nou = NOU[Math.floor(Math.random() * NOU.length)];
-  const num = Math.floor(Math.random() * 9000 + 1000);
-  return adj + '.' + nou + num + '@' + dom;
-}
-function addrForDomain(dom) {
-  const adj = ADJ[Math.floor(Math.random() * ADJ.length)];
-  const nou = NOU[Math.floor(Math.random() * NOU.length)];
-  const num = Math.floor(Math.random() * 9000 + 1000);
-  return adj + '.' + nou + num + '@' + dom;
-}
 function getInbox(id) { return inboxes.find(function(i){ return i.id === id; }); }
 function activeInbox() { return getInbox(activeInboxId); }
+function updateSidebarCount() {
+  var el = document.getElementById('sidebar-inbox-count');
+  if (el) el.textContent = inboxes.length;
+}
 
-/* ── Create default inbox on first load ── */
-function createDefaultInbox() {
-  var addr = randAddr();
-  var ib = {
-    id: ++inboxIdCounter,
-    address: addr,
-    timerSecs: 3600,
-    timerMaxSecs: 3600,
-    domain: addr.split('@')[1],
-    emails: JSON.parse(JSON.stringify(SAMPLE_EMAILS)),
-    currentMailId: 1,
-  };
-  inboxes.push(ib);
-  return ib;
+/* ── Load inboxes from API ── */
+function loadInboxes(callback) {
+  fetch('/inboxes').then(function(r){ return r.json(); }).then(function(data) {
+    inboxes = data.inboxes || [];
+    IS_PRO = data.is_pro;
+    updateSidebarCount();
+    callback && callback(data);
+  })['catch'](function() {
+    toast('Failed to load inboxes');
+    callback && callback({ inboxes: [] });
+  });
 }
 
 /* ── Inbox tabs rendering ── */
@@ -1126,41 +1105,47 @@ function renderActiveInbox() {
   renderEmailDetail();
 }
 
-/* ── Create inbox ── */
-function createInbox(domain, expiresSecs) {
-  var addr = addrForDomain(domain);
-  var ib = {
-    id: ++inboxIdCounter,
-    address: addr,
-    timerSecs: expiresSecs > 0 ? expiresSecs : 999999,
-    timerMaxSecs: expiresSecs > 0 ? expiresSecs : 999999,
-    domain: domain,
-    emails: JSON.parse(JSON.stringify(SAMPLE_EMAILS)),
-    currentMailId: 1,
-  };
-  inboxes.push(ib);
-  activeInboxId = ib.id;
-  renderInboxTabs();
-  renderActiveInbox();
-  ensureTimer();
-  toast('Inbox created');
+/* ── Create inbox via API ── */
+function createInbox(domainId, expiresSecs) {
+  fetch('/inboxes', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF_TOKEN },
+    body: JSON.stringify({ email_domain_id: domainId, expires_in: expiresSecs })
+  }).then(function(r){ return r.json(); }).then(function(data) {
+    if (data.error) { toast(data.error); return; }
+    var ib = data.inbox;
+    inboxes.push(ib);
+    activeInboxId = ib.id;
+    renderInboxTabs();
+    renderActiveInbox();
+    ensureTimer();
+    updateSidebarCount();
+    toast('Inbox created');
+  })['catch'](function() { toast('Failed to create inbox'); });
 }
 
 /* ── Delete inbox ── */
 function deleteInbox(id) {
   if (inboxes.length <= 1) { toast('Cannot delete the last inbox'); return; }
   showConfirmModal('Delete this inbox and all its messages?', function() {
-    var idx = -1;
-    inboxes.forEach(function(ib, i){ if (ib.id === id) idx = i; });
-    if (idx === -1) return;
-    inboxes.splice(idx, 1);
-    if (activeInboxId === id) {
-      var next = inboxes[Math.min(idx, inboxes.length - 1)];
-      activeInboxId = next ? next.id : null;
-    }
-    renderInboxTabs();
-    renderActiveInbox();
-    toast('Inbox deleted');
+    fetch('/inboxes/' + id, {
+      method: 'DELETE',
+      headers: { 'X-CSRF-TOKEN': CSRF_TOKEN }
+    }).then(function(r){ return r.json(); }).then(function(data) {
+      if (data.error) { toast(data.error); return; }
+      var idx = -1;
+      inboxes.forEach(function(ib, i){ if (ib.id === id) idx = i; });
+      if (idx === -1) return;
+      inboxes.splice(idx, 1);
+      if (activeInboxId === id) {
+        var next = inboxes[Math.min(idx, inboxes.length - 1)];
+        activeInboxId = next ? next.id : null;
+      }
+      renderInboxTabs();
+      renderActiveInbox();
+      updateSidebarCount();
+      toast('Inbox deleted');
+    })['catch'](function() { toast('Failed to delete inbox'); });
   }, 'Delete');
 }
 
@@ -1254,9 +1239,9 @@ function renderEmailDetail() {
 
 /* ── Generate new inbox (domain → expires modals) ── */
 function genNewInbox() {
-  showDomainModal(function(domain) {
+  showDomainModal(function(domainId) {
     showExpiresModal(function(expiresSecs) {
-      createInbox(domain, expiresSecs);
+      createInbox(domainId, expiresSecs);
     });
   });
 }
@@ -1265,23 +1250,29 @@ function genNewInbox() {
 function showDomainModal(callback) {
   pendingDomainCallback = callback;
   var list = document.getElementById('domain-options');
-  list.innerHTML = DOMAINS.map(function(d) {
-    return '<div class="domain-option" onclick="pickDomainOpt(this,\'' + d + '\')" data-domain="' + d + '">' +
-      '<span class="domain-option-name" style="font-size:.82rem;">@' + d + '</span>' +
-      '<div class="domain-check"></div>' +
-    '</div>';
-  }).join('');
+  list.innerHTML = '<div style="text-align:center;padding:12px;color:var(--MU2);font-size:.82rem;">Loading domains...</div>';
   selectedDomain = null;
   var btn = document.getElementById('domain-confirm-btn');
   btn.disabled = true;
   btn.style.opacity = '.5';
   document.getElementById('domain-modal').classList.add('open');
+
+  fetch('/inboxes/domains').then(function(r){ return r.json(); }).then(function(data) {
+    list.innerHTML = (data.domains || []).map(function(d) {
+      return '<div class="domain-option" onclick="pickDomainOpt(this,' + d.id + ')" data-domain-id="' + d.id + '" data-domain-name="' + d.name + '">' +
+        '<span class="domain-option-name" style="font-size:.82rem;">@' + d.name + '</span>' +
+        '<div class="domain-check"></div>' +
+      '</div>';
+    }).join('');
+  })['catch'](function() {
+    list.innerHTML = '<div style="text-align:center;padding:12px;color:var(--RED);font-size:.82rem;">Failed to load domains</div>';
+  });
 }
 
-function pickDomainOpt(el, domain) {
+function pickDomainOpt(el, id) {
   document.querySelectorAll('#domain-options .domain-option').forEach(function(o) { o.classList.remove('selected'); });
   el.classList.add('selected');
-  selectedDomain = domain;
+  selectedDomain = id;
   var btn = document.getElementById('domain-confirm-btn');
   btn.disabled = false;
   btn.style.opacity = '1';
@@ -1462,11 +1453,18 @@ function debounceSearchInbox(val) {
 }
 
 /* ── Init ── */
-var first = createDefaultInbox();
-activeInboxId = first.id;
-renderInboxTabs();
-renderActiveInbox();
-ensureTimer();
-if (window.innerWidth >= 900) openMailDetail(1);
+loadInboxes(function(data) {
+  if (inboxes.length === 0) {
+    genNewInbox();
+  } else {
+    activeInboxId = inboxes[0].id;
+    renderInboxTabs();
+    renderActiveInbox();
+    ensureTimer();
+    if (window.innerWidth >= 900 && inboxes[0].emails && inboxes[0].emails.length > 0) {
+      openMailDetail(inboxes[0].emails[0].id);
+    }
+  }
+});
 </script>
 @endpush

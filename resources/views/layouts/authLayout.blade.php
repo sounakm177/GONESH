@@ -1565,7 +1565,7 @@ body.sb-collapsed .sb-collapse-btn svg { transform: rotate(180deg); }
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
         </div>
         <span class="sb-item-label">Inbox</span>
-        <span class="sb-pill">3</span>
+        <span class="sb-pill" id="sidebar-inbox-count">{{ auth()->user()?->addresses()->where('type', 'inbox')->count() ?? 0 }}</span>
       </a>
 
       <a class="sb-item {{ request()->routeIs('dashboard.address') ? 'active' : '' }}" href="{{ route('dashboard.address') }}" data-tip="Addresses">

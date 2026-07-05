@@ -16,7 +16,7 @@ class PlanSeeder extends Seeder
                 'description' => 'Get started with a basic temporary email address.',
                 'price' => 0,
                 'billing_cycle' => 'monthly',
-                'max_addresses' => 1,
+                'max_addresses' => 2,
                 'max_aliases' => 0,
                 'max_domains' => 1,
                 'max_api_requests_per_day' => 100,

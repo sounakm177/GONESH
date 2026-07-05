@@ -25,6 +25,7 @@ class Email extends Model
         'has_attachments',
         'is_read',
         'is_spam',
+        'is_starred',
         'received_at',
     ];
 
@@ -33,6 +34,7 @@ class Email extends Model
         'has_attachments' => 'boolean',
         'is_read' => 'boolean',
         'is_spam' => 'boolean',
+        'is_starred' => 'boolean',
         'received_at' => 'datetime',
     ];
 

@@ -620,6 +620,7 @@
 }
 .detail-body::-webkit-scrollbar       { width: 4px; }
 .detail-body::-webkit-scrollbar-thumb { background: var(--BD); border-radius: 2px; }
+.detail-body .email-iframe { width:100%; height:100%; border:none; display:block; }
 
 /* 4. Right info sidebar should also scroll independently */
 .inbox-info-col {
@@ -876,11 +877,11 @@
                   <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8"/></svg>
                   Mark Unread
                 </button>
-                <button class="dtl-btn">
+                <button class="dtl-btn" onclick="viewRawEmail()">
                   <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M3 10h18M3 14h18"/></svg>
                   View Raw
                 </button>
-                <button class="dtl-btn">
+                <button class="dtl-btn" onclick="printEmail()">
                   <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
                   Print
                 </button>
@@ -904,16 +905,7 @@
               </div>
             </div>
 
-            <div class="detail-body" id="d-body">
-              <p>Hi there,</p>
-              <p>We received a request to verify the email address associated with your Google Account.</p>
-              <p>Your verification code is:</p>
-              <div class="otp-box">847 291</div>
-              <p>This code expires in <strong>10 minutes</strong>. Do not share it with anyone — Google will never ask for this code.</p>
-              <hr style="border:none;border-top:1px solid var(--BD);margin:20px 0;"/>
-              <p style="font-size:.76rem;color:var(--MU2);">If you didn't request this, you can safely ignore this email. Your account remains secure.</p>
-              <p style="font-size:.76rem;color:var(--MU2);">Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043</p>
-            </div>
+            <div class="detail-body" id="d-body"></div>
 
             <div class="quick-reply">
               <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="color:var(--MU2);flex-shrink:0;"><path stroke-linecap="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -927,16 +919,16 @@
         <div class="inbox-info-col" id="inbox-info-col">
           <div class="info-section">
             <div class="info-section-title">Sender Info</div>
-            <div class="info-stat"><span class="info-stat-lbl">From</span><span class="info-stat-val" style="font-size:.76rem;">Google</span></div>
-            <div class="info-stat"><span class="info-stat-lbl">Domain</span><span class="info-stat-val" style="font-family:var(--MONO);font-size:.72rem;">google.com</span></div>
-            <div class="info-stat"><span class="info-stat-lbl">Received</span><span class="info-stat-val" style="font-size:.76rem;">2m ago</span></div>
+            <div class="info-stat"><span class="info-stat-lbl">From</span><span class="info-stat-val" style="font-size:.76rem;" id="info-from">—</span></div>
+            <div class="info-stat"><span class="info-stat-lbl">Domain</span><span class="info-stat-val" style="font-family:var(--MONO);font-size:.72rem;" id="info-domain">—</span></div>
+            <div class="info-stat"><span class="info-stat-lbl">Received</span><span class="info-stat-val" style="font-size:.76rem;" id="info-received">—</span></div>
           </div>
           <div class="info-section">
             <div class="info-section-title">Inbox Stats</div>
-            <div class="info-stat"><span class="info-stat-lbl">Total</span><span class="info-stat-val">5</span></div>
-            <div class="info-stat"><span class="info-stat-lbl">Unread</span><span class="info-stat-val" style="color:var(--Y);">3</span></div>
-            <div class="info-stat"><span class="info-stat-lbl">Address</span><span class="info-stat-val" style="font-family:var(--MONO);font-size:.68rem;word-break:break-all;">ghost.wolf2847</span></div>
-            <div class="info-stat"><span class="info-stat-lbl">Domain</span><span class="info-stat-val" style="font-family:var(--MONO);font-size:.72rem;">dropit.io</span></div>
+            <div class="info-stat"><span class="info-stat-lbl">Total</span><span class="info-stat-val" id="info-total">0</span></div>
+            <div class="info-stat"><span class="info-stat-lbl">Unread</span><span class="info-stat-val" style="color:var(--Y);" id="info-unread">0</span></div>
+            <div class="info-stat"><span class="info-stat-lbl">Address</span><span class="info-stat-val" style="font-family:var(--MONO);font-size:.68rem;word-break:break-all;" id="info-address">—</span></div>
+            <div class="info-stat"><span class="info-stat-lbl">Domain</span><span class="info-stat-val" style="font-family:var(--MONO);font-size:.72rem;" id="info-addr-domain">—</span></div>
           </div>
           <div class="info-section">
             <div class="info-section-title">Quick Actions</div>
@@ -1015,6 +1007,24 @@
         </div>
       </div>
     </div>
+
+    <!-- ═══ VIEW RAW MODAL ═══ -->
+    <div class="modal-overlay" id="raw-modal" style="z-index:800;">
+      <div class="modal-box" style="max-width:700px;width:90%;">
+        <div class="modal-hd">
+          <div class="modal-title">Raw Email Source</div>
+          <button class="modal-close" onclick="closeRawModal()">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M18 6L6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <pre id="raw-content" style="font-family:var(--MONO);font-size:.72rem;line-height:1.6;white-space:pre-wrap;word-break:break-all;background:#1a1a2e;color:#e2e8f0;padding:16px;border-radius:8px;max-height:60vh;overflow-y:auto;margin:0;"></pre>
+        </div>
+        <div class="modal-ft">
+          <button class="btn-primary yellow" onclick="closeRawModal()" style="padding:10px 20px;font-size:.8rem;">Close</button>
+        </div>
+      </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -1041,7 +1051,6 @@ const EXPIRES_OPT = [
 /* ── State ── */
 let inboxes = [];
 let activeInboxId = null;
-let inboxIdCounter = 0;
 let timerInt = null;
 let searchDelayInbox = null;
 let pendingGenCallback = null;
@@ -1049,6 +1058,9 @@ let selectedExpiresValue = null;
 let pendingConfirmCallback = null;
 let selectedDomain = null;
 let pendingDomainCallback = null;
+let currentFilter = 'all';
+let currentSearch = '';
+let currentRawUrl = '';
 
 /* ── Helpers ── */
 function padInbox(n) { return String(n).padStart(2, '0'); }
@@ -1059,16 +1071,25 @@ function updateSidebarCount() {
   if (el) el.textContent = inboxes.length;
 }
 
+function toast(msg) {
+  var el = document.getElementById('toast');
+  if (!el) return;
+  el.innerHTML = '<span class="toast-dot"></span>' + msg;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(function() { el.classList.remove('show'); }, 2800);
+}
+
 /* ── Load inboxes from API ── */
 function loadInboxes(callback) {
   fetch('/inboxes').then(function(r){ return r.json(); }).then(function(data) {
     inboxes = data.inboxes || [];
     IS_PRO = data.is_pro;
     updateSidebarCount();
-    callback && callback(data);
+    if (callback) callback(data);
   })['catch'](function() {
     toast('Failed to load inboxes');
-    callback && callback({ inboxes: [] });
+    if (callback) callback({ inboxes: [] });
   });
 }
 
@@ -1101,8 +1122,7 @@ function renderActiveInbox() {
 
   document.getElementById('edisplay').textContent = ib.address;
   updateTimerUI();
-  renderEmailList();
-  renderEmailDetail();
+  loadEmails();
 }
 
 /* ── Create inbox via API ── */
@@ -1181,6 +1201,23 @@ function extendTimer() {
   toast('Added 10 minutes');
 }
 
+/* ── Load emails from API ── */
+function loadEmails() {
+  var ib = activeInbox();
+  if (!ib) return;
+  var params = '?filter=' + currentFilter;
+  if (currentSearch) params += '&search=' + encodeURIComponent(currentSearch);
+  fetch('/inboxes/' + ib.id + '/emails' + params).then(function(r){ return r.json(); }).then(function(data) {
+    ib.emails = data.emails || [];
+    ib.unreadCount = data.unread || 0;
+    ib.totalEmails = data.total || 0;
+    renderEmailList();
+    renderEmailDetail();
+  })['catch'](function() {
+    toast('Failed to load emails');
+  });
+}
+
 /* ── Email list ── */
 function renderEmailList() {
   var ib = activeInbox();
@@ -1188,7 +1225,7 @@ function renderEmailList() {
   var scroll = document.getElementById('email-list');
   var cnt = document.getElementById('list-count');
   var badge = document.getElementById('ucnt');
-  var unread = ib.emails.filter(function(e){ return e.unread; }).length;
+  var unread = ib.unreadCount || 0;
 
   scroll.innerHTML = ib.emails.map(function(em) {
     var sel = em.id === ib.currentMailId ? ' selected' : '';
@@ -1203,11 +1240,11 @@ function renderEmailList() {
       '</div>' +
       '<div class="erow-body">' +
         '<div class="erow-top-row">' +
-          '<span class="e-sender">' + em.sender + '</span>' +
+          '<span class="e-sender">' + escapeHtml(em.sender) + '</span>' +
           '<span class="e-time">' + em.time + '</span>' +
         '</div>' +
-        '<div class="e-subject">' + em.subject + '</div>' +
-        '<div class="e-preview">' + (em.body.replace(/<[^>]*>/g,'').slice(0,60)) + '…</div>' +
+        '<div class="e-subject">' + escapeHtml(em.subject) + '</div>' +
+        '<div class="e-preview">' + escapeHtml((em.body || '').replace(/<[^>]*>/g,'').slice(0,60)) + '…</div>' +
       '</div>' +
     '</div>';
   }).join('');
@@ -1215,6 +1252,14 @@ function renderEmailList() {
   badge.textContent = unread > 0 ? unread : '';
 }
 
+function escapeHtml(str) {
+  if (!str) return '';
+  var d = document.createElement('div');
+  d.appendChild(document.createTextNode(str));
+  return d.innerHTML;
+}
+
+/* ── Render email detail ── */
 function renderEmailDetail() {
   var ib = activeInbox();
   if (!ib) return;
@@ -1234,7 +1279,50 @@ function renderEmailDetail() {
   (f = document.getElementById('d-email'))   && (f.innerHTML = '&lt;' + em.email + '&gt;');
   (f = document.getElementById('d-to'))      && (f.textContent = ib.address);
   (f = document.getElementById('d-time'))    && (f.textContent = em.time);
-  (f = document.getElementById('d-body'))    && (f.innerHTML = em.body);
+
+  renderEmailBody(em);
+  renderSenderInfo(em, ib);
+}
+
+function renderEmailBody(em) {
+  var container = document.getElementById('d-body');
+  if (!container) return;
+
+  currentRawUrl = '/inboxes/' + activeInbox().id + '/emails/' + em.id + '/raw';
+
+  if (em.body && em.body.indexOf('<') === 0) {
+    container.innerHTML =
+      '<iframe class="email-iframe" srcdoc="' + escapeAttr(em.body) + '" sandbox="allow-same-origin" style="width:100%;height:100%;border:none;"></iframe>';
+  } else if (em.body) {
+    container.innerHTML = em.body;
+  } else {
+    container.innerHTML = '<p style="color:var(--MU2);">(no content)</p>';
+  }
+}
+
+function escapeAttr(str) {
+  return str.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function renderSenderInfo(em, ib) {
+  var fn = document.getElementById('info-from');
+  var fd = document.getElementById('info-domain');
+  var fr = document.getElementById('info-received');
+  var ft = document.getElementById('info-total');
+  var fu = document.getElementById('info-unread');
+  var fa = document.getElementById('info-address');
+  var fdom = document.getElementById('info-addr-domain');
+
+  if (fn) fn.textContent = em.sender || '—';
+  if (fd) {
+    var parts = (em.email || '').split('@');
+    fd.textContent = parts.length > 1 ? parts[1] : '—';
+  }
+  if (fr) fr.textContent = em.time || '—';
+  if (ft) ft.textContent = ib.emails ? ib.emails.length : 0;
+  if (fu) fu.textContent = ib.unreadCount || 0;
+  if (fa) fa.textContent = ib.address ? ib.address.split('@')[0] : '—';
+  if (fdom) fdom.textContent = ib.domain || '—';
 }
 
 /* ── Generate new inbox (domain → expires modals) ── */
@@ -1361,11 +1449,11 @@ function confirmActionYes() {
 /* ── Copy ── */
 function copyEmailInbox() {
   var txt = document.getElementById('edisplay').textContent;
-  navigator.clipboard.writeText(txt).catch(function(){});
+  navigator.clipboard.writeText(txt)['catch'](function(){});
   var btn = document.getElementById('cbtn');
   btn.classList.add('ok'); btn.innerHTML = '✓ Copied';
   toast('Email address copied!');
-  setTimeout(function() { btn.classList.remove('ok'); btn.innerHTML = '<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><rect x=\\"9\\" y=\\"9\\" width=\\"13\\" height=\\"13\\" rx=\\"2\\"/><path stroke-linecap=\\"round\\" d=\\"M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1\\"/></svg> Copy'; }, 2200);
+  setTimeout(function() { btn.classList.remove('ok'); btn.innerHTML = '<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path stroke-linecap="round" d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy'; }, 2200);
 }
 
 /* ── Open mail detail ── */
@@ -1373,14 +1461,27 @@ function openMailDetail(id) {
   var ib = activeInbox();
   if (!ib) return;
   ib.currentMailId = id;
-  var em = ib.emails.find(function(e){ return e.id === id; });
-  if (!em) return;
 
-  em.unread = false;
-  renderEmailList();
-  renderEmailDetail();
-
-  document.getElementById('inbox-3col').classList.add('mob-detail');
+  fetch('/inboxes/' + ib.id + '/emails/' + id).then(function(r){ return r.json(); }).then(function(data) {
+    var em = data.email;
+    if (!em) return;
+    var local = ib.emails.find(function(e){ return e.id === em.id; });
+    if (local) {
+      local.unread = false;
+      local.body = em.html_body || (em.text_body ? '<pre>' + escapeHtml(em.text_body) + '</pre>' : '');
+    }
+    renderEmailList();
+    renderEmailDetail();
+    document.getElementById('inbox-3col').classList.add('mob-detail');
+  })['catch'](function() {
+    // fallback to local data
+    var em = ib.emails.find(function(e){ return e.id === id; });
+    if (!em) return;
+    em.unread = false;
+    renderEmailList();
+    renderEmailDetail();
+    document.getElementById('inbox-3col').classList.add('mob-detail');
+  });
 }
 
 function closeMailDetail() {
@@ -1389,34 +1490,53 @@ function closeMailDetail() {
 
 function deleteCurrentMail() {
   var ib = activeInbox();
-  if (!ib) return;
+  if (!ib || !ib.currentMailId) return;
   showConfirmModal('Delete this message?', function() {
-    ib.emails = ib.emails.filter(function(e){ return e.id !== ib.currentMailId; });
-    document.getElementById('detail-empty').style.display = 'flex';
-    document.getElementById('detail-content').style.display = 'none';
-    document.getElementById('inbox-3col').classList.remove('mob-detail');
-    renderEmailList();
-    toast('Message deleted');
+    fetch('/inboxes/' + ib.id + '/emails/' + ib.currentMailId, {
+      method: 'DELETE',
+      headers: { 'X-CSRF-TOKEN': CSRF_TOKEN }
+    }).then(function(r){ return r.json(); }).then(function(data) {
+      if (data.error) { toast(data.error); return; }
+      ib.emails = ib.emails.filter(function(e){ return e.id !== ib.currentMailId; });
+      ib.currentMailId = null;
+      document.getElementById('detail-empty').style.display = 'flex';
+      document.getElementById('detail-content').style.display = 'none';
+      document.getElementById('inbox-3col').classList.remove('mob-detail');
+      renderEmailList();
+      toast('Message deleted');
+    })['catch'](function() { toast('Failed to delete message'); });
   });
 }
 
 function markUnreadCurrent() {
   var ib = activeInbox();
-  if (!ib) return;
-  var em = ib.emails.find(function(e){ return e.id === ib.currentMailId; });
-  if (!em) return;
-  em.unread = true;
-  renderEmailList();
-  toast('Marked as unread');
+  if (!ib || !ib.currentMailId) return;
+  fetch('/inboxes/' + ib.id + '/emails/' + ib.currentMailId + '/unread', {
+    method: 'PATCH',
+    headers: { 'X-CSRF-TOKEN': CSRF_TOKEN }
+  }).then(function(r){ return r.json(); }).then(function(data) {
+    if (data.error) { toast(data.error); return; }
+    var em = ib.emails.find(function(e){ return e.id === ib.currentMailId; });
+    if (em) em.unread = true;
+    renderEmailList();
+    toast('Marked as unread');
+  })['catch'](function() { toast('Failed to mark as unread'); });
 }
 
 function markAllReadInbox() {
   var ib = activeInbox();
   if (!ib) return;
   showConfirmModal('Mark all messages as read?', function() {
-    ib.emails.forEach(function(e){ e.unread = false; });
-    renderEmailList();
-    toast('All messages marked as read');
+    fetch('/inboxes/' + ib.id + '/emails/mark-all-read', {
+      method: 'POST',
+      headers: { 'X-CSRF-TOKEN': CSRF_TOKEN }
+    }).then(function(r){ return r.json(); }).then(function(data) {
+      if (data.error) { toast(data.error); return; }
+      ib.emails.forEach(function(e){ e.unread = false; });
+      ib.unreadCount = 0;
+      renderEmailList();
+      toast('All messages marked as read');
+    })['catch'](function() { toast('Failed to mark all as read'); });
   }, 'Mark Read');
 }
 
@@ -1424,32 +1544,71 @@ function deleteAllInbox() {
   var ib = activeInbox();
   if (!ib) return;
   showConfirmModal('Delete all messages?', function() {
-    ib.emails = [];
-    document.getElementById('detail-empty').style.display = 'flex';
-    document.getElementById('detail-content').style.display = 'none';
-    renderEmailList();
-    toast('All messages deleted');
+    fetch('/inboxes/' + ib.id + '/emails', {
+      method: 'DELETE',
+      headers: { 'X-CSRF-TOKEN': CSRF_TOKEN }
+    }).then(function(r){ return r.json(); }).then(function(data) {
+      if (data.error) { toast(data.error); return; }
+      ib.emails = [];
+      ib.currentMailId = null;
+      ib.unreadCount = 0;
+      document.getElementById('detail-empty').style.display = 'flex';
+      document.getElementById('detail-content').style.display = 'none';
+      renderEmailList();
+      toast('All messages deleted');
+    })['catch'](function() { toast('Failed to delete all messages'); });
   });
 }
 
 function refreshInboxList() {
+  loadEmails();
   toast('Inbox refreshed');
 }
 
 function switchTab(btn, tab) {
   document.querySelectorAll('.list-tab').forEach(function(b){ b.classList.remove('active'); });
   btn.classList.add('active');
+  currentFilter = tab;
+  loadEmails();
 }
 
 function debounceSearchInbox(val) {
   clearTimeout(searchDelayInbox);
   searchDelayInbox = setTimeout(function() {
-    var rows = document.querySelectorAll('.erow');
-    rows.forEach(function(r) {
-      var txt = r.textContent.toLowerCase();
-      r.style.display = txt.includes(val.toLowerCase()) ? '' : 'none';
-    });
+    currentSearch = val;
+    loadEmails();
   }, 300);
+}
+
+/* ── View Raw ── */
+function viewRawEmail() {
+  if (!currentRawUrl) { toast('No email selected'); return; }
+  fetch(currentRawUrl).then(function(r){ return r.json(); }).then(function(data) {
+    document.getElementById('raw-content').textContent = data.raw || '(no raw content)';
+    document.getElementById('raw-modal').classList.add('open');
+  })['catch'](function() { toast('Failed to load raw content'); });
+}
+
+function closeRawModal() {
+  document.getElementById('raw-modal').classList.remove('open');
+}
+
+function printEmail() {
+  if (!currentRawUrl) { toast('No email selected'); return; }
+  var w = window.open('', '_blank');
+  if (!w) { toast('Please allow popups for printing'); return; }
+  w.document.write('<html><head><title>Print Email</title></head><body>');
+  var iframe = document.querySelector('.email-iframe');
+  if (iframe) {
+    w.document.write(iframe.getAttribute('srcdoc') || '(no content)');
+  } else {
+    var body = document.getElementById('d-body');
+    if (body) w.document.write(body.innerHTML);
+  }
+  w.document.write('</body></html>');
+  w.document.close();
+  w.focus();
+  setTimeout(function() { w.print(); }, 300);
 }
 
 /* ── Init ── */
@@ -1461,9 +1620,6 @@ loadInboxes(function(data) {
     renderInboxTabs();
     renderActiveInbox();
     ensureTimer();
-    if (window.innerWidth >= 900 && inboxes[0].emails && inboxes[0].emails.length > 0) {
-      openMailDetail(inboxes[0].emails[0].id);
-    }
   }
 });
 </script>

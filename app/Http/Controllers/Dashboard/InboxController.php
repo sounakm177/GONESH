@@ -38,6 +38,7 @@ class InboxController extends Controller
                     'subject' => $email->subject ?? '(no subject)',
                     'body' => $email->html_body ?: ($email->text_body ? '<pre>' . e($email->text_body) . '</pre>' : ''),
                     'unread' => !$email->is_read,
+                    'starred' => $email->is_starred,
                 ];
             });
 

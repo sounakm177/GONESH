@@ -38,6 +38,17 @@ Route::middleware('auth')->name('dashboard.')->group(function () {
         Route::post('/',                [\App\Http\Controllers\Dashboard\InboxController::class, 'store'])->name('store');
         Route::delete('{address}',      [\App\Http\Controllers\Dashboard\InboxController::class, 'destroy'])->name('destroy');
         Route::get('domains',           [\App\Http\Controllers\Dashboard\InboxController::class, 'domains'])->name('domains');
+
+        Route::prefix('{address}/emails')->name('emails.')->group(function () {
+            Route::get('/',                             [\App\Http\Controllers\Dashboard\EmailController::class, 'index'])->name('index');
+            Route::get('{email}',                       [\App\Http\Controllers\Dashboard\EmailController::class, 'show'])->name('show');
+            Route::get('{email}/raw',                   [\App\Http\Controllers\Dashboard\EmailController::class, 'raw'])->name('raw');
+            Route::patch('{email}/read',                [\App\Http\Controllers\Dashboard\EmailController::class, 'markRead'])->name('read');
+            Route::patch('{email}/unread',              [\App\Http\Controllers\Dashboard\EmailController::class, 'markUnread'])->name('unread');
+            Route::delete('/',                          [\App\Http\Controllers\Dashboard\EmailController::class, 'destroyAll'])->name('destroyAll');
+            Route::delete('{email}',                    [\App\Http\Controllers\Dashboard\EmailController::class, 'destroy'])->name('destroy');
+            Route::post('mark-all-read',                [\App\Http\Controllers\Dashboard\EmailController::class, 'markAllRead'])->name('markAllRead');
+        });
     });
 });
 

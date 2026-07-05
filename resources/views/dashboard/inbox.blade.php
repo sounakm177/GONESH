@@ -1060,9 +1060,10 @@ function startTimerInbox() {
 }
 
 function updateTimerUI() {
-  const m = padInbox(Math.floor(timerSecs / 60));
+  const h = Math.floor(timerSecs / 3600);
+  const m = padInbox(Math.floor((timerSecs % 3600) / 60));
   const s = padInbox(timerSecs % 60);
-  document.getElementById('tnum').textContent  = m + ':' + s;
+  document.getElementById('tnum').textContent  = h > 0 ? h + ':' + m + ':' + s : m + ':' + s;
   const pct = timerMaxSecs > 0 ? Math.min(100, (timerSecs / timerMaxSecs) * 100) : 0;
   document.getElementById('tbar').style.width  = pct + '%';
   document.getElementById('tbar').style.background = timerSecs < 120 ? 'var(--RED)' : 'var(--Y)';

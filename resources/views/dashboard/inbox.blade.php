@@ -646,6 +646,67 @@
   box-sizing: border-box;
 }
 
+/* ═══ INBOX TABS STRIP ═══ */
+.inbox-strip {
+  display:         flex;
+  align-items:     center;
+  padding:         4px 12px;
+  background:      var(--SURF);
+  border-bottom:   1px solid var(--BD);
+  overflow-x:      auto;
+  scrollbar-width: none;
+  flex-shrink:     0;
+  gap:             4px;
+}
+.inbox-strip::-webkit-scrollbar {display:none;}
+.inbox-tab {
+  display:         inline-flex;
+  align-items:     center;
+  gap:             6px;
+  font-family:     var(--MONO);
+  font-size:       .66rem;
+  font-weight:     600;
+  padding:         5px 12px;
+  border-radius:   6px;
+  background:      var(--SURF);
+  color:           var(--MU);
+  white-space:     nowrap;
+  cursor:          pointer;
+  transition:      background .12s, color .12s, border-color .12s;
+  flex-shrink:     0;
+  max-width:       180px;
+}
+.inbox-tab:hover  {color: var(--INK); border-color: #D1D5DB; }
+.inbox-tab .inbox-tab-addr {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.inbox-tab .inbox-tab-close {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px; border-radius: 50%;
+   color: var(--MU);
+  flex-shrink: 0; cursor: pointer;
+  transition: background .12s;
+  border: none; padding: 0; font-size: 10px; line-height: 1;
+}
+.inbox-tab .inbox-tab-close:hover { background: var(--RED); color: #fff; }
+.inbox-tab.active .inbox-tab-close { background: rgba(255,255,255,.15); color: var(--Y); }
+.inbox-tab.active .inbox-tab-close:hover { background: var(--RED); color: #fff; }
+.inbox-add-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; border-radius: 6px;
+  border: 1px dashed var(--MU2);
+  background: var(--SURF); color: var(--MU2);
+  cursor: pointer; flex-shrink: 0; font-size: 14px; line-height: 1;
+  transition: background .12s, color .12s, border-color .12s;
+}
+.inbox-add-btn:hover { background: var(--BD2); color: var(--INK); border-color: var(--MU); }
+.inbox-tab-dot {
+  width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0;
+  background: var(--GREEN);
+}
+
 /* ── Mobile responsive refinements ── */
 @media (max-width: 480px) {
   .addr-strip { padding: 12px 8px 6px; gap: 4px; }
@@ -655,7 +716,8 @@
   .timer-strip { padding: 4px 8px; flex-wrap: wrap; gap: 4px; }
   .timer-strip-btns { width: 100%; justify-content: flex-end; margin-top: 2px; }
   .timer-ctrl-btn { font-size: .55rem; padding: 3px 7px; }
-  .domain-tab { font-size: .58rem; padding: 7px 8px; }
+  .inbox-tab { font-size: .56rem; padding: 4px 8px; max-width: 120px; }
+  .inbox-add-btn { width: 22px; height: 22px; font-size: 12px; }
   .list-toolbar { padding: 8px 10px; }
   .list-toolbar-title { font-size: .76rem; }
   .list-search { padding: 6px 10px; }
@@ -722,14 +784,8 @@
         </button>
       </div>
 
-      <!-- ── Domain tabs ── -->
-      <div class="domain-strip" id="domain-strip">
-        <button class="domain-tab active" onclick="switchDomain(this,'dropit.io')">@dropit.io</button>
-        <button class="domain-tab" onclick="switchDomain(this,'burnbox.dev')">@burnbox.dev</button>
-        <button class="domain-tab" onclick="switchDomain(this,'zaptmp.net')">@zaptmp.net</button>
-        <button class="domain-tab" onclick="switchDomain(this,'voidmail.cc')">@voidmail.cc</button>
-        <button class="domain-tab" onclick="switchDomain(this,'mailsink.app')">@mailsink.app</button>
-      </div>
+      <!-- ── Inbox tabs ── -->
+      <div class="inbox-strip" id="inbox-strip"></div>
 
       <!-- ── Timer strip ── -->
       <div class="timer-strip">
@@ -781,81 +837,7 @@
           </div>
 
           <div class="email-scroll" id="email-list">
-            <!-- Email rows rendered by JS or static demo -->
-            <div class="erow unread selected" data-id="1" onclick="openMailDetail(1)">
-              <div class="erow-left">
-                <div class="erow-avatar" style="background:#4285F4;">G</div>
-                <div class="udot-sm"></div>
-              </div>
-              <div class="erow-body">
-                <div class="erow-top-row">
-                  <span class="e-sender">Google</span>
-                  <span class="e-time">2m ago</span>
-                </div>
-                <div class="e-subject">Verify your Google account</div>
-                <div class="e-preview">Use OTP 847291 to confirm your sign-in…</div>
-              </div>
-            </div>
-
-            <div class="erow unread" data-id="2" onclick="openMailDetail(2)">
-              <div class="erow-left">
-                <div class="erow-avatar" style="background:#7C3AED;">S</div>
-                <div class="udot-sm"></div>
-              </div>
-              <div class="erow-body">
-                <div class="erow-top-row">
-                  <span class="e-sender">Shopify</span>
-                  <span class="e-time">14m ago</span>
-                </div>
-                <div class="e-subject">Your OTP code is 382910</div>
-                <div class="e-preview">Enter this code to complete your login…</div>
-              </div>
-            </div>
-
-            <div class="erow unread" data-id="3" onclick="openMailDetail(3)">
-              <div class="erow-left">
-                <div class="erow-avatar" style="background:#10B981;">N</div>
-                <div class="udot-sm"></div>
-              </div>
-              <div class="erow-body">
-                <div class="erow-top-row">
-                  <span class="e-sender">Notion</span>
-                  <span class="e-time">38m ago</span>
-                </div>
-                <div class="e-subject">Confirm your Notion email</div>
-                <div class="e-preview">Click the link below to confirm your email…</div>
-              </div>
-            </div>
-
-            <div class="erow" data-id="4" onclick="openMailDetail(4)">
-              <div class="erow-left">
-                <div class="erow-avatar" style="background:#1DA1F2;">T</div>
-                <div class="rdot-sm"></div>
-              </div>
-              <div class="erow-body">
-                <div class="erow-top-row">
-                  <span class="e-sender">Twitter</span>
-                  <span class="e-time">1h ago</span>
-                </div>
-                <div class="e-subject">New login to your Twitter account</div>
-                <div class="e-preview">A new device signed in from Chrome on…</div>
-              </div>
-            </div>
-
-            <div class="erow" data-id="5" onclick="openMailDetail(5)">
-              <div class="erow-left">
-                <div class="erow-avatar" style="background:#F59E0B;">A</div>
-                <div class="rdot-sm"></div>
-              </div>
-              <div class="erow-body">
-                <div class="erow-top-row">
-                  <span class="e-sender">Amazon</span>
-                  <span class="e-time">2h ago</span>
-                </div>
-                <div class="e-subject">Your order has been confirmed</div>
-                <div class="e-preview">Order #112-8827741 is confirmed and…</div>
-              </div>
-            </div>
+            <!-- email rows rendered by JS -->
           </div>
 
           <div class="list-footer" id="list-count">
@@ -1015,7 +997,7 @@
 @push('scripts')
 <script>
 /* ══════════════════════════════════════════════════
-   INBOX PAGE LOGIC
+   INBOX PAGE LOGIC — MULTI-INBOX
 ══════════════════════════════════════════════════ */
 
 @php
@@ -1025,14 +1007,16 @@
 @endphp
 
 const IS_PRO      = @json($isProInbox);
+const DOMAINS     = ['dropit.io','burnbox.dev','zaptmp.net','voidmail.cc','mailsink.app'];
+const ADJ         = ['silent','ghost','turbo','vapor','swift','lunar','neon','flux'];
+const NOU         = ['fox','wolf','tide','bolt','hawk','mint','storm','byte'];
 const EXPIRES_OPT = [
   { label: '60 Minutes',  value: 3600,  pro: false },
   { label: '12 Hours',    value: 43200, pro: false },
   { label: '24 Hours',    value: 86400, pro: false },
   { label: 'Unlimited',   value: -1,    pro: true  },
 ];
-
-const EMAILS = [
+const SAMPLE_EMAILS = [
   { id:1, sender:'Google',   email:'noreply@accounts.google.com', avatar:'G', color:'#4285F4', time:'2 min ago',  subject:'Verify your Google account',     body:'<p>Hi there,</p><p>We received a request to verify your Google Account email address.</p><p>Your verification code is:</p><div class="otp-box">847 291</div><p>This code expires in <strong>10 minutes</strong>. Do not share it with anyone.</p><hr style="border:none;border-top:1px solid var(--BD);margin:20px 0;"/><p style="font-size:.76rem;color:var(--MU2);">Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043</p>', unread:true  },
   { id:2, sender:'Shopify',  email:'noreply@shopify.com',         avatar:'S', color:'#7C3AED', time:'14 min ago', subject:'Your OTP code is 382910',          body:'<p>Hi,</p><p>Use the following OTP to complete your Shopify sign-in:</p><div class="otp-box">382 910</div><p>This code is valid for 15 minutes. If you did not request this, please ignore this email.</p>', unread:true  },
   { id:3, sender:'Notion',   email:'hello@mail.notion.so',        avatar:'N', color:'#10B981', time:'38 min ago', subject:'Confirm your Notion email',        body:'<p>Hey there,</p><p>Thanks for signing up for Notion. Please confirm your email address to get started.</p><a href="#" style="display:inline-block;background:#000;color:#fff;padding:10px 22px;border-radius:6px;font-size:.84rem;font-weight:600;margin:14px 0;text-decoration:none;">Confirm Email →</a><p style="font-size:.76rem;color:var(--MU2);">This link expires in 24 hours. If you didn\'t sign up, you can safely ignore this.</p>', unread:true  },
@@ -1040,43 +1024,212 @@ const EMAILS = [
   { id:5, sender:'Amazon',   email:'auto-confirm@amazon.com',     avatar:'A', color:'#F59E0B', time:'2 hrs ago',  subject:'Your order has been confirmed',     body:'<p>Hello,</p><p>Thank you for your order! Your order <strong>#112-8827741-1234567</strong> has been confirmed and is being prepared for shipment.</p><p>Estimated delivery: <strong>June 22–24, 2026</strong></p><a href="#" style="color:#F59E0B;">Track your order →</a>', unread:false },
 ];
 
-let currentMailId = 1;
-let timerSecs     = 492;
-let timerMaxSecs  = 492;
-let timerInt      = null;
+/* ── State ── */
+let inboxes = [];
+let activeInboxId = null;
+let inboxIdCounter = 0;
+let timerInt = null;
 let searchDelayInbox = null;
 let pendingGenCallback = null;
+let selectedExpiresValue = null;
+let pendingConfirmCallback = null;
 
-// ── Timer ──
+/* ── Helpers ── */
 function padInbox(n) { return String(n).padStart(2, '0'); }
+function randAddr() {
+  const dom = DOMAINS[Math.floor(Math.random() * DOMAINS.length)];
+  const adj = ADJ[Math.floor(Math.random() * ADJ.length)];
+  const nou = NOU[Math.floor(Math.random() * NOU.length)];
+  const num = Math.floor(Math.random() * 9000 + 1000);
+  return adj + '.' + nou + num + '@' + dom;
+}
+function getInbox(id) { return inboxes.find(function(i){ return i.id === id; }); }
+function activeInbox() { return getInbox(activeInboxId); }
 
-function startTimerInbox() {
-  clearInterval(timerInt);
-  timerInt = setInterval(() => {
-    if (timerSecs > 0) timerSecs--;
-    else { clearInterval(timerInt); document.getElementById('edisplay').textContent = 'Address expired'; return; }
-    updateTimerUI();
+/* ── Create default inbox on first load ── */
+function createDefaultInbox() {
+  var addr = randAddr();
+  var ib = {
+    id: ++inboxIdCounter,
+    address: addr,
+    timerSecs: 3600,
+    timerMaxSecs: 3600,
+    domain: addr.split('@')[1],
+    emails: JSON.parse(JSON.stringify(SAMPLE_EMAILS)),
+    currentMailId: 1,
+  };
+  inboxes.push(ib);
+  return ib;
+}
+
+/* ── Inbox tabs rendering ── */
+function renderInboxTabs() {
+  var strip = document.getElementById('inbox-strip');
+  strip.innerHTML = inboxes.map(function(ib) {
+    var active = ib.id === activeInboxId ? ' active' : '';
+    var label = ib.address.length > 22 ? ib.address.slice(0, 19) + '…' : ib.address;
+    return '<div class="inbox-tab' + active + '" onclick="switchInbox(' + ib.id + ')">' +
+      '<span class="inbox-tab-dot"></span>' +
+      '<span class="inbox-tab-addr" title="' + ib.address + '">' + label + '</span>' +
+      '<button class="inbox-tab-close" onclick="event.stopPropagation();deleteInbox(' + ib.id + ')" title="Delete inbox">✕</button>' +
+    '</div>';
+  }).join('') +
+  '<button class="inbox-add-btn" onclick="genNewInbox()" title="New inbox">+</button>';
+}
+
+/* ── Switch inbox ── */
+function switchInbox(id) {
+  activeInboxId = id;
+  renderInboxTabs();
+  renderActiveInbox();
+}
+
+/* ── Render the active inbox data into the UI ── */
+function renderActiveInbox() {
+  var ib = activeInbox();
+  if (!ib) return;
+
+  document.getElementById('edisplay').textContent = ib.address;
+  updateTimerUI();
+  renderEmailList();
+  renderEmailDetail();
+}
+
+/* ── Create inbox ── */
+function createInbox(expiresSecs) {
+  var addr = randAddr();
+  var dom = addr.split('@')[1];
+  var ib = {
+    id: ++inboxIdCounter,
+    address: addr,
+    timerSecs: expiresSecs > 0 ? expiresSecs : 999999,
+    timerMaxSecs: expiresSecs > 0 ? expiresSecs : 999999,
+    domain: dom,
+    emails: JSON.parse(JSON.stringify(SAMPLE_EMAILS)),
+    currentMailId: 1,
+  };
+  inboxes.push(ib);
+  activeInboxId = ib.id;
+  renderInboxTabs();
+  renderActiveInbox();
+  ensureTimer();
+  toast('Inbox created');
+}
+
+/* ── Delete inbox ── */
+function deleteInbox(id) {
+  if (inboxes.length <= 1) { toast('Cannot delete the last inbox'); return; }
+  showConfirmModal('Delete this inbox and all its messages?', function() {
+    var idx = -1;
+    inboxes.forEach(function(ib, i){ if (ib.id === id) idx = i; });
+    if (idx === -1) return;
+    inboxes.splice(idx, 1);
+    if (activeInboxId === id) {
+      var next = inboxes[Math.min(idx, inboxes.length - 1)];
+      activeInboxId = next ? next.id : null;
+    }
+    renderInboxTabs();
+    renderActiveInbox();
+    toast('Inbox deleted');
+  }, 'Delete');
+}
+
+/* ── Timer ── */
+function ensureTimer() {
+  if (timerInt) return;
+  timerInt = setInterval(function() {
+    inboxes.forEach(function(ib) {
+      if (ib.timerSecs > 0) ib.timerSecs--;
+    });
+    if (activeInbox()) updateTimerUI();
   }, 1000);
 }
 
 function updateTimerUI() {
-  const h = Math.floor(timerSecs / 3600);
-  const m = padInbox(Math.floor((timerSecs % 3600) / 60));
-  const s = padInbox(timerSecs % 60);
-  document.getElementById('tnum').textContent  = h > 0 ? h + ':' + m + ':' + s : m + ':' + s;
-  const pct = timerMaxSecs > 0 ? Math.min(100, (timerSecs / timerMaxSecs) * 100) : 0;
-  document.getElementById('tbar').style.width  = pct + '%';
-  document.getElementById('tbar').style.background = timerSecs < 120 ? 'var(--RED)' : 'var(--Y)';
+  var ib = activeInbox();
+  if (!ib) return;
+  var h = Math.floor(ib.timerSecs / 3600);
+  var m = padInbox(Math.floor((ib.timerSecs % 3600) / 60));
+  var s = padInbox(ib.timerSecs % 60);
+  document.getElementById('tnum').textContent = h > 0 ? h + ':' + m + ':' + s : m + ':' + s;
+  var pct = ib.timerMaxSecs > 0 ? Math.min(100, (ib.timerSecs / ib.timerMaxSecs) * 100) : 0;
+  document.getElementById('tbar').style.width = pct + '%';
+  document.getElementById('tbar').style.background = ib.timerSecs < 120 ? 'var(--RED)' : 'var(--Y)';
 }
 
 function extendTimer() {
-  timerSecs += 600;
-  if (timerSecs > timerMaxSecs) timerMaxSecs = timerSecs;
+  var ib = activeInbox();
+  if (!ib) return;
+  ib.timerSecs += 600;
+  if (ib.timerSecs > ib.timerMaxSecs) ib.timerMaxSecs = ib.timerSecs;
   updateTimerUI();
   toast('Added 10 minutes');
 }
 
-// ── Expires In modal ──
+/* ── Email list ── */
+function renderEmailList() {
+  var ib = activeInbox();
+  if (!ib) return;
+  var scroll = document.getElementById('email-list');
+  var cnt = document.getElementById('list-count');
+  var badge = document.getElementById('ucnt');
+  var unread = ib.emails.filter(function(e){ return e.unread; }).length;
+
+  scroll.innerHTML = ib.emails.map(function(em) {
+    var sel = em.id === ib.currentMailId ? ' selected' : '';
+    var unr = em.unread ? ' unread' : '';
+    var dot = em.unread
+      ? '<div class="udot-sm"></div>'
+      : '<div class="rdot-sm"></div>';
+    return '<div class="erow' + unr + sel + '" data-id="' + em.id + '" onclick="openMailDetail(' + em.id + ')">' +
+      '<div class="erow-left">' +
+        '<div class="erow-avatar" style="background:' + em.color + ';">' + em.avatar + '</div>' +
+        dot +
+      '</div>' +
+      '<div class="erow-body">' +
+        '<div class="erow-top-row">' +
+          '<span class="e-sender">' + em.sender + '</span>' +
+          '<span class="e-time">' + em.time + '</span>' +
+        '</div>' +
+        '<div class="e-subject">' + em.subject + '</div>' +
+        '<div class="e-preview">' + (em.body.replace(/<[^>]*>/g,'').slice(0,60)) + '…</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+  cnt.innerHTML = '<svg width="9" height="9" fill="var(--GREEN)" viewBox="0 0 10 10"><circle cx="5" cy="5" r="5"/></svg> ' + ib.emails.length + ' messages' + (unread ? ' · ' + unread + ' unread' : '');
+  badge.textContent = unread > 0 ? unread : '';
+}
+
+function renderEmailDetail() {
+  var ib = activeInbox();
+  if (!ib) return;
+  var em = ib.emails.find(function(e){ return e.id === ib.currentMailId; });
+  if (!em) {
+    document.getElementById('detail-empty').style.display = 'flex';
+    document.getElementById('detail-content').style.display = 'none';
+    return;
+  }
+  document.getElementById('detail-empty').style.display = 'none';
+  document.getElementById('detail-content').style.display = 'flex';
+  var f;
+  (f = document.getElementById('d-subject')) && (f.textContent = em.subject);
+  (f = document.getElementById('d-avatar'))  && (f.textContent = em.avatar);
+  if (f = document.getElementById('d-avatar')) f.style.background = em.color;
+  (f = document.getElementById('d-name'))    && (f.textContent = em.sender);
+  (f = document.getElementById('d-email'))   && (f.innerHTML = '&lt;' + em.email + '&gt;');
+  (f = document.getElementById('d-to'))      && (f.textContent = ib.address);
+  (f = document.getElementById('d-time'))    && (f.textContent = em.time);
+  (f = document.getElementById('d-body'))    && (f.innerHTML = em.body);
+}
+
+/* ── Generate new inbox (via expires modal) ── */
+function genNewInbox() {
+  showExpiresModal(function(expiresSecs) {
+    createInbox(expiresSecs);
+  });
+}
+
+/* ── Expires In modal ── */
 function showExpiresModal(callback) {
   pendingGenCallback = callback;
   var list = document.getElementById('expires-options');
@@ -1095,8 +1248,6 @@ function showExpiresModal(callback) {
   document.getElementById('expires-confirm-btn').style.opacity = '.5';
   document.getElementById('expires-modal').classList.add('open');
 }
-
-var selectedExpiresValue = null;
 
 function pickExpiresOpt(el, val) {
   document.querySelectorAll('.expires-opt').forEach(function(o) { o.classList.remove('selected'); });
@@ -1121,9 +1272,7 @@ function cancelExpiresModal() {
   pendingGenCallback = null;
 }
 
-// ── Confirm action modal ──
-var pendingConfirmCallback = null;
-
+/* ── Confirm action modal ── */
 function showConfirmModal(msg, callback, btnLabel) {
   pendingConfirmCallback = callback;
   document.getElementById('confirm-msg').textContent = msg;
@@ -1145,95 +1294,29 @@ function confirmActionYes() {
   }
 }
 
-// ── Generate new ──
-function genNewInbox() {
-  showExpiresModal(function(expiresSecs) {
-    doGenerateInbox(expiresSecs);
-  });
-}
-
-function doGenerateInbox(expiresSecs) {
-  const DOMAINS = ['dropit.io','burnbox.dev','zaptmp.net','voidmail.cc','mailsink.app'];
-  const ADJ     = ['silent','ghost','turbo','vapor','swift','lunar','neon','flux'];
-  const NOU     = ['fox','wolf','tide','bolt','hawk','mint','storm','byte'];
-  const dom = DOMAINS[0];
-  const em  = ADJ[Math.floor(Math.random()*ADJ.length)] + '.' + NOU[Math.floor(Math.random()*NOU.length)] + Math.floor(Math.random()*9000+1000) + '@' + dom;
-  const el  = document.getElementById('edisplay');
-  el.style.opacity = '.3';
-  setTimeout(() => { el.textContent = em; el.style.opacity = '1'; }, 220);
-  timerSecs = expiresSecs > 0 ? expiresSecs : 999999;
-  timerMaxSecs = timerSecs;
-  startTimerInbox(); updateTimerUI();
-  toast('New address generated');
-  const ic = document.getElementById('new-spin');
-  ic.style.transition = 'transform .4s'; ic.style.transform = 'rotate(360deg)';
-  setTimeout(() => { ic.style.transition = 'none'; ic.style.transform = ''; }, 420);
-}
-
-// ── Domain switch ──
-function switchDomain(btn, domain) {
-  document.querySelectorAll('.domain-tab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  genNewInbox();
-}
-
-// ── Copy ──
+/* ── Copy ── */
 function copyEmailInbox() {
-  const txt = document.getElementById('edisplay').textContent;
-  navigator.clipboard.writeText(txt).catch(() => {});
-  const btn = document.getElementById('cbtn');
+  var txt = document.getElementById('edisplay').textContent;
+  navigator.clipboard.writeText(txt).catch(function(){});
+  var btn = document.getElementById('cbtn');
   btn.classList.add('ok'); btn.innerHTML = '✓ Copied';
   toast('Email address copied!');
-  setTimeout(() => { btn.classList.remove('ok'); btn.innerHTML = '<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><rect x=\\"9\\" y=\\"9\\" width=\\"13\\" height=\\"13\\" rx=\\"2\\"/><path stroke-linecap=\\"round\\" d=\\"M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1\\"/></svg> Copy'; }, 2200);
+  setTimeout(function() { btn.classList.remove('ok'); btn.innerHTML = '<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><rect x=\\"9\\" y=\\"9\\" width=\\"13\\" height=\\"13\\" rx=\\"2\\"/><path stroke-linecap=\\"round\\" d=\\"M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1\\"/></svg> Copy'; }, 2200);
 }
 
-// ── Open mail detail ──
+/* ── Open mail detail ── */
 function openMailDetail(id) {
-  currentMailId = id;
-  const em = EMAILS.find(e => e.id === id);
+  var ib = activeInbox();
+  if (!ib) return;
+  ib.currentMailId = id;
+  var em = ib.emails.find(function(e){ return e.id === id; });
   if (!em) return;
 
-  // Mark as read
   em.unread = false;
-  const row = document.querySelector(`.erow[data-id="${id}"]`);
-  if (row) {
-    row.classList.remove('unread');
-    const dot = row.querySelector('.udot-sm');
-    if (dot) dot.className = 'rdot-sm';
-  }
+  renderEmailList();
+  renderEmailDetail();
 
-  // Select row
-  document.querySelectorAll('.erow').forEach(r => r.classList.remove('selected'));
-  if (row) row.classList.add('selected');
-
-  // Populate detail
-  var f;
-  (f = document.getElementById('d-subject')) && (f.textContent = em.subject);
-  (f = document.getElementById('d-avatar'))  && (f.textContent = em.avatar);
-  if (f = document.getElementById('d-avatar')) f.style.background = em.color;
-  (f = document.getElementById('d-name'))    && (f.textContent = em.sender);
-  (f = document.getElementById('d-email'))   && (f.innerHTML = '&lt;' + em.email + '&gt;');
-  var eDisplay = document.getElementById('edisplay');
-  (f = document.getElementById('d-to'))      && eDisplay && (f.textContent = eDisplay.textContent);
-  (f = document.getElementById('d-time'))    && (f.textContent = em.time);
-  (f = document.getElementById('d-body'))    && (f.innerHTML = em.body);
-
-  // Show detail
-  (f = document.getElementById('detail-empty')) && (f.style.display = 'none');
-  var dc = document.getElementById('detail-content');
-  if (dc) dc.style.display = 'flex';
-
-  // Info col update
-  var infoVal = document.querySelector('.inbox-info-col .info-stat-val');
-  if (infoVal) infoVal.textContent = em.sender;
-
-  // Mobile: slide in
   document.getElementById('inbox-3col').classList.add('mob-detail');
-
-  // Update unread badge
-  const unread = EMAILS.filter(e => e.unread).length;
-  const badge  = document.getElementById('ucnt');
-  if (badge) badge.textContent = unread > 0 ? unread : '';
 }
 
 function closeMailDetail() {
@@ -1241,48 +1324,46 @@ function closeMailDetail() {
 }
 
 function deleteCurrentMail() {
+  var ib = activeInbox();
+  if (!ib) return;
   showConfirmModal('Delete this message?', function() {
-    const row = document.querySelector(`.erow[data-id="${currentMailId}"]`);
-    if (row) { row.style.opacity = '0'; row.style.transform = 'translateX(12px)'; row.style.transition = 'all .25s'; setTimeout(() => row.remove(), 260); }
+    ib.emails = ib.emails.filter(function(e){ return e.id !== ib.currentMailId; });
     document.getElementById('detail-empty').style.display = 'flex';
     document.getElementById('detail-content').style.display = 'none';
     document.getElementById('inbox-3col').classList.remove('mob-detail');
+    renderEmailList();
     toast('Message deleted');
   });
 }
 
 function markUnreadCurrent() {
-  const em  = EMAILS.find(e => e.id === currentMailId);
+  var ib = activeInbox();
+  if (!ib) return;
+  var em = ib.emails.find(function(e){ return e.id === ib.currentMailId; });
   if (!em) return;
   em.unread = true;
-  const row = document.querySelector(`.erow[data-id="${currentMailId}"]`);
-  if (row) {
-    row.classList.add('unread');
-    const dot = row.querySelector('.rdot-sm');
-    if (dot) dot.className = 'udot-sm';
-  }
+  renderEmailList();
   toast('Marked as unread');
 }
 
 function markAllReadInbox() {
+  var ib = activeInbox();
+  if (!ib) return;
   showConfirmModal('Mark all messages as read?', function() {
-    EMAILS.forEach(e => e.unread = false);
-    document.querySelectorAll('.erow.unread').forEach(r => {
-      r.classList.remove('unread');
-      const dot = r.querySelector('.udot-sm'); if (dot) dot.className = 'rdot-sm';
-    });
-    document.getElementById('ucnt').textContent = '';
+    ib.emails.forEach(function(e){ e.unread = false; });
+    renderEmailList();
     toast('All messages marked as read');
   }, 'Mark Read');
 }
 
 function deleteAllInbox() {
+  var ib = activeInbox();
+  if (!ib) return;
   showConfirmModal('Delete all messages?', function() {
-    document.getElementById('email-list').innerHTML = '<div class="no-mail"><svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="#FACC15" stroke-width="1"><path stroke-linecap=\\"round\\" d=\\"M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z\\"/></svg><p>No messages yet</p></div>';
+    ib.emails = [];
     document.getElementById('detail-empty').style.display = 'flex';
     document.getElementById('detail-content').style.display = 'none';
-    document.getElementById('ucnt').textContent = '';
-    document.getElementById('inbox-3col').classList.remove('mob-detail');
+    renderEmailList();
     toast('All messages deleted');
   });
 }
@@ -1292,25 +1373,27 @@ function refreshInboxList() {
 }
 
 function switchTab(btn, tab) {
-  document.querySelectorAll('.list-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.list-tab').forEach(function(b){ b.classList.remove('active'); });
   btn.classList.add('active');
 }
 
 function debounceSearchInbox(val) {
   clearTimeout(searchDelayInbox);
-  searchDelayInbox = setTimeout(() => {
-    const rows = document.querySelectorAll('.erow');
-    rows.forEach(r => {
-      const txt = r.textContent.toLowerCase();
+  searchDelayInbox = setTimeout(function() {
+    var rows = document.querySelectorAll('.erow');
+    rows.forEach(function(r) {
+      var txt = r.textContent.toLowerCase();
       r.style.display = txt.includes(val.toLowerCase()) ? '' : 'none';
     });
   }, 300);
 }
 
-// Boot timer
-startTimerInbox();
-
-// Open first email on desktop
+/* ── Init ── */
+var first = createDefaultInbox();
+activeInboxId = first.id;
+renderInboxTabs();
+renderActiveInbox();
+ensureTimer();
 if (window.innerWidth >= 900) openMailDetail(1);
 </script>
 @endpush

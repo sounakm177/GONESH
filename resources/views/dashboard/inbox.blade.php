@@ -609,7 +609,7 @@
 }
 .mob-back-bar:hover {background:#EAB800;}
 
-/* ── Fullscreen mode ── */
+/* ── Fullscreen mode (hide site chrome only) ── */
 body.inbox-fs .topbar {display:none !important;}
 body.inbox-fs .sidebar {display:none !important;}
 body.inbox-fs .main {
@@ -621,31 +621,35 @@ body.inbox-fs .inbox-page-wrap {
   border-radius:0 !important;
   box-shadow:none !important;
 }
-body.inbox-fs .addr-strip,
-body.inbox-fs .timer-strip,
-body.inbox-fs .inbox-strip,
-body.inbox-fs .list-footer,
-body.inbox-fs .list-search,
-body.inbox-fs .list-tabs,
-body.inbox-fs .list-toolbar,
-body.inbox-fs .mob-back-bar,
-body.inbox-fs .quick-reply,
-body.inbox-fs .detail-toolbar {
+body.inbox-fs .quick-reply {
   display:none !important;
 }
-body.inbox-fs .inbox-list-col {
-  width:0 !important;
-  min-width:0 !important;
-  opacity:0;
-  overflow:hidden;
-  border-right:none;
+body.inbox-fs .fs-exit-btn {
+  display:flex !important;
 }
-body.inbox-fs .detail-header {
-  padding:12px 16px 8px;
+
+/* ── Fullscreen exit button (only visible in fullscreen) ── */
+.fs-exit-btn {
+  display:none;
+  position:fixed;
+  top:12px;
+  right:12px;
+  z-index:9999;
+  background:var(--INK);
+  color:#fff;
+  border:none;
+  font-family:var(--MONO);
+  font-size:.7rem;
+  font-weight:700;
+  padding:8px 14px;
+  border-radius:8px;
+  cursor:pointer;
+  align-items:center;
+  gap:6px;
+  box-shadow:0 4px 16px rgba(0,0,0,.2);
+  transition:background .12s, transform .1s;
 }
-body.inbox-fs .email-viewer {
-  padding:16px;
-}
+.fs-exit-btn:hover {background:#000; transform:translateY(-1px);}
 
 /* ── Animations ── */
 @keyframes slide-in-right {
@@ -989,6 +993,10 @@ body.inbox-fs .email-viewer {
             </div>
 
             <!-- Email viewer (centered) -->
+            <button class="fs-exit-btn" onclick="toggleFullscreen()">
+              <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
+              Exit Fullscreen
+            </button>
             <div class="email-viewer" id="email-viewer">
               <div class="email-content">
                 <!-- Email body -->
@@ -1149,12 +1157,9 @@ function toggleInboxList() {
   document.getElementById('inbox-3col').classList.toggle('list-collapsed');
 }
 
-/* ── Toggle fullscreen ── */
+/* ── Toggle fullscreen (hide site chrome only) ── */
 function toggleFullscreen() {
   document.body.classList.toggle('inbox-fs');
-  if (document.body.classList.contains('inbox-fs')) {
-    document.getElementById('inbox-3col').classList.add('list-collapsed');
-  }
 }
 
 /* ── Toggle sender details panel ── */

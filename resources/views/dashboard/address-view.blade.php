@@ -873,6 +873,7 @@
         <tr>
           <th>Date &amp; Time</th>
           <th>Sender</th>
+          <th>Subject</th>
           <th>Status</th>
           <th style="text-align:right;">Action</th>
         </tr>
@@ -924,6 +925,41 @@
       <div style="display:flex;gap:8px;justify-content:center;">
         <button class="act-btn" onclick="closeConfirm()">Cancel</button>
         <button class="act-btn danger" id="confirm-yes-btn" onclick="confirmYes()">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── View Detail Log Modal ── -->
+<div class="modal-overlay" id="vdl-modal" style="display:none;">
+  <div class="modal-box" style="max-width:420px;">
+    <div class="modal-hd">
+      <span class="modal-title">Forwarding Detail</span>
+      <button class="modal-close" onclick="closeVdlModal()">&times;</button>
+    </div>
+    <div class="modal-bd" style="padding:20px;">
+      <div style="margin-bottom:16px;">
+        <div style="font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--MU2);margin-bottom:4px;">Sender</div>
+        <div style="font-size:.84rem;color:var(--INK);word-break:break-all;" id="vdl-sender">—</div>
+      </div>
+      <div style="margin-bottom:16px;">
+        <div style="font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--MU2);margin-bottom:4px;">Subject</div>
+        <div style="font-size:.84rem;color:var(--INK);word-break:break-all;" id="vdl-subject">—</div>
+      </div>
+      <div style="margin-bottom:16px;">
+        <div style="font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--MU2);margin-bottom:4px;">Status</div>
+        <span class="del-badge delivered" id="vdl-status-badge"><span class="db-dot"></span>Forwarded</span>
+      </div>
+      <div style="margin-bottom:16px;">
+        <div style="font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--MU2);margin-bottom:4px;">Time (relative)</div>
+        <div style="font-size:.84rem;color:var(--INK);" id="vdl-time">—</div>
+      </div>
+      <div style="margin-bottom:16px;">
+        <div style="font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--MU2);margin-bottom:4px;">Time (exact)</div>
+        <div style="font-size:.78rem;font-family:var(--MONO);color:var(--MU);" id="vdl-time-raw">—</div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px;">
+        <button class="act-btn" onclick="closeVdlModal()">Close</button>
       </div>
     </div>
   </div>
@@ -1170,11 +1206,12 @@ function renderFwTable() {
     var badgeClass = e.status === 'forwarded' ? 'delivered' : e.status === 'blocked' ? 'failed' : 'pending';
     var badgeLbl = e.status.charAt(0).toUpperCase() + e.status.slice(1);
     var canRetry = e.status === 'blocked';
-    var viewBtn = '<button class="tbl-act" onclick="viewEmail(\'' + e.sender_email.replace(/'/g, "\\'") + '\')">View</button>';
-    var retryBtn = canRetry ? '<button class="tbl-act retry" onclick="retryForward(\'' + e.sender_email.replace(/'/g, "\\'") + '\')">Retry</button>' : '';
+    var viewBtn = '<button class="tbl-act" onclick="viewEmailLog(' + e.id + ')">View</button>';
+    var retryBtn = canRetry ? '<button class="tbl-act retry" onclick="retryForward(' + e.id + ')">Retry</button>' : '';
     return '<tr>' +
       '<td style="white-space:nowrap;font-family:var(--MONO);font-size:.68rem;color:var(--MU);">' + (e.created_at || '—') + '</td>' +
       '<td><div class="fw-cell-sender">' + (e.sender_email || '—') + '</div></td>' +
+      '<td><div class="fw-cell-subject">' + (e.subject || '—') + '</div></td>' +
       '<td><span class="del-badge ' + badgeClass + '"><span class="db-dot"></span>' + badgeLbl + '</span></td>' +
       '<td style="text-align:right;white-space:nowrap;">' + viewBtn + retryBtn + '</td>' +
     '</tr>';
@@ -1195,11 +1232,27 @@ function fwGoPage(p) {
   renderFwTable();
 }
 
-function viewEmail(sender) {
-  showToast('Viewing email from ' + sender);
+function viewEmailLog(id) {
+  var log = FW_LOGS.find(function(l) { return l.id === id; });
+  if (!log) { showToast('Log entry not found'); return; }
+  document.getElementById('vdl-sender').textContent = log.sender_email || '—';
+  document.getElementById('vdl-subject').textContent = log.subject || '—';
+  var badge = document.getElementById('vdl-status-badge');
+  var cls = log.status === 'forwarded' ? 'delivered' : log.status === 'blocked' ? 'failed' : 'pending';
+  badge.className = 'del-badge ' + cls;
+  badge.innerHTML = '<span class="db-dot"></span>' + log.status.charAt(0).toUpperCase() + log.status.slice(1);
+  document.getElementById('vdl-time').textContent = log.created_at || '—';
+  document.getElementById('vdl-time-raw').textContent = log.created_at_raw || '—';
+  document.getElementById('vdl-modal').style.display = 'flex';
 }
 
-function retryForward(sender) {
+function closeVdlModal() {
+  document.getElementById('vdl-modal').style.display = 'none';
+}
+
+function retryForward(id) {
+  var log = FW_LOGS.find(function(l) { return l.id === id; });
+  var sender = log ? log.sender_email : 'unknown';
   showConfirm('Retry forwarding from ' + sender + '?', function() {
     showToast('Retrying forward from ' + sender);
   });
@@ -1222,6 +1275,7 @@ function renderTimeline() {
       '<div class="timeline-body">' +
         '<div class="timeline-event">' + e.status.charAt(0).toUpperCase() + e.status.slice(1) + '</div>' +
         '<div class="timeline-desc">From: ' + (e.sender_email || '—') + '</div>' +
+        '<div class="timeline-desc" style="font-size:.68rem;color:var(--MU2);">' + (e.subject || '') + '</div>' +
         '<div class="timeline-time">' + (e.created_at || '') + '</div>' +
       '</div>' +
     '</div>';

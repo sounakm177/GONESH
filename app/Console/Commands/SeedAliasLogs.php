@@ -57,6 +57,29 @@ class SeedAliasLogs extends Command
 
         $statuses = ['received', 'forwarded', 'blocked'];
 
+        $subjects = [
+            'Your order confirmation #ORD-38291',
+            'New login to your account',
+            'Is this your account?',
+            'You sent a payment of $49.99',
+            'Your playlist is ready',
+            'New pull request #892 — please review',
+            'Security alert for your account',
+            'How was your shopping experience?',
+            'Shared workspace has been updated',
+            '@someone liked your tweet',
+            'New job recommendations for you',
+            'Your login code is 482916',
+            'New comment on your design',
+            'Your trip receipt',
+            'New message in #general',
+            'Your meeting recording is ready',
+            'Payment receipt for $29.00',
+            'Your weekly reading digest',
+            'File shared with you',
+            'New episodes available',
+        ];
+
         $now = now();
         $created = 0;
 
@@ -67,6 +90,7 @@ class SeedAliasLogs extends Command
             AliasLog::create([
                 'alias_id' => $aliasId,
                 'sender_email' => $sender['name'] . ' <' . $sender['email'] . '>',
+                'subject' => $subjects[array_rand($subjects)],
                 'status' => $status,
                 'created_at' => (clone $now)->subMinutes(rand(1, $count * 60)),
             ]);

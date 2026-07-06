@@ -175,6 +175,7 @@ class AliasController extends Controller
                     return [
                         'id' => $log->id,
                         'sender_email' => $log->sender_email,
+                        'subject' => $log->subject,
                         'status' => $log->status,
                         'created_at' => $log->created_at?->diffForHumans(),
                         'created_at_raw' => $log->created_at?->toDateTimeString(),
@@ -309,6 +310,7 @@ class AliasController extends Controller
                 return [
                     'id' => $log->id,
                     'sender_email' => $log->sender_email,
+                    'subject' => $log->subject,
                     'status' => $log->status,
                     'created_at' => $log->created_at?->diffForHumans(),
                     'created_at_raw' => $log->created_at?->toDateTimeString(),

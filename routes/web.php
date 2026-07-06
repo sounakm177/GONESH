@@ -54,6 +54,17 @@ Route::middleware('auth')->name('dashboard.')->group(function () {
         });
     });
 
+    Route::prefix('custom-domains')->name('custom-domains.')->group(function () {
+        Route::get('/',                 [\App\Http\Controllers\Dashboard\CustomDomainController::class, 'index'])->name('index');
+        Route::post('/',                [\App\Http\Controllers\Dashboard\CustomDomainController::class, 'store'])->name('store');
+        Route::get('{customDomain}',    [\App\Http\Controllers\Dashboard\CustomDomainController::class, 'show'])->name('show');
+        Route::patch('{customDomain}',  [\App\Http\Controllers\Dashboard\CustomDomainController::class, 'update'])->name('update');
+        Route::delete('{customDomain}', [\App\Http\Controllers\Dashboard\CustomDomainController::class, 'destroy'])->name('destroy');
+        Route::post('{customDomain}/verify',  [\App\Http\Controllers\Dashboard\CustomDomainController::class, 'verify'])->name('verify');
+        Route::post('{customDomain}/refresh', [\App\Http\Controllers\Dashboard\CustomDomainController::class, 'refreshStatus'])->name('refresh');
+        Route::post('{customDomain}/select',  [\App\Http\Controllers\Dashboard\CustomDomainController::class, 'select'])->name('select');
+    });
+
     Route::prefix('aliases')->name('aliases.')->group(function () {
         Route::get('/',                 [AliasController::class, 'index'])->name('index');
         Route::post('/',                [AliasController::class, 'store'])->name('store');

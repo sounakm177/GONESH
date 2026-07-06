@@ -17,6 +17,7 @@ class AliasLog extends Model
         'email_id',
         'sender_email',
         'subject',
+        'body',
         'status',
         'created_at',
     ];

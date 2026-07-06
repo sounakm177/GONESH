@@ -55,6 +55,7 @@ class InboxController extends Controller
                 'totalEmails' => $totalCount,
                 'unreadCount' => $unreadCount,
                 'currentMailId' => $emails->first()?->id ?? null,
+                'created_at_raw' => $addr->created_at->toISOString(),
             ];
         });
 
@@ -148,6 +149,7 @@ class InboxController extends Controller
                 'totalEmails' => 0,
                 'unreadCount' => 0,
                 'currentMailId' => null,
+                'created_at_raw' => $address->created_at->toISOString(),
             ],
         ], 201);
     }
@@ -198,6 +200,69 @@ class InboxController extends Controller
         });
 
         return response()->json(['domains' => $data]);
+    }
+
+    public function extend(Request $request, Address $address): JsonResponse
+    {
+        $user = $request->user();
+
+        if ($address->user_id !== $user->id) {
+            return response()->json(['error' => 'Unauthorized.'], 403);
+        }
+
+        if ($address->expires_at === null) {
+            return response()->json(['error' => 'This inbox never expires.'], 422);
+        }
+
+        $validated = $request->validate([
+            'duration' => 'required|integer|min:60',
+        ]);
+
+        $duration = (int) $validated['duration'];
+
+        $subscription = $user->subscriptions()->active()->first();
+        $plan = $subscription?->plan;
+        $isPro = $plan && $plan->slug === 'pro';
+
+        $freeDurations = [600, 1800, 3600, 21600];
+        $proDurations = [600, 1800, 3600, 21600, 43200, 86400, 604800, 2592000];
+
+        $allowed = $isPro ? $proDurations : $freeDurations;
+
+        if (!in_array($duration, $allowed, true)) {
+            return response()->json(['error' => 'Invalid duration selected.'], 422);
+        }
+
+        $createdAt = $address->created_at;
+        $currentExpiresAt = $address->expires_at;
+
+        $maxExpiresAt = $isPro ? null : (clone $createdAt)->addHours(24);
+
+        $baseTime = $currentExpiresAt && $currentExpiresAt->isFuture() ? clone $currentExpiresAt : now();
+        $newExpiresAt = (clone $baseTime)->addSeconds($duration);
+
+        if ($maxExpiresAt && $newExpiresAt->gt($maxExpiresAt)) {
+            if ($currentExpiresAt && $currentExpiresAt->gte($maxExpiresAt)) {
+                return response()->json([
+                    'error' => 'Maximum expiration time reached for your plan. Upgrade to Pro for longer durations.',
+                ], 422);
+            }
+            $newExpiresAt = clone $maxExpiresAt;
+        }
+
+        $address->expires_at = $newExpiresAt;
+        $address->save();
+
+        $timerSecs = max(0, $newExpiresAt->getTimestamp() - now()->getTimestamp());
+        $timerMaxSecs = max(0, $newExpiresAt->getTimestamp() - $createdAt->getTimestamp());
+
+        return response()->json([
+            'success' => true,
+            'expires_at' => $newExpiresAt->toDateTimeString(),
+            'timerSecs' => $timerSecs,
+            'timerMaxSecs' => $timerMaxSecs,
+            'formatted_expires' => $newExpiresAt->format('g:i A') . ' · ' . $newExpiresAt->format('M j, Y'),
+        ]);
     }
 
     private function generateLocalPart(): string

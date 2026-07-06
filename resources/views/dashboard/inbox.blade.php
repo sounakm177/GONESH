@@ -139,20 +139,81 @@
   font-family:var(--MONO); font-size:.72rem; font-weight:700;
   color:var(--INK); white-space:nowrap; min-width:38px; text-align:right;
 }
-.timer-strip-btns {
-  display:flex; gap:4px; flex-shrink:0;
-}
-.timer-ctrl-btn {
-  display:flex; align-items:center; gap:4px;
-  font-family:var(--MONO); font-size:.6rem; font-weight:700;
-  letter-spacing:.05em;
-  padding:4px 9px; border-radius:6px;
-  border:1px solid var(--BD);
-  background:var(--SURF); color:var(--INK);
-  white-space:nowrap; cursor:pointer;
+.timer-extend-wrap { position:relative; display:flex; align-items:center; }
+.timer-extend-btn {
+  display:inline-flex; align-items:center; gap:4px;
+  font-family:var(--MONO); font-size:.58rem; font-weight:700;
+  letter-spacing:.04em; padding:3px 8px; border-radius:5px;
+  border:1px solid var(--BD); background:var(--SURF); color:var(--MU);
+  white-space:nowrap; cursor:pointer; margin-left:4px;
   transition:background .12s, border-color .12s, color .12s;
 }
-.timer-ctrl-btn:hover {background:var(--INK); border-color:var(--INK); color:var(--Y);}
+.timer-extend-btn:hover { background:var(--INK); border-color:var(--INK); color:var(--Y); }
+.timer-extend-btn svg { flex-shrink:0; }
+
+.extend-popover {
+  display:none; position:absolute; top:calc(100% + 6px); right:0;
+  width:260px; background:#fff; border-radius:10px;
+  box-shadow:0 8px 30px rgba(0,0,0,.14),0 2px 8px rgba(0,0,0,.06);
+  border:1px solid #e8eaed; z-index:500; overflow:hidden;
+  animation:pop-fade .15s ease both;
+}
+.extend-popover.open { display:block; }
+@keyframes pop-fade { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
+
+.extend-pop-hd {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 14px 8px; border-bottom:1px solid var(--BD);
+}
+.extend-pop-hd span { font-size:.74rem; font-weight:700; color:var(--INK); }
+.extend-pop-close {
+  background:none; border:none; font-size:1.1rem; color:var(--MU);
+  cursor:pointer; line-height:1; padding:0 2px;
+}
+.extend-pop-close:hover { color:var(--INK); }
+
+.extend-pop-body { padding:10px 14px 14px; }
+.extend-pop-label {
+  font-size:.6rem; font-weight:700; text-transform:uppercase;
+  letter-spacing:.06em; color:var(--MU2); margin-bottom:5px;
+}
+.extend-pop-select {
+  width:100%; padding:8px 10px; border:1px solid var(--BD);
+  border-radius:6px; background:var(--BG); color:var(--INK);
+  font-family:var(--MONO); font-size:.72rem; font-weight:600;
+  appearance:auto; cursor:pointer; margin-bottom:10px;
+}
+.extend-pop-select:focus { outline:none; border-color:var(--Y); }
+.extend-pop-btn {
+  width:100%; display:flex; align-items:center; justify-content:center;
+  gap:6px; padding:9px 0; border:none; border-radius:7px;
+  font-family:var(--MONO); font-size:.7rem; font-weight:700;
+  letter-spacing:.04em; cursor:pointer; transition:opacity .15s;
+}
+.extend-pop-btn.primary { background:var(--Y); color:#000; }
+.extend-pop-btn.primary:hover { opacity:.85; }
+.extend-pop-btn:disabled { opacity:.4; cursor:default; }
+
+.extend-pop-msg {
+  font-size:.66rem; color:var(--MU); line-height:1.5;
+  padding:8px 10px; border-radius:6px; background:#fef3cd;
+  margin-top:8px; display:none;
+}
+.extend-pop-msg.show { display:block; }
+.extend-pop-msg strong { color:#92400e; }
+
+.extend-pop-success {
+  display:none; padding:14px; text-align:center;
+}
+.extend-pop-success.show { display:block; }
+.extend-pop-success .check {
+  display:inline-flex; align-items:center; justify-content:center;
+  width:36px; height:36px; border-radius:50%;
+  background:#d1fae5; margin-bottom:8px;
+}
+.extend-pop-success .check svg { color:#16a34a; }
+.extend-pop-success .msg { font-size:.76rem; font-weight:600; color:var(--INK); margin-bottom:4px; }
+.extend-pop-success .sub { font-size:.66rem; color:var(--MU); }
 
 /* ── Inbox tabs strip ── */
 .inbox-strip {
@@ -734,6 +795,12 @@ body.inbox-fs .quick-reply {
 
   .addr-strip .addr-new-btn { display: none; }
   .addr-strip .btn-primary.yellow { display: flex; }
+
+  .extend-popover { right:auto; left:0; width:240px; }
+}
+
+@media (max-width: 480px) {
+  .extend-popover { width:220px; }
 }
 
 @media (min-width: 900px) {
@@ -747,8 +814,6 @@ body.inbox-fs .quick-reply {
   .addr-copy-btn, .addr-new-btn { font-size: .66rem; padding: 5px 8px; }
   .addr-strip .page-title { font-size: .8rem; }
   .timer-strip { padding: 4px 8px; flex-wrap: wrap; gap: 4px; }
-  .timer-strip-btns { width: 100%; justify-content: flex-end; margin-top: 2px; }
-  .timer-ctrl-btn { font-size: .55rem; padding: 3px 7px; }
   .inbox-tab { font-size: .56rem; padding: 4px 8px; max-width: 120px; }
   .inbox-add-btn { width: 22px; height: 22px; font-size: 12px; }
   .list-toolbar { padding: 8px 10px; }
@@ -811,11 +876,31 @@ body.inbox-fs .quick-reply {
           <div class="timer-strip-fill" id="tbar" style="width:68%;"></div>
         </div>
         <span class="timer-strip-num" id="tnum">08:12</span>
-        <div class="timer-strip-btns">
-          <button class="timer-ctrl-btn" onclick="extendTimer()" title="Add 10 minutes">
+        <div class="timer-extend-wrap">
+          <button class="timer-extend-btn" onclick="toggleExtendPopover()" title="Extend expiration">
             <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M12 4v16m8-8H4"/></svg>
-            +10m
+            + Extend
           </button>
+          <div class="extend-popover" id="extend-popover">
+            <div class="extend-pop-hd">
+              <span>Extend Expiration</span>
+              <button class="extend-pop-close" onclick="closeExtendPopover()">&times;</button>
+            </div>
+            <div class="extend-pop-body" id="extend-pop-body">
+              <div class="extend-pop-label">Select Time</div>
+              <select class="extend-pop-select" id="extend-select"></select>
+              <button class="extend-pop-btn primary" id="extend-action-btn" onclick="extendInbox()">
+                <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M12 4v16m8-8H4"/></svg>
+                Extend Time
+              </button>
+              <div class="extend-pop-msg" id="extend-pop-msg"></div>
+            </div>
+            <div class="extend-pop-success" id="extend-pop-success">
+              <div class="check"><svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg></div>
+              <div class="msg">Expiration extended successfully!</div>
+              <div class="sub" id="extend-success-sub">Today, 4:30 PM</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1089,7 +1174,7 @@ const CSRF_TOKEN   = @json(csrf_token());
 let IS_PRO         = @json($isProInbox);
 const EMAIL_PER_PAGE = 10;
 const EXPIRES_OPT = [
-  { label: '60 Minutes',  value: 3600,  pro: false },
+  { label: '30 Minutes',  value: 1800,  pro: false },
   { label: '12 Hours',    value: 43200, pro: false },
   { label: '24 Hours',    value: 86400, pro: false },
   { label: 'Unlimited',   value: -1,    pro: true  },
@@ -1262,23 +1347,141 @@ function ensureTimer() {
 function updateTimerUI() {
   var ib = activeInbox();
   if (!ib) return;
-  var h = Math.floor(ib.timerSecs / 3600);
-  var m = padInbox(Math.floor((ib.timerSecs % 3600) / 60));
-  var s = padInbox(ib.timerSecs % 60);
-  document.getElementById('tnum').textContent = h > 0 ? h + ':' + m + ':' + s : m + ':' + s;
-  var pct = ib.timerMaxSecs > 0 ? Math.min(100, (ib.timerSecs / ib.timerMaxSecs) * 100) : 0;
-  document.getElementById('tbar').style.width = pct + '%';
-  document.getElementById('tbar').style.background = ib.timerSecs < 120 ? 'var(--RED)' : 'var(--Y)';
+  var isUnlimited = ib.timerSecs >= 999999;
+  if (isUnlimited) {
+    document.getElementById('tnum').textContent = '∞';
+    document.getElementById('tbar').style.width = '100%';
+    document.getElementById('tbar').style.background = 'var(--BD2)';
+  } else {
+    var h = Math.floor(ib.timerSecs / 3600);
+    var m = padInbox(Math.floor((ib.timerSecs % 3600) / 60));
+    var s = padInbox(ib.timerSecs % 60);
+    document.getElementById('tnum').textContent = h > 0 ? h + ':' + m + ':' + s : m + ':' + s;
+    var pct = ib.timerMaxSecs > 0 ? Math.min(100, (ib.timerSecs / ib.timerMaxSecs) * 100) : 0;
+    document.getElementById('tbar').style.width = pct + '%';
+    document.getElementById('tbar').style.background = ib.timerSecs < 120 ? 'var(--RED)' : 'var(--Y)';
+  }
+  var btn = document.querySelector('.timer-extend-btn');
+  if (btn) btn.style.display = isUnlimited ? 'none' : '';
 }
 
-function extendTimer() {
+/* ── Extend popover ── */
+function toggleExtendPopover() {
+  var pop = document.getElementById('extend-popover');
+  var open = pop.classList.contains('open');
+  closeExtendPopover();
+  if (!open) {
+    document.getElementById('extend-pop-success').classList.remove('show');
+    document.getElementById('extend-pop-body').style.display = 'block';
+    populateExtendOptions();
+    pop.classList.add('open');
+  }
+}
+function closeExtendPopover() {
+  document.getElementById('extend-popover').classList.remove('open');
+}
+
+function populateExtendOptions() {
   var ib = activeInbox();
   if (!ib) return;
-  ib.timerSecs += 600;
-  if (ib.timerSecs > ib.timerMaxSecs) ib.timerMaxSecs = ib.timerSecs;
-  updateTimerUI();
-  toast('Added 10 minutes');
+  var select = document.getElementById('extend-select');
+  select.innerHTML = '';
+
+  var freeOpts = [
+    { label: '+10 Minutes', value: 600 },
+    { label: '+30 Minutes', value: 1800 },
+    { label: '+1 Hour',     value: 3600 },
+    { label: '+6 Hours',    value: 21600 },
+  ];
+  var proOpts = freeOpts.concat([
+    { label: '+12 Hours',   value: 43200 },
+    { label: '+1 Day',      value: 86400 },
+    { label: '+7 Days',     value: 604800 },
+    { label: '+30 Days',    value: 2592000 },
+  ]);
+
+  var opts = IS_PRO ? proOpts : freeOpts;
+  var msgEl = document.getElementById('extend-pop-msg');
+  var btn = document.getElementById('extend-action-btn');
+  msgEl.classList.remove('show');
+  btn.disabled = false;
+
+  var maxReached = false;
+  var atMaxMsg = '';
+  var now = Math.floor(Date.now() / 1000);
+
+  opts.forEach(function(o) {
+    var opt = document.createElement('option');
+    opt.value = o.value;
+    opt.textContent = o.label;
+    select.appendChild(opt);
+  });
+
+  var createdRaw = ib.created_at_raw;
+  if (!createdRaw && ib.timerMaxSecs > 0 && ib.timerSecs >= 0) {
+    createdRaw = new Date((now - ib.timerMaxSecs) * 1000).toISOString();
+  }
+
+  if (!IS_PRO && createdRaw) {
+    var createdTime = new Date(createdRaw).getTime();
+    var maxEnd = createdTime + 24 * 3600 * 1000;
+    var remainingMs = maxEnd - Date.now();
+    if (remainingMs <= 0) {
+      maxReached = true;
+      atMaxMsg = 'Maximum expiration time reached for your plan.<br><strong>Upgrade to Pro</strong> for longer durations.';
+    }
+  }
+
+  if (maxReached) {
+    btn.disabled = true;
+    msgEl.innerHTML = atMaxMsg;
+    msgEl.classList.add('show');
+  }
 }
+
+function extendInbox() {
+  var ib = activeInbox();
+  if (!ib) return;
+  var select = document.getElementById('extend-select');
+  var duration = parseInt(select.value);
+  if (!duration) return;
+
+  var btn = document.getElementById('extend-action-btn');
+  btn.disabled = true;
+  btn.textContent = 'Extending…';
+
+  fetch('/inboxes/' + ib.id + '/extend', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF_TOKEN },
+    body: JSON.stringify({ duration: duration })
+  }).then(function(r){ return r.json(); }).then(function(data) {
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M12 4v16m8-8H4"/></svg> Extend Time';
+    if (data.error) {
+      toast(data.error);
+      return;
+    }
+    ib.timerSecs = data.timerSecs;
+    ib.timerMaxSecs = data.timerMaxSecs;
+    updateTimerUI();
+    document.getElementById('extend-pop-body').style.display = 'none';
+    document.getElementById('extend-success-sub').textContent = 'New Expiration: ' + (data.formatted_expires || '');
+    document.getElementById('extend-pop-success').classList.add('show');
+    setTimeout(closeExtendPopover, 2500);
+  })['catch'](function() {
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M12 4v16m8-8H4"/></svg> Extend Time';
+    toast('Failed to extend expiration');
+  });
+}
+
+// Close extend popover on outside click
+document.addEventListener('click', function(e) {
+  var wrap = document.querySelector('.timer-extend-wrap');
+  if (wrap && !wrap.contains(e.target)) {
+    closeExtendPopover();
+  }
+});
 
 /* ── Load emails from API (paginated) ── */
 function loadEmails(keep) {

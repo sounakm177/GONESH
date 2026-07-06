@@ -40,6 +40,7 @@ Route::middleware('auth')->name('dashboard.')->group(function () {
         Route::post('/',                [\App\Http\Controllers\Dashboard\InboxController::class, 'store'])->name('store');
         Route::delete('{address}',      [\App\Http\Controllers\Dashboard\InboxController::class, 'destroy'])->name('destroy');
         Route::get('domains',           [\App\Http\Controllers\Dashboard\InboxController::class, 'domains'])->name('domains');
+        Route::post('{address}/extend', [\App\Http\Controllers\Dashboard\InboxController::class, 'extend'])->name('extend');
 
         Route::prefix('{address}/emails')->name('emails.')->group(function () {
             Route::get('/',                             [\App\Http\Controllers\Dashboard\EmailController::class, 'index'])->name('index');

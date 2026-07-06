@@ -36,7 +36,10 @@ class EmailController extends Controller
             }
         }
 
-        $emails = $query->latest('received_at')->paginate(50);
+        $perPage = (int) $request->input('per_page', 10);
+        $perPage = min(max($perPage, 1), 100);
+
+        $emails = $query->latest('received_at')->paginate($perPage);
 
         $data = $emails->map(function (Email $email) {
             return [
@@ -55,9 +58,12 @@ class EmailController extends Controller
 
         return response()->json([
             'emails' => $data,
-            'total' => $query->count(),
+            'total' => $emails->total(),
             'unread' => $address->emails()->where('is_read', false)->count(),
             'page' => $emails->currentPage(),
+            'last_page' => $emails->lastPage(),
+            'has_more' => $emails->currentPage() < $emails->lastPage(),
+            'per_page' => $perPage,
         ]);
     }
 

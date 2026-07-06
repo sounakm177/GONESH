@@ -1,0 +1,1342 @@
+@extends('layouts.authLayout')
+
+@section('title', 'InboxOro — Alias Details')
+
+@push('styles')
+<style>
+
+/* ══════════════════════════════════════════════
+   ALIAS DETAIL PAGE — Premium SaaS Design
+   ══════════════════════════════════════════════ */
+
+/* ── Back link ── */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--MONO);
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--MU);
+  padding: 6px 0;
+  margin-bottom: 8px;
+  transition: color .12s;
+}
+.back-link:hover { color: var(--INK); }
+
+/* ── Alias header card ── */
+.alias-header {
+  background: var(--SURF);
+  border: 1px solid var(--BD);
+  border-radius: 12px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.04);
+}
+.alias-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+.alias-header-avatar {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--DISP);
+  font-size: 1.2rem;
+  color: #fff;
+  flex-shrink: 0;
+}
+.alias-header-info { min-width: 0; }
+.alias-header-addr {
+  font-family: var(--MONO);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--INK);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.alias-header-label {
+  font-size: .78rem;
+  color: var(--MU);
+  margin-top: 2px;
+}
+.alias-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+/* ── Status badge ── */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--MONO);
+  font-size: .65rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  padding: 5px 12px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+.status-badge.active {
+  background: rgba(16,185,129,.1);
+  color: var(--GREEN);
+}
+.status-badge.paused {
+  background: rgba(245,158,11,.1);
+  color: #D97706;
+}
+.status-badge.disabled {
+  background: rgba(239,68,68,.1);
+  color: var(--RED);
+}
+.status-badge .sb-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+}
+.status-badge.active .sb-dot { background: var(--GREEN); }
+.status-badge.paused .sb-dot { background: #D97706; }
+.status-badge.disabled .sb-dot { background: var(--RED); }
+
+/* ── Action buttons ── */
+.act-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: .74rem;
+  font-weight: 600;
+  color: var(--INK);
+  background: var(--SURF);
+  border: 1px solid var(--BD);
+  padding: 7px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background .12s, color .12s, border-color .12s;
+  white-space: nowrap;
+}
+.act-btn:hover { background: var(--BD2); }
+.act-btn.primary { background: var(--Y); border-color: var(--Y); }
+.act-btn.primary:hover { background: #EAB800; }
+.act-btn.danger { color: var(--RED); }
+.act-btn.danger:hover { background: rgba(239,68,68,.08); border-color: rgba(239,68,68,.3); }
+
+/* ── Stats grid ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.stat-card {
+  background: var(--SURF);
+  border: 1px solid var(--BD);
+  border-radius: 12px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.03);
+  transition: box-shadow .15s, transform .1s;
+}
+.stat-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,.06);
+  transform: translateY(-1px);
+}
+.stat-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.stat-icon.blue   { background: rgba(59,130,246,.1); color: var(--B); }
+.stat-icon.green  { background: rgba(16,185,129,.1); color: var(--GREEN); }
+.stat-icon.red    { background: rgba(239,68,68,.1); color: var(--RED); }
+.stat-icon.yellow { background: rgba(250,204,21,.15); color: #D97706; }
+.stat-body { min-width: 0; }
+.stat-num {
+  font-family: var(--DISP);
+  font-size: 1.6rem;
+  line-height: 1;
+  color: var(--INK);
+  letter-spacing: .02em;
+}
+.stat-lbl {
+  font-size: .72rem;
+  color: var(--MU);
+  margin-top: 3px;
+}
+.stat-sub {
+  font-size: .64rem;
+  color: var(--MU2);
+  margin-top: 1px;
+}
+
+/* ── Section panel ── */
+.panel {
+  background: var(--SURF);
+  border: 1px solid var(--BD);
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.03);
+}
+.panel-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--BD);
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.panel-title {
+  font-size: .9rem;
+  font-weight: 700;
+  color: var(--INK);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.panel-badge {
+  font-family: var(--MONO);
+  font-size: .58rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--BD2);
+  color: var(--MU);
+}
+.panel-body { padding: 0; }
+
+/* ── Info rows ── */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0;
+  padding: 0;
+}
+.info-row {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--BD2);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.info-row:nth-last-child(-n+2) { border-bottom: none; }
+.info-label {
+  font-family: var(--MONO);
+  font-size: .58rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--MU2);
+}
+.info-value {
+  font-size: .84rem;
+  color: var(--INK);
+  word-break: break-all;
+}
+.info-value.mono { font-family: var(--MONO); font-size: .78rem; }
+
+/* ── Table styles ── */
+.tbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--BD);
+  flex-wrap: wrap;
+}
+.tbar-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 160px;
+  background: var(--BG);
+  border: 1px solid var(--BD);
+  border-radius: 8px;
+  padding: 7px 12px;
+}
+.tbar-search input {
+  border: none; outline: none;
+  background: transparent;
+  font-family: var(--BODY);
+  font-size: .82rem;
+  color: var(--INK);
+  flex: 1;
+  min-width: 0;
+}
+.tbar-search input::placeholder { color: var(--MU2); }
+.tbar-select {
+  font-family: var(--BODY);
+  font-size: .78rem;
+  color: var(--INK);
+  background: var(--SURF);
+  border: 1px solid var(--BD);
+  border-radius: 8px;
+  padding: 7px 28px 7px 10px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='none' viewBox='0 0 24 24' stroke='%236B7280' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  min-width: 120px;
+}
+.fw-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .8rem;
+}
+.fw-table th {
+  font-family: var(--MONO);
+  font-size: .58rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--MU2);
+  text-align: left;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--BD);
+  white-space: nowrap;
+}
+.fw-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--BD2);
+  color: var(--INK);
+  vertical-align: middle;
+}
+.fw-table tr:last-child td { border-bottom: none; }
+.fw-table tr:hover td { background: #FFFBEB; }
+.fw-table .fw-cell-sender {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fw-table .fw-cell-subject {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Status badges in table */
+.del-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--MONO);
+  font-size: .6rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+.del-badge.delivered { background: rgba(16,185,129,.1); color: var(--GREEN); }
+.del-badge.pending   { background: rgba(245,158,11,.1); color: #D97706; }
+.del-badge.failed    { background: rgba(239,68,68,.1); color: var(--RED); }
+.del-badge .db-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+}
+.del-badge.delivered .db-dot { background: var(--GREEN); }
+.del-badge.pending .db-dot   { background: #D97706; }
+.del-badge.failed .db-dot    { background: var(--RED); }
+
+/* Table action links */
+.tbl-act {
+  font-family: var(--MONO);
+  font-size: .6rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: var(--B);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background .12s;
+}
+.tbl-act:hover { background: rgba(59,130,246,.08); }
+.tbl-act.retry { color: var(--GREEN); }
+.tbl-act.retry:hover { background: rgba(16,185,129,.08); }
+
+/* ── Pagination ── */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--BD);
+}
+.page-btn {
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 8px;
+  font-family: var(--MONO);
+  font-size: .72rem;
+  font-weight: 600;
+  color: var(--MU);
+  background: var(--SURF);
+  border: 1px solid var(--BD);
+  cursor: pointer;
+  transition: background .12s, color .12s, border-color .12s;
+}
+.page-btn:hover { background: var(--BD2); color: var(--INK); }
+.page-btn.active { background: var(--INK); color: var(--Y); border-color: var(--INK); }
+.page-btn:disabled { opacity: .4; cursor: default; }
+
+/* ── Recent emails list ── */
+.email-list-compact { padding: 0; }
+.email-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--BD2);
+  cursor: pointer;
+  transition: background .1s;
+}
+.email-item:last-child { border-bottom: none; }
+.email-item:hover { background: #FFFBEB; }
+.email-item-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--DISP); font-size: .85rem; color: #fff;
+  flex-shrink: 0;
+}
+.email-item-body { flex: 1; min-width: 0; }
+.email-item-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+.email-item-sender {
+  font-size: .8rem;
+  font-weight: 600;
+  color: var(--INK);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.email-item-time {
+  font-family: var(--MONO);
+  font-size: .6rem;
+  color: var(--MU2);
+  flex-shrink: 0;
+}
+.email-item-subject {
+  font-size: .76rem;
+  color: var(--INK);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 1px;
+}
+.email-item-preview {
+  font-size: .7rem;
+  color: var(--MU2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.email-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.att-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: .58rem;
+  color: var(--MU2);
+}
+.otp-badge-sm {
+  font-family: var(--MONO);
+  font-size: .5rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--Y);
+  color: var(--INK);
+}
+
+/* ── Settings card ── */
+.settings-list { padding: 4px 0; }
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--BD2);
+  gap: 16px;
+}
+.setting-row:last-child { border-bottom: none; }
+.setting-info { flex: 1; min-width: 0; }
+.setting-label {
+  font-size: .84rem;
+  font-weight: 600;
+  color: var(--INK);
+}
+.setting-desc {
+  font-size: .72rem;
+  color: var(--MU);
+  margin-top: 2px;
+}
+.setting-input {
+  font-family: var(--MONO);
+  font-size: .78rem;
+  color: var(--INK);
+  background: var(--BG);
+  border: 1px solid var(--BD);
+  border-radius: 8px;
+  padding: 7px 12px;
+  width: 240px;
+  max-width: 100%;
+}
+.setting-save {
+  font-family: var(--MONO);
+  font-size: .6rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 7px 16px;
+  border-radius: 8px;
+  background: var(--INK);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background .12s;
+}
+.setting-save:hover { background: #000; }
+
+/* ── Toggle switch ── */
+.toggle {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: var(--BD);
+  border-radius: 11px;
+  transition: background .2s;
+}
+.toggle-slider::after {
+  content: '';
+  position: absolute;
+  width: 18px; height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  top: 2px; left: 2px;
+  transition: transform .2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,.15);
+}
+.toggle input:checked + .toggle-slider { background: var(--GREEN); }
+.toggle input:checked + .toggle-slider::after { transform: translateX(18px); }
+
+/* ── Activity timeline ── */
+.timeline { padding: 12px 20px; }
+.timeline-item {
+  display: flex;
+  gap: 14px;
+  position: relative;
+  padding-bottom: 20px;
+}
+.timeline-item:last-child { padding-bottom: 0; }
+.timeline-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 4px;
+  position: relative;
+  z-index: 1;
+}
+.timeline-item:not(:last-child) .timeline-dot::after {
+  content: '';
+  position: absolute;
+  top: 14px; left: 4px;
+  width: 2px; height: calc(100% + 16px);
+  background: var(--BD2);
+}
+.timeline-dot.green  { background: var(--GREEN); }
+.timeline-dot.yellow { background: #D97706; }
+.timeline-dot.blue   { background: var(--B); }
+.timeline-dot.red    { background: var(--RED); }
+.timeline-dot.gray   { background: var(--MU2); }
+.timeline-body { flex: 1; min-width: 0; }
+.timeline-event {
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--INK);
+}
+.timeline-desc {
+  font-size: .74rem;
+  color: var(--MU);
+  margin-top: 2px;
+}
+.timeline-time {
+  font-family: var(--MONO);
+  font-size: .6rem;
+  color: var(--MU2);
+  margin-top: 4px;
+}
+
+/* ── Security section ── */
+.security-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0;
+  padding: 12px 20px;
+}
+.sec-item {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+.sec-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--MONO);
+  font-size: .6rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+.sec-badge.pass { background: rgba(16,185,129,.1); color: var(--GREEN); }
+.sec-badge.fail { background: rgba(239,68,68,.1); color: var(--RED); }
+.sec-badge.warn { background: rgba(245,158,11,.1); color: #D97706; }
+.sec-label {
+  font-size: .72rem;
+  color: var(--MU);
+}
+.sec-value {
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--INK);
+}
+
+/* ── Empty state ── */
+.empty-state {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  gap: 10px;
+  text-align: center;
+}
+.empty-state.show { display: flex; }
+.empty-icon {
+  width: 48px; height: 48px;
+  background: var(--BD2);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--MU2);
+}
+.empty-title { font-size: .88rem; font-weight: 600; color: var(--INK); }
+.empty-sub { font-size: .76rem; color: var(--MU2); max-width: 280px; line-height: 1.5; }
+
+/* ── Mobile responsive ── */
+@media (max-width: 768px) {
+  .alias-header { padding: 16px; }
+  .alias-header-left { width: 100%; }
+  .alias-header-right { width: 100%; justify-content: flex-start; }
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stat-card { padding: 14px; }
+  .stat-num { font-size: 1.3rem; }
+  .info-grid { grid-template-columns: 1fr; }
+  .info-row:nth-last-child(-n+2) { border-bottom: 1px solid var(--BD2); }
+  .info-row:last-child { border-bottom: none; }
+  .fw-table { font-size: .72rem; }
+  .fw-table th, .fw-table td { padding: 8px 10px; }
+  .tbar { padding: 10px 14px; }
+  .tbar-search { min-width: 120px; }
+  .panel-hd { padding: 12px 14px; }
+  .security-grid { grid-template-columns: 1fr 1fr; }
+  .setting-row { flex-wrap: wrap; }
+  .setting-input { width: 100%; }
+  .email-item { padding: 10px 14px; }
+  .timeline { padding: 10px 14px; }
+  .pagination { flex-wrap: wrap; }
+}
+
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .security-grid { grid-template-columns: 1fr; }
+  .alias-header-addr { font-size: .88rem; }
+}
+
+</style>
+@endpush
+
+@section('content')
+
+<!-- ── Back link ── -->
+<a href="{{ route('dashboard.address') }}" class="back-link">
+  <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M15 19l-7-7 7-7"/></svg>
+  Back to Aliases
+</a>
+
+<!-- ── Alias header ── -->
+<div class="alias-header" id="alias-header">
+  <div class="alias-header-left">
+    <div class="alias-header-avatar" id="ah-avatar" style="background:#6366F1;">SH</div>
+    <div class="alias-header-info">
+      <div class="alias-header-addr" id="ah-addr">shopping@dropit.io</div>
+      <div class="alias-header-label" id="ah-label">Shopping</div>
+    </div>
+  </div>
+  <div class="alias-header-right">
+    <span class="status-badge active" id="ah-status">
+      <span class="sb-dot"></span>
+      Active
+    </span>
+    <button class="act-btn" onclick="copyAliasAddr()">
+      <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path stroke-linecap="round" d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+      Copy
+    </button>
+    <button class="act-btn" onclick="editAlias()">
+      <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+      Edit
+    </button>
+    <button class="act-btn" id="ah-pause-btn" onclick="toggleAliasPause()">⏸ Pause</button>
+    <button class="act-btn danger" onclick="deleteAlias()">
+      <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path stroke-linecap="round" d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6m5 0V4a1 1 0 011-1h2a1 1 0 011 1v2"/></svg>
+      Delete
+    </button>
+  </div>
+</div>
+
+<!-- ── Stats cards ── -->
+<div class="stats-grid" id="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon blue">
+      <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+    </div>
+    <div class="stat-body">
+      <div class="stat-num" id="stat-received">0</div>
+      <div class="stat-lbl">Emails Received</div>
+      <div class="stat-sub">All time</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon green">
+      <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+    </div>
+    <div class="stat-body">
+      <div class="stat-num" id="stat-forwarded">0</div>
+      <div class="stat-lbl">Forwarded Successfully</div>
+      <div class="stat-sub">99.2% rate</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon red">
+      <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    </div>
+    <div class="stat-body">
+      <div class="stat-num" id="stat-failed">0</div>
+      <div class="stat-lbl">Forward Failures</div>
+      <div class="stat-sub">Last 30 days</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon yellow">
+      <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    </div>
+    <div class="stat-body">
+      <div class="stat-num" id="stat-spam">0</div>
+      <div class="stat-lbl">Spam Blocked</div>
+      <div class="stat-sub">Protected</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Alias Information ── -->
+<div class="panel">
+  <div class="panel-hd">
+    <span class="panel-title">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      Alias Information
+    </span>
+  </div>
+  <div class="info-grid" id="info-grid">
+    <div class="info-row">
+      <span class="info-label">Alias Address</span>
+      <span class="info-value mono" id="info-address">shopping@dropit.io</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Forwarding To</span>
+      <span class="info-value mono" id="info-forward">j***@gmail.com</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Domain</span>
+      <span class="info-value mono" id="info-domain">dropit.io</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Label</span>
+      <span class="info-value" id="info-label">Shopping</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Created</span>
+      <span class="info-value" id="info-created">Mar 15, 2026</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Last Activity</span>
+      <span class="info-value" id="info-last">2 hours ago</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Total Received</span>
+      <span class="info-value" id="info-total-received">47</span>
+    </div>
+    <div class="info-row">
+      <span class="info-label">Total Forwarded</span>
+      <span class="info-value" id="info-total-forwarded">45</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── Forwarding History ── -->
+<div class="panel" id="fw-panel">
+  <div class="panel-hd">
+    <span class="panel-title">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+      Forwarding History
+    </span>
+    <span class="panel-badge" id="fw-count">23 events</span>
+  </div>
+
+  <div class="tbar">
+    <div class="tbar-search">
+      <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="M21 21l-4.35-4.35"/></svg>
+      <input type="text" id="fw-search" placeholder="Search history…" oninput="filterFwHistory()"/>
+    </div>
+    <select class="tbar-select" id="fw-status-filter" onchange="filterFwHistory()">
+      <option value="all">All Status</option>
+      <option value="delivered">Delivered</option>
+      <option value="pending">Pending</option>
+      <option value="failed">Failed</option>
+    </select>
+    <input type="date" class="tbar-select" id="fw-date-filter" onchange="filterFwHistory()" style="min-width:140px;">
+  </div>
+
+  <div style="overflow-x:auto;" id="fw-table-wrap">
+    <table class="fw-table" id="fw-table">
+      <thead>
+        <tr>
+          <th>Date &amp; Time</th>
+          <th>Sender</th>
+          <th>Subject</th>
+          <th>Recipient</th>
+          <th>Status</th>
+          <th>Delivery Time</th>
+          <th style="text-align:right;">Action</th>
+        </tr>
+      </thead>
+      <tbody id="fw-tbody"></tbody>
+    </table>
+    <div class="empty-state" id="fw-empty">
+      <div class="empty-icon">
+        <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+      </div>
+      <div class="empty-title">No forwarding history</div>
+      <div class="empty-sub">No emails have been forwarded yet for this alias.</div>
+    </div>
+  </div>
+
+  <div class="pagination" id="fw-pagination"></div>
+</div>
+
+<!-- ── Recent Emails ── -->
+<div class="panel">
+  <div class="panel-hd">
+    <span class="panel-title">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+      Recent Emails
+    </span>
+    <span class="panel-badge" id="recent-count">8 emails</span>
+  </div>
+  <div class="email-list-compact" id="recent-list"></div>
+  <div class="empty-state" id="recent-empty">
+    <div class="empty-icon">
+      <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+    </div>
+    <div class="empty-title">No emails received</div>
+    <div class="empty-sub">This alias hasn't received any emails yet.</div>
+  </div>
+</div>
+
+<!-- ── Alias Settings ── -->
+<div class="panel">
+  <div class="panel-hd">
+    <span class="panel-title">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      Alias Settings
+    </span>
+  </div>
+  <div class="settings-list">
+    <div class="setting-row">
+      <div class="setting-info">
+        <div class="setting-label">Forwarding Enabled</div>
+        <div class="setting-desc">Forward incoming emails to your real inbox</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="setting-forward" checked onchange="saveSetting('forward')">
+        <div class="toggle-slider"></div>
+      </label>
+    </div>
+    <div class="setting-row">
+      <div class="setting-info">
+        <div class="setting-label">Spam Filter</div>
+        <div class="setting-desc">Automatically block known spam senders</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="setting-spam" checked onchange="saveSetting('spam')">
+        <div class="toggle-slider"></div>
+      </label>
+    </div>
+    <div class="setting-row">
+      <div class="setting-info">
+        <div class="setting-label">Block Attachments</div>
+        <div class="setting-desc">Strip attachments from forwarded emails</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="setting-attach" onchange="saveSetting('attach')">
+        <div class="toggle-slider"></div>
+      </label>
+    </div>
+    <div class="setting-row">
+      <div class="setting-info">
+        <div class="setting-label">Auto Delete</div>
+        <div class="setting-desc">Automatically delete emails older than 30 days</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="setting-autodel" onchange="saveSetting('autodel')">
+        <div class="toggle-slider"></div>
+      </label>
+    </div>
+    <div class="setting-row" style="border-bottom:none;">
+      <div class="setting-info">
+        <div class="setting-label">Notification Email</div>
+        <div class="setting-desc">Send delivery failure notifications to this address</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <input type="email" class="setting-input" id="setting-notif" value="john@example.com">
+        <button class="setting-save" onclick="saveNotifEmail()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Activity Timeline ── -->
+<div class="panel">
+  <div class="panel-hd">
+    <span class="panel-title">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      Activity Timeline
+    </span>
+  </div>
+  <div class="timeline" id="timeline"></div>
+  <div class="empty-state" id="tl-empty">
+    <div class="empty-icon">
+      <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    </div>
+    <div class="empty-title">No activity yet</div>
+    <div class="empty-sub">Activity for this alias will appear here.</div>
+  </div>
+</div>
+
+<!-- ── Security ── -->
+<div class="panel">
+  <div class="panel-hd">
+    <span class="panel-title">
+      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+      Security &amp; Authentication
+    </span>
+  </div>
+  <div class="security-grid" id="security-grid">
+    <div class="sec-item">
+      <span class="sec-badge pass" id="sec-spf">
+        <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg>
+        Pass
+      </span>
+      <span class="sec-label">SPF Status</span>
+      <span class="sec-value">v=spf1 include:_spf.dropit.io ~all</span>
+    </div>
+    <div class="sec-item">
+      <span class="sec-badge pass" id="sec-dkim">
+        <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg>
+        Pass
+      </span>
+      <span class="sec-label">DKIM Status</span>
+      <span class="sec-value">dkim.dropit.io</span>
+    </div>
+    <div class="sec-item">
+      <span class="sec-badge pass" id="sec-health">
+        <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg>
+        Healthy
+      </span>
+      <span class="sec-label">Forwarding Health</span>
+      <span class="sec-value">99.2% delivery rate</span>
+    </div>
+    <div class="sec-item">
+      <span class="sec-badge pass" id="sec-verified">
+        <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg>
+        Verified
+      </span>
+      <span class="sec-label">Last Verification</span>
+      <span class="sec-value">Today, 09:32 AM</span>
+    </div>
+  </div>
+</div>
+
+@endsection
+
+@push('scripts')
+<script>
+
+/* ══════════════════════════════════════════════════
+   ALIAS DETAIL PAGE — CLIENT-SIDE DATA
+   ══════════════════════════════════════════════════ */
+
+// ── Seed alias data ──
+const ALIAS = {
+  id: 1,
+  prefix: 'shopping',
+  domain: 'dropit.io',
+  email: 'shopping@dropit.io',
+  label: 'Shopping',
+  forward: 'j***@gmail.com',
+  status: 'active',
+  color: '#6366F1',
+  created: 'Mar 15, 2026',
+  lastActivity: '2 hours ago',
+  totalReceived: 47,
+  totalForwarded: 45,
+  totalFailed: 2,
+  totalSpam: 5,
+  statsForwarded: 45,
+  statsFailed: 2,
+  statsSpam: 5,
+};
+
+// ── Seed forwarding history ──
+const FW_HISTORY = [
+  { id: 1, date: '2026-07-06 09:23:00', sender: 'Amazon <no-reply@amazon.com>', subject: 'Your order #ORD-38291 has shipped', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.4s' },
+  { id: 2, date: '2026-07-06 08:15:00', sender: 'Shopify <notifications@shopify.com>', subject: 'New login to your store', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.3s' },
+  { id: 3, date: '2026-07-05 22:40:00', sender: 'Netflix <info@netflix.com>', subject: 'Is this your account?', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.5s' },
+  { id: 4, date: '2026-07-05 18:12:00', sender: 'PayPal <service@paypal.com>', subject: 'You sent a payment of $49.99', recipient: 'john@personal.com', status: 'pending', deliveryTime: '—' },
+  { id: 5, date: '2026-07-05 14:30:00', sender: 'Spotify <no-reply@spotify.com>', subject: 'Your playlist is ready', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.3s' },
+  { id: 6, date: '2026-07-05 11:05:00', sender: 'GitHub <noreply@github.com>', subject: '[org/repo] New pull request #892', recipient: 'john@personal.com', status: 'failed', deliveryTime: '—' },
+  { id: 7, date: '2026-07-04 21:00:00', sender: 'Google <no-reply@google.com>', subject: 'Security alert for your account', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.2s' },
+  { id: 8, date: '2026-07-04 16:45:00', sender: 'Etsy <feedback@etsy.com>', subject: 'How was your shopping experience?', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.4s' },
+  { id: 9, date: '2026-07-04 10:20:00', sender: 'Notion <noreply@notion.so>', subject: 'Shared workspace has been updated', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.3s' },
+  { id: 10, date: '2026-07-03 19:55:00', sender: 'Twitter <info@twitter.com>', subject: '@someone liked your tweet', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.5s' },
+  { id: 11, date: '2026-07-03 15:30:00', sender: 'LinkedIn <jobs@linkedin.com>', subject: 'New job recommendations for you', recipient: 'john@personal.com', status: 'pending', deliveryTime: '—' },
+  { id: 12, date: '2026-07-03 12:10:00', sender: 'Instagram <mail@instagram.com>', subject: 'Your login code is 482916', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.2s' },
+  { id: 13, date: '2026-07-02 20:00:00', sender: 'Figma <updates@figma.com>', subject: 'New comment on your design', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.4s' },
+  { id: 14, date: '2026-07-02 14:25:00', sender: 'Uber <receipts@uber.com>', subject: 'Your trip receipt', recipient: 'john@personal.com', status: 'failed', deliveryTime: '—' },
+  { id: 15, date: '2026-07-02 09:00:00', sender: 'Discord <no-reply@discord.com>', subject: 'New message in #general', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.3s' },
+  { id: 16, date: '2026-07-01 22:30:00', sender: 'Zoom <no-reply@zoom.us>', subject: 'Your meeting recording is ready', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.5s' },
+  { id: 17, date: '2026-07-01 17:45:00', sender: 'Stripe <receipts@stripe.com>', subject: 'Payment receipt for $29.00', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.3s' },
+  { id: 18, date: '2026-06-30 13:00:00', sender: 'Medium <digest@medium.com>', subject: 'Your weekly reading digest', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.4s' },
+  { id: 19, date: '2026-06-30 08:20:00', sender: 'Dropbox <no-reply@dropbox.com>', subject: 'File shared with you', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.2s' },
+  { id: 20, date: '2026-06-29 19:10:00', sender: 'Hulu <updates@hulu.com>', subject: 'New episodes available', recipient: 'john@personal.com', status: 'pending', deliveryTime: '—' },
+];
+
+// ── Seed recent emails ──
+const RECENT_EMAILS = [
+  { id: 1, sender: 'Amazon', color: '#FF9900', subject: 'Your order #ORD-38291 has shipped', preview: 'Your package is on its way! Expected delivery: Jul 8-10.', time: '9:23 AM', hasAtt: true, isOtp: false },
+  { id: 2, sender: 'Shopify', color: '#96BF48', subject: 'New login to your store', preview: 'A new login was detected from Chrome on Windows.', time: '8:15 AM', hasAtt: false, isOtp: false },
+  { id: 3, sender: 'Netflix', color: '#E50914', subject: 'Is this your account?', preview: 'We noticed a new sign-in on your account.', time: '10:40 PM', hasAtt: false, isOtp: false },
+  { id: 4, sender: 'PayPal', color: '#003087', subject: 'You sent a payment of $49.99', preview: 'Your payment to BestBuy.com has been completed.', time: '6:12 PM', hasAtt: true, isOtp: false },
+  { id: 5, sender: 'Google', color: '#4285F4', subject: 'Security alert for your account', preview: 'A new device was used to sign in to your Google Account.', time: '9:00 PM', hasAtt: false, isOtp: false },
+  { id: 6, sender: 'Instagram', color: '#E4405F', subject: 'Your login code is 482916', preview: 'Use this code to complete your login to Instagram.', time: '12:10 PM', hasAtt: false, isOtp: true },
+  { id: 7, sender: 'GitHub', color: '#333', subject: '[org/repo] New pull request #892', preview: '@developer opened a new pull request: Fix auth bug.', time: '11:05 AM', hasAtt: false, isOtp: false },
+  { id: 8, sender: 'Notion', color: '#000', subject: 'Shared workspace has been updated', preview: '@alice added a new page: "Q3 Roadmap"', time: '10:20 AM', hasAtt: false, isOtp: false },
+];
+
+// ── Seed timeline ──
+const TIMELINE = [
+  { event: 'Alias Created', desc: 'Alias shopping@dropit.io was created', time: 'Mar 15, 2026 · 10:30 AM', dot: 'blue' },
+  { event: 'Forwarding Email Changed', desc: 'Forwarding updated to j***@gmail.com', time: 'Mar 16, 2026 · 2:15 PM', dot: 'blue' },
+  { event: 'Alias Paused', desc: 'Alias was paused for 3 days', time: 'Apr 2, 2026 · 8:00 AM', dot: 'yellow' },
+  { event: 'Alias Activated', desc: 'Alias was reactivated', time: 'Apr 5, 2026 · 9:30 AM', dot: 'green' },
+  { event: 'Email Forwarded', desc: 'Amazon order confirmation forwarded successfully', time: 'Jul 6, 2026 · 9:23 AM', dot: 'green' },
+  { event: 'Email Forwarded', desc: 'Shopify login alert forwarded successfully', time: 'Jul 6, 2026 · 8:15 AM', dot: 'green' },
+  { event: 'Spam Blocked', desc: 'Suspicious email from "win@prize.com" was blocked', time: 'Jul 5, 2026 · 3:20 AM', dot: 'red' },
+  { event: 'Forward Failure', desc: 'GitHub PR notification failed to forward (mailbox full)', time: 'Jul 5, 2026 · 11:05 AM', dot: 'red' },
+];
+
+/* ── State ── */
+let fwPage = 1;
+const FW_PER_PAGE = 8;
+let fwFiltered = [...FW_HISTORY];
+
+/* ── Helpers ── */
+function showToast(msg) {
+  var el = document.getElementById('toast');
+  if (!el) return;
+  el.innerHTML = '<span class="toast-dot"></span>' + msg;
+  el.classList.add('show');
+  clearTimeout(el._t);
+  el._t = setTimeout(function() { el.classList.remove('show'); }, 2800);
+}
+
+function formatDate(d) {
+  var parts = d.split(' ');
+  var dateParts = parts[0].split('-');
+  var timeParts = parts[1].split(':');
+  var dObj = new Date(dateParts[0], dateParts[1]-1, dateParts[2], timeParts[0], timeParts[1]);
+  return dObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
+/* ── Render alias info ── */
+function renderAlias() {
+  var a = ALIAS;
+  document.getElementById('ah-addr').textContent = a.email;
+  document.getElementById('ah-label').textContent = a.label;
+  document.getElementById('ah-avatar').textContent = a.prefix.substring(0,2).toUpperCase();
+  document.getElementById('ah-avatar').style.background = a.color;
+
+  var st = document.getElementById('ah-status');
+  st.className = 'status-badge ' + a.status;
+  st.innerHTML = '<span class="sb-dot"></span> ' + (a.status === 'active' ? 'Active' : a.status === 'paused' ? 'Paused' : 'Disabled');
+
+  document.getElementById('ah-pause-btn').textContent = a.status === 'active' ? '⏸ Pause' : '▶ Resume';
+
+  // Stats
+  document.getElementById('stat-received').textContent = a.totalReceived;
+  document.getElementById('stat-forwarded').textContent = a.statsForwarded;
+  document.getElementById('stat-failed').textContent = a.statsFailed;
+  document.getElementById('stat-spam').textContent = a.statsSpam;
+
+  // Info
+  document.getElementById('info-address').textContent = a.email;
+  document.getElementById('info-forward').textContent = a.forward;
+  document.getElementById('info-domain').textContent = a.domain;
+  document.getElementById('info-label').textContent = a.label;
+  document.getElementById('info-created').textContent = a.created;
+  document.getElementById('info-last').textContent = a.lastActivity;
+  document.getElementById('info-total-received').textContent = a.totalReceived;
+  document.getElementById('info-total-forwarded').textContent = a.totalForwarded;
+}
+
+/* ── Header actions ── */
+function copyAliasAddr() {
+  navigator.clipboard.writeText(ALIAS.email).catch(function(){});
+  showToast('Alias address copied!');
+}
+
+function editAlias() {
+  showToast('Edit mode opened');
+}
+
+function toggleAliasPause() {
+  ALIAS.status = ALIAS.status === 'active' ? 'paused' : 'active';
+  renderAlias();
+  showToast(ALIAS.status === 'active' ? 'Alias activated' : 'Alias paused');
+}
+
+function deleteAlias() {
+  if (!confirm('Delete this alias? This cannot be undone.')) return;
+  showToast('Alias deleted');
+  setTimeout(function() { window.location = '/addresses'; }, 800);
+}
+
+/* ── Forwarding History ── */
+function filterFwHistory() {
+  var search = document.getElementById('fw-search').value.toLowerCase();
+  var status = document.getElementById('fw-status-filter').value;
+  var date = document.getElementById('fw-date-filter').value;
+
+  fwFiltered = FW_HISTORY.filter(function(e) {
+    if (search && !e.sender.toLowerCase().includes(search) && !e.subject.toLowerCase().includes(search)) return false;
+    if (status !== 'all' && e.status !== status) return false;
+    if (date && !e.date.startsWith(date)) return false;
+    return true;
+  });
+
+  fwPage = 1;
+  renderFwTable();
+}
+
+function renderFwTable() {
+  var tbody = document.getElementById('fw-tbody');
+  var empty = document.getElementById('fw-empty');
+  var pag = document.getElementById('fw-pagination');
+  var count = document.getElementById('fw-count');
+
+  count.textContent = fwFiltered.length + ' events';
+
+  if (!fwFiltered.length) {
+    tbody.innerHTML = '';
+    empty.classList.add('show');
+    pag.innerHTML = '';
+    return;
+  }
+  empty.classList.remove('show');
+
+  var totalPages = Math.ceil(fwFiltered.length / FW_PER_PAGE);
+  var start = (fwPage - 1) * FW_PER_PAGE;
+  var pageItems = fwFiltered.slice(start, start + FW_PER_PAGE);
+
+  tbody.innerHTML = pageItems.map(function(e) {
+    var statusDot = e.status === 'delivered' ? 'delivered' : e.status === 'pending' ? 'pending' : 'failed';
+    var statusLbl = e.status.charAt(0).toUpperCase() + e.status.slice(1);
+    var retryBtn = e.status === 'failed' ? '<button class="tbl-act retry" onclick="retryForward(' + e.id + ')">Retry</button>' : '';
+    return '<tr>' +
+      '<td style="white-space:nowrap;font-family:var(--MONO);font-size:.68rem;color:var(--MU);">' + formatDate(e.date) + '</td>' +
+      '<td><div class="fw-cell-sender">' + e.sender + '</div></td>' +
+      '<td><div class="fw-cell-subject">' + e.subject + '</div></td>' +
+      '<td style="font-family:var(--MONO);font-size:.72rem;">' + e.recipient + '</td>' +
+      '<td><span class="del-badge ' + statusDot + '"><span class="db-dot"></span>' + statusLbl + '</span></td>' +
+      '<td style="font-family:var(--MONO);font-size:.68rem;color:var(--MU);">' + e.deliveryTime + '</td>' +
+      '<td style="text-align:right;white-space:nowrap;">' +
+        '<button class="tbl-act" onclick="viewEmail(' + e.id + ')">View</button>' +
+        retryBtn +
+      '</td>' +
+    '</tr>';
+  }).join('');
+
+  // Pagination
+  var pagHtml = '';
+  pagHtml += '<button class="page-btn" onclick="fwGoPage(' + (fwPage - 1) + ')" ' + (fwPage <= 1 ? 'disabled' : '') + '>‹</button>';
+  for (var i = 1; i <= totalPages; i++) {
+    pagHtml += '<button class="page-btn' + (i === fwPage ? ' active' : '') + '" onclick="fwGoPage(' + i + ')">' + i + '</button>';
+  }
+  pagHtml += '<button class="page-btn" onclick="fwGoPage(' + (fwPage + 1) + ')" ' + (fwPage >= totalPages ? 'disabled' : '') + '>›</button>';
+  pag.innerHTML = pagHtml;
+}
+
+function fwGoPage(p) {
+  var totalPages = Math.ceil(fwFiltered.length / FW_PER_PAGE);
+  if (p < 1 || p > totalPages) return;
+  fwPage = p;
+  renderFwTable();
+}
+
+function viewEmail(id) {
+  showToast('Opening email #' + id + '…');
+}
+
+function retryForward(id) {
+  showToast('Retrying forward for email #' + id + '…');
+}
+
+/* ── Recent emails ── */
+function renderRecent() {
+  var list = document.getElementById('recent-list');
+  var empty = document.getElementById('recent-empty');
+  var count = document.getElementById('recent-count');
+
+  count.textContent = RECENT_EMAILS.length + ' emails';
+
+  if (!RECENT_EMAILS.length) {
+    list.innerHTML = '';
+    empty.classList.add('show');
+    return;
+  }
+  empty.classList.remove('show');
+
+  list.innerHTML = RECENT_EMAILS.map(function(e) {
+    var att = e.hasAtt ? '<span class="att-badge"><svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg></span>' : '';
+    var otp = e.isOtp ? '<span class="otp-badge-sm">OTP</span>' : '';
+    var initials = e.sender.substring(0,2).toUpperCase();
+    return '<div class="email-item">' +
+      '<div class="email-item-avatar" style="background:' + e.color + ';">' + initials + '</div>' +
+      '<div class="email-item-body">' +
+        '<div class="email-item-top">' +
+          '<span class="email-item-sender">' + e.sender + '</span>' +
+          '<span class="email-item-time">' + e.time + '</span>' +
+        '</div>' +
+        '<div class="email-item-subject">' + e.subject + '</div>' +
+        '<div class="email-item-preview">' + e.preview + '</div>' +
+      '</div>' +
+      '<div class="email-item-meta">' + att + otp + '</div>' +
+    '</div>';
+  }).join('');
+}
+
+/* ── Timeline ── */
+function renderTimeline() {
+  var tl = document.getElementById('timeline');
+  var empty = document.getElementById('tl-empty');
+
+  if (!TIMELINE.length) {
+    tl.innerHTML = '';
+    empty.classList.add('show');
+    return;
+  }
+  empty.classList.remove('show');
+
+  tl.innerHTML = TIMELINE.map(function(t) {
+    return '<div class="timeline-item">' +
+      '<div class="timeline-dot ' + t.dot + '"></div>' +
+      '<div class="timeline-body">' +
+        '<div class="timeline-event">' + t.event + '</div>' +
+        '<div class="timeline-desc">' + t.desc + '</div>' +
+        '<div class="timeline-time">' + t.time + '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+/* ── Settings ── */
+function saveSetting(id) {
+  var el = document.getElementById('setting-' + id);
+  showToast('Setting updated: ' + id + ' = ' + (el.checked ? 'ON' : 'OFF'));
+}
+
+function saveNotifEmail() {
+  var val = document.getElementById('setting-notif').value;
+  showToast('Notification email saved: ' + val);
+}
+
+/* ── Init ── */
+renderAlias();
+renderFwTable();
+renderRecent();
+renderTimeline();
+
+</script>
+@endpush

@@ -23,6 +23,7 @@ Route::middleware('auth')->name('dashboard.')->group(function () {
     Route::get('/dashboard',         fn() => view('dashboard.dash'))->name('overview');
     Route::get('/inbox',             fn() => view('dashboard.inbox'))->name('inbox');
     Route::get('/addresses',         fn() => view('dashboard.address'))->name('address');
+    Route::get('/addresses/{id}',    fn() => view('dashboard.address-view'))->name('address.view');
     Route::get('/domains',           fn() => view('dashboard.domain'))->name('domain');
     Route::get('/api-keys',          fn() => view('dashboard.api'))->name('api');
     Route::get('/smtp',              fn() => view('dashboard.smtp'))->name('smtp');

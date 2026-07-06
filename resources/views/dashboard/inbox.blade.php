@@ -722,6 +722,10 @@ body.inbox-fs .quick-reply {
     display:flex; animation:slide-in-right .2s cubic-bezier(.4,0,.2,1) both;
   }
 
+  /* Hide hamburger on mobile — list is full-width, overlay detail */
+  .inbox-list-col .list-toggle-btn { display:none; }
+  .detail-toolbar-left [onclick*="toggleInboxList"] { display:none; }
+
   .email-viewer { padding: 14px; }
   .detail-subject { font-size: 1.1rem; }
   .detail-header { padding: 12px 14px 10px; }
@@ -1081,8 +1085,9 @@ body.inbox-fs .quick-reply {
     $isProInbox = $_plan && $_plan->slug === 'pro';
 @endphp
 
-const CSRF_TOKEN  = @json(csrf_token());
-let IS_PRO        = @json($isProInbox);
+const CSRF_TOKEN   = @json(csrf_token());
+let IS_PRO         = @json($isProInbox);
+const EMAIL_PER_PAGE = 10;
 const EXPIRES_OPT = [
   { label: '60 Minutes',  value: 3600,  pro: false },
   { label: '12 Hours',    value: 43200, pro: false },
@@ -1103,6 +1108,9 @@ let pendingDomainCallback = null;
 let currentFilter = 'all';
 let currentSearch = '';
 let currentRawUrl = '';
+let emailPage = 1;
+let emailHasMore = false;
+let emailLoading = false;
 const VS_BUFFER = 10;
 let vsItemHeight = 64;
 
@@ -1272,23 +1280,42 @@ function extendTimer() {
   toast('Added 10 minutes');
 }
 
-/* ── Load emails from API ── */
-function loadEmails() {
+/* ── Load emails from API (paginated) ── */
+function loadEmails(keep) {
   var ib = activeInbox();
   if (!ib) return;
-  var params = '?filter=' + currentFilter;
+  if (!keep) { emailPage = 1; emailHasMore = false; }
+  if (emailLoading) return;
+  emailLoading = true;
+  var params = '?filter=' + currentFilter + '&page=' + emailPage + '&per_page=' + EMAIL_PER_PAGE;
   if (currentSearch) params += '&search=' + encodeURIComponent(currentSearch);
   fetch('/inboxes/' + ib.id + '/emails' + params).then(function(r){ return r.json(); }).then(function(data) {
-    ib.emails = data.emails || [];
+    emailLoading = false;
+    emailHasMore = data.has_more || false;
+    if (keep) {
+      ib.emails = (ib.emails || []).concat(data.emails || []);
+    } else {
+      ib.emails = data.emails || [];
+      ib._vsScroll = 0;
+    }
     ib.unreadCount = data.unread || 0;
     ib.totalEmails = data.total || 0;
-    ib._vsScroll = 0;
     renderEmailList();
-    renderEmailDetail();
-    renderSenderInfo(ib.emails.find(function(e){ return e.id === ib.currentMailId; }) || null, ib);
+    if (!keep || !ib.currentMailId) {
+      renderEmailDetail();
+      renderSenderInfo(ib.emails.find(function(e){ return e.id === ib.currentMailId; }) || null, ib);
+    }
   })['catch'](function() {
+    emailLoading = false;
     toast('Failed to load emails');
   });
+}
+
+/* ── Load more emails (next page) ── */
+function loadMoreEmails() {
+  if (emailLoading || !emailHasMore) return;
+  emailPage++;
+  loadEmails(true);
 }
 
 /* ── Virtual-scrolled email list ── */
@@ -1345,6 +1372,10 @@ function vsScrollHandler() {
   var ib = getInbox(scroll._vsIbId);
   if (!ib) return;
   vsRenderVisible(scroll, ib);
+  // Infinite scroll: trigger load more near bottom
+  if (scroll.scrollTop + scroll.clientHeight >= scroll.scrollHeight - 200) {
+    if (getInbox(scroll._vsIbId)) loadMoreEmails();
+  }
 }
 
 function vsOnScroll(ib) {

@@ -874,6 +874,7 @@
           <th>Date &amp; Time</th>
           <th>Sender</th>
           <th>Status</th>
+          <th style="text-align:right;">Action</th>
         </tr>
       </thead>
       <tbody id="fw-tbody"></tbody>
@@ -1086,14 +1087,17 @@ function copyAliasAddr() {
 
 function toggleAliasPause() {
   if (!ALIAS_DATA) return;
-  api(ALIAS_ID + '/status', { method: 'PATCH' }).then(function(data) {
-    if (data.success) {
-      ALIAS_DATA.is_enabled = data.is_enabled;
-      renderAlias();
-      showToast(data.is_enabled ? 'Alias activated' : 'Alias paused');
-    } else {
-      showToast('Error: ' + (data.error || 'Unknown error'));
-    }
+  var nextState = ALIAS_DATA.is_enabled ? 'pause' : 'activate';
+  showConfirm('Are you sure you want to ' + nextState + ' this alias?', function() {
+    api(ALIAS_ID + '/status', { method: 'PATCH' }).then(function(data) {
+      if (data.success) {
+        ALIAS_DATA.is_enabled = data.is_enabled;
+        renderAlias();
+        showToast(data.is_enabled ? 'Alias activated' : 'Alias paused');
+      } else {
+        showToast('Error: ' + (data.error || 'Unknown error'));
+      }
+    });
   });
 }
 
@@ -1112,41 +1116,45 @@ function deleteAlias() {
 
 /* ── Forwarding History (from logs) ── */
 var FW_LOGS = [];
+var FW_FILTERED = [];
 var fwPage = 1;
 var FW_PER_PAGE = 10;
+var FW_STATUS_FILTER = 'all';
+var FW_SEARCH = '';
 
 function loadLogs() {
   api(ALIAS_ID + '/logs').then(function(data) {
     if (data.logs) {
       FW_LOGS = data.logs;
-      filterFwHistory();
+      FW_FILTERED = data.logs;
+      renderFwTable();
     }
   });
 }
 
 function filterFwHistory() {
-  var search = document.getElementById('fw-search').value.toLowerCase();
-  var status = document.getElementById('fw-status-filter').value;
+  FW_SEARCH = document.getElementById('fw-search').value.toLowerCase();
+  FW_STATUS_FILTER = document.getElementById('fw-status-filter').value;
 
-  var filtered = FW_LOGS.filter(function(e) {
-    if (search && !e.sender_email.toLowerCase().includes(search)) return false;
-    if (status !== 'all' && e.status !== status) return false;
+  FW_FILTERED = FW_LOGS.filter(function(e) {
+    if (FW_SEARCH && !e.sender_email.toLowerCase().includes(FW_SEARCH)) return false;
+    if (FW_STATUS_FILTER !== 'all' && e.status !== FW_STATUS_FILTER) return false;
     return true;
   });
 
   fwPage = 1;
-  renderFwTable(filtered);
+  renderFwTable();
 }
 
-function renderFwTable(items) {
+function renderFwTable() {
   var tbody = document.getElementById('fw-tbody');
   var empty = document.getElementById('fw-empty');
   var pag = document.getElementById('fw-pagination');
   var count = document.getElementById('fw-count');
 
-  count.textContent = items.length + ' events';
+  count.textContent = FW_FILTERED.length + ' events';
 
-  if (!items.length) {
+  if (!FW_FILTERED.length) {
     tbody.innerHTML = '';
     empty.classList.add('show');
     pag.innerHTML = '';
@@ -1154,33 +1162,47 @@ function renderFwTable(items) {
   }
   empty.classList.remove('show');
 
-  var totalPages = Math.ceil(items.length / FW_PER_PAGE);
+  var totalPages = Math.ceil(FW_FILTERED.length / FW_PER_PAGE);
   var start = (fwPage - 1) * FW_PER_PAGE;
-  var pageItems = items.slice(start, start + FW_PER_PAGE);
+  var pageItems = FW_FILTERED.slice(start, start + FW_PER_PAGE);
 
   tbody.innerHTML = pageItems.map(function(e) {
     var badgeClass = e.status === 'forwarded' ? 'delivered' : e.status === 'blocked' ? 'failed' : 'pending';
     var badgeLbl = e.status.charAt(0).toUpperCase() + e.status.slice(1);
+    var canRetry = e.status === 'blocked';
+    var viewBtn = '<button class="tbl-act" onclick="viewEmail(\'' + e.sender_email.replace(/'/g, "\\'") + '\')">View</button>';
+    var retryBtn = canRetry ? '<button class="tbl-act retry" onclick="retryForward(\'' + e.sender_email.replace(/'/g, "\\'") + '\')">Retry</button>' : '';
     return '<tr>' +
       '<td style="white-space:nowrap;font-family:var(--MONO);font-size:.68rem;color:var(--MU);">' + (e.created_at || '—') + '</td>' +
       '<td><div class="fw-cell-sender">' + (e.sender_email || '—') + '</div></td>' +
       '<td><span class="del-badge ' + badgeClass + '"><span class="db-dot"></span>' + badgeLbl + '</span></td>' +
+      '<td style="text-align:right;white-space:nowrap;">' + viewBtn + retryBtn + '</td>' +
     '</tr>';
   }).join('');
 
-  var pagHtml = '<button class="page-btn" onclick="fwGoPage(' + (fwPage - 1) + ',items)" ' + (fwPage <= 1 ? 'disabled' : '') + '>‹</button>';
+  var pagHtml = '<button class="page-btn" onclick="fwGoPage(' + (fwPage - 1) + ')" ' + (fwPage <= 1 ? 'disabled' : '') + '>‹</button>';
   for (var i = 1; i <= totalPages; i++) {
-    pagHtml += '<button class="page-btn' + (i === fwPage ? ' active' : '') + '" onclick="fwGoPage(' + i + ',items)">' + i + '</button>';
+    pagHtml += '<button class="page-btn' + (i === fwPage ? ' active' : '') + '" onclick="fwGoPage(' + i + ')">' + i + '</button>';
   }
-  pagHtml += '<button class="page-btn" onclick="fwGoPage(' + (fwPage + 1) + ',items)" ' + (fwPage >= totalPages ? 'disabled' : '') + '>›</button>';
+  pagHtml += '<button class="page-btn" onclick="fwGoPage(' + (fwPage + 1) + ')" ' + (fwPage >= totalPages ? 'disabled' : '') + '>›</button>';
   pag.innerHTML = pagHtml;
 }
 
-function fwGoPage(p, items) {
-  var totalPages = Math.ceil(items.length / FW_PER_PAGE);
+function fwGoPage(p) {
+  var totalPages = Math.ceil(FW_FILTERED.length / FW_PER_PAGE);
   if (p < 1 || p > totalPages) return;
   fwPage = p;
-  renderFwTable(items);
+  renderFwTable();
+}
+
+function viewEmail(sender) {
+  showToast('Viewing email from ' + sender);
+}
+
+function retryForward(sender) {
+  showConfirm('Retry forwarding from ' + sender + '?', function() {
+    showToast('Retrying forward from ' + sender);
+  });
 }
 
 /* ── Activity Timeline ── */

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\Address;
 use App\Models\Alias;
 use App\Models\AliasLog;
 use App\Models\EmailDomain;
+use App\Models\PublicMailbox;
 use App\Models\UserDomain;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -98,7 +100,11 @@ class AliasController extends Controller
         $localPart = $validated['local_part'];
         $email = $localPart . '@' . $domain->name;
 
-        if (Alias::where('email', $email)->exists()) {
+        $existing = Alias::where('email', $email)->exists()
+            || Address::where('email', $email)->exists()
+            || PublicMailbox::where('email', $email)->exists();
+
+        if ($existing) {
             return response()->json(['error' => 'This alias address is already taken.'], 422);
         }
 

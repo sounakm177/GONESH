@@ -584,6 +584,20 @@
   </div>
 </div>
 
+<!-- ── Confirm Modal ── -->
+<div class="modal-overlay" id="confirm-modal">
+  <div class="modal-box" style="max-width:400px;">
+    <div class="modal-bd" style="padding:24px;text-align:center;">
+      <div style="font-size:.9rem;font-weight:600;color:var(--INK);margin-bottom:8px;">Confirm</div>
+      <div style="font-size:.8rem;color:var(--MU);margin-bottom:20px;" id="confirm-msg">Are you sure?</div>
+      <div style="display:flex;gap:8px;justify-content:center;">
+        <button class="act-btn" onclick="closeConfirm()">Cancel</button>
+        <button class="act-btn danger" onclick="confirmYes()">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ── How aliases work ── -->
 <div class="panel">
   <div class="panel-hd">
@@ -821,16 +835,19 @@ function copyAlias(email) {
 }
 
 function toggleAliasStatus(id) {
-  fetch('/aliases/' + id + '/status', {
-    method: 'PATCH',
-    headers: { 'X-CSRF-TOKEN': CSRF_TOKEN }
-  }).then(function(r){ return r.json(); }).then(function(data) {
-    if (data.error) { showToast(data.error, 'err'); return; }
-    var a = aliases.find(function(x){ return x.id === id; });
-    if (a) a.is_enabled = data.is_enabled;
-    renderTable();
-    showToast(data.is_enabled ? 'Alias activated' : 'Alias paused');
-  }).catch(function() { showToast('Failed to toggle status', 'err'); });
+  var a = aliases.find(function(x){ return x.id === id; });
+  var nextState = a && a.is_enabled ? 'pause' : 'activate';
+  showConfirm('Are you sure you want to ' + nextState + ' this alias?', function() {
+    fetch('/aliases/' + id + '/status', {
+      method: 'PATCH',
+      headers: { 'X-CSRF-TOKEN': CSRF_TOKEN }
+    }).then(function(r){ return r.json(); }).then(function(data) {
+      if (data.error) { showToast(data.error, 'err'); return; }
+      if (a) a.is_enabled = data.is_enabled;
+      renderTable();
+      showToast(data.is_enabled ? 'Alias activated' : 'Alias paused');
+    }).catch(function() { showToast('Failed to toggle status', 'err'); });
+  });
 }
 
 function deleteAlias(id) {

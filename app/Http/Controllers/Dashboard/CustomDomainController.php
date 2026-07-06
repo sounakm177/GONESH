@@ -53,10 +53,6 @@ class CustomDomainController extends Controller
 
         $planInfo = $this->getPlanInfo($user);
 
-        if (!$planInfo['is_pro']) {
-            return response()->json(['error' => 'Custom domains are available on the Pro plan only.'], 403);
-        }
-
         $maxDomains = $planInfo['max_domains'];
         $currentCount = CustomDomain::where('user_id', $user->id)->count();
 

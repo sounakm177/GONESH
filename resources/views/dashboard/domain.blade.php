@@ -351,6 +351,7 @@
 /* Card action button */
 .dc-btn {
   width: 100%;
+  margin-top: auto;
   padding: 10px 16px;
   border-radius: 9px;
   font-size: .8rem; font-weight: 700;
@@ -633,15 +634,14 @@
   display: flex; align-items: center; gap: 8px;
 }
 
-.cd-pro-badge {
+.cd-plan-limit {
   font-family: var(--MONO);
   font-size: .52rem; font-weight: 800;
-  letter-spacing: .06em;
-  padding: 2px 7px;
+  letter-spacing: .04em;
+  padding: 2px 8px;
   border-radius: 5px;
-  background: linear-gradient(135deg, #7C3AED, #6D28D9);
-  color: #fff;
-  text-transform: uppercase;
+  background: var(--BD2);
+  color: var(--MU2);
 }
 
 .cd-add-btn {
@@ -680,130 +680,116 @@
 }
 .cd-stat-lbl { font-size: .68rem; color: var(--MU); font-weight: 500; margin-top: 2px; }
 
-/* ── Custom domain filter chips ── */
-.cd-filter-chips {
-  display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 14px;
-}
-.cd-filter-chip {
-  display: inline-flex; align-items: center; gap: 4px;
-  font-family: var(--MONO); font-size: .56rem; font-weight: 700;
-  padding: 4px 10px; border-radius: 16px;
-  border: 1px solid var(--BD); background: var(--SURF);
-  color: var(--MU); cursor: pointer;
-  transition: all .12s; user-select: none;
-}
-.cd-filter-chip:hover { border-color: var(--MU2); color: var(--INK); }
-.cd-filter-chip.active { background: var(--INK); color: #fff; border-color: var(--INK); }
-
-/* ── Custom domain cards grid ── */
-.cd-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
+/* ── Custom domain table ── */
+.cd-table-wrap {
+  overflow-x: auto;
   margin-bottom: 8px;
 }
-@media (min-width: 580px) { .cd-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 900px) { .cd-grid { grid-template-columns: repeat(3, 1fr); } }
+.cd-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .78rem;
+}
+.cd-table thead th {
+  text-align: left;
+  font-family: var(--MONO);
+  font-size: .6rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--MU2);
+  padding: 10px 12px;
+  border-bottom: 1.5px solid var(--BD);
+  white-space: nowrap;
+}
+.cd-table tbody tr {
+  transition: background .1s;
+}
+.cd-table tbody tr:hover { background: rgba(0,0,0,.02); }
+.cd-table tbody tr + tr td { border-top: 1px solid var(--BD); }
+.cd-table tbody td {
+  padding: 10px 12px;
+  vertical-align: middle;
+  color: var(--INK);
+}
+.cd-col-status { width: 90px; }
+.cd-col-dns { width: 180px; }
+.cd-col-actions { width: 200px; text-align: right; }
 
-/* ── Custom domain card ── */
-.cd-card {
-  background: var(--SURF);
-  border: 1.5px solid var(--BD);
-  border-radius: 12px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  position: relative;
-  transition: border-color .2s, box-shadow .2s;
+.cd-td-domain {
+  font-family: var(--MONO);
+  font-weight: 700;
+  word-break: break-all;
 }
-.cd-card:hover { border-color: #D1D5DB; box-shadow: 0 4px 14px rgba(0,0,0,.06); }
-.cd-card.selected { border-color: var(--Y); box-shadow: 0 0 0 1px var(--Y), 0 4px 16px rgba(250,204,21,.12); }
-.cd-card.verified { border-left: 3px solid var(--GREEN); }
-.cd-card.pending { border-left: 3px solid #F59E0B; }
-.cd-card.failed { border-left: 3px solid #EF4444; }
-
-.cdc-top {
-  display: flex; align-items: flex-start; justify-content: space-between; gap: 8px;
-}
-.cdc-name {
-  font-family: var(--MONO); font-size: .82rem; font-weight: 700;
-  color: var(--INK); word-break: break-all;
-}
-.cdc-domain-icon {
-  width: 30px; height: 30px; min-width: 30px;
-  border-radius: 8px; background: rgba(59,130,246,.1);
-  color: var(--B); display: flex; align-items: center;
-  justify-content: center; flex-shrink: 0;
+.cd-td-domain small {
+  display: block;
+  font-size: .6rem;
+  font-weight: 400;
+  color: var(--MU);
+  margin-top: 1px;
 }
 
-.cdc-selected-badge {
-  display: inline-flex; align-items: center; gap: 3px;
-  font-family: var(--MONO); font-size: .52rem; font-weight: 700;
-  padding: 2px 7px; border-radius: 4px;
-  background: rgba(250,204,21,.15); color: #92400E;
-}
-
-/* ── Status badge ── */
-.cdc-status {
+/* ── Status badge in table ── */
+.cd-td-status {
   display: inline-flex; align-items: center; gap: 5px;
-  font-family: var(--MONO); font-size: .56rem; font-weight: 700;
+  font-family: var(--MONO); font-size: .6rem; font-weight: 700;
   padding: 3px 9px; border-radius: 12px;
 }
-.cdc-status.verified { background: rgba(16,185,129,.1); color: var(--GREEN); }
-.cdc-status.pending  { background: rgba(245,158,11,.1);  color: #B45309; }
-.cdc-status.failed   { background: rgba(239,68,68,.1);   color: #DC2626; }
-
-.cdc-status-dot {
+.cd-td-status.verified { background: rgba(16,185,129,.1); color: var(--GREEN); }
+.cd-td-status.pending  { background: rgba(245,158,11,.1);  color: #B45309; }
+.cd-td-status.failed   { background: rgba(239,68,68,.1);   color: #DC2626; }
+.cd-td-status-dot {
   width: 5px; height: 5px; border-radius: 50%;
 }
-.cdc-status.verified .cdc-status-dot { background: var(--GREEN); }
-.cdc-status.pending .cdc-status-dot  { background: #F59E0B; animation: pulse-dot 1.5s ease-in-out infinite; }
-.cdc-status.failed .cdc-status-dot   { background: #EF4444; }
-
+.cd-td-status.verified .cd-td-status-dot { background: var(--GREEN); }
+.cd-td-status.pending .cd-td-status-dot  { background: #F59E0B; animation: pulse-dot 1.5s ease-in-out infinite; }
+.cd-td-status.failed .cd-td-status-dot   { background: #EF4444; }
 @keyframes pulse-dot {
   0%,100% { opacity: 1; }
   50%     { opacity: .3; }
 }
 
-.cdc-meta {
-  display: flex; gap: 6px; flex-wrap: wrap; font-size: .66rem; color: var(--MU);
+/* ── DNS badges ── */
+.cd-td-dns {
+  display: flex; gap: 3px; flex-wrap: wrap;
 }
-.cdc-meta span { display: inline-flex; align-items: center; gap: 3px; }
+.cd-td-dns-item {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-family: var(--MONO); font-size: .52rem; font-weight: 700;
+  padding: 2px 5px; border-radius: 4px;
+}
+.cd-td-dns-item.verified { background: rgba(16,185,129,.1); color: var(--GREEN); }
+.cd-td-dns-item.pending  { background: rgba(245,158,11,.1);  color: #B45309; }
+.cd-td-dns-item.failed   { background: rgba(239,68,68,.1);   color: #DC2626; }
+.cd-td-dns-icon { width: 9px; height: 9px; flex-shrink: 0; }
 
-/* ── DNS summary rows ── */
-.cdc-dns {
-  display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px;
+/* ── Actions in table ── */
+.cd-td-actions {
+  display: flex; gap: 4px; justify-content: flex-end;
 }
-.cdc-dns-item {
-  display: flex; align-items: center; gap: 4px;
-  font-family: var(--MONO); font-size: .55rem; font-weight: 600;
-  padding: 3px 6px; border-radius: 4px;
-}
-.cdc-dns-item.verified { color: var(--GREEN); }
-.cdc-dns-item.pending  { color: #F59E0B; }
-.cdc-dns-item.failed   { color: #DC2626; }
-
-.cdc-dns-icon { width: 11px; height: 11px; flex-shrink: 0; }
-
-/* ── Actions row ── */
-.cdc-actions {
-  display: flex; gap: 5px; flex-wrap: wrap; margin-top: auto;
-}
-.cdc-act {
-  display: inline-flex; align-items: center; gap: 4px;
-  padding: 5px 9px; border-radius: 6px;
+.cd-td-act {
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 4px 8px; border-radius: 5px;
   font-family: var(--MONO); font-size: .56rem; font-weight: 700;
-  border: 1px solid var(--BD); background: var(--SURF);
+  border: 1px solid var(--BD); background: transparent;
   color: var(--MU); cursor: pointer;
   transition: background .12s, color .12s;
+  white-space: nowrap;
 }
-.cdc-act:hover { background: var(--BD2); color: var(--INK); }
-.cdc-act.primary { background: var(--INK); color: #fff; border-color: var(--INK); }
-.cdc-act.primary:hover { background: var(--INK2); }
-.cdc-act.danger { color: #DC2626; border-color: rgba(239,68,68,.2); }
-.cdc-act.danger:hover { background: rgba(239,68,68,.08); }
-.cdc-act:disabled { opacity: .5; cursor: not-allowed; }
+.cd-td-act:hover { background: var(--BD2); color: var(--INK); }
+.cd-td-act.primary { background: var(--INK); color: #fff; border-color: var(--INK); }
+.cd-td-act.primary:hover { background: var(--INK2); }
+.cd-td-act.danger { color: #DC2626; border-color: rgba(239,68,68,.2); }
+.cd-td-act.danger:hover { background: rgba(239,68,68,.08); }
+.cd-td-act:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ── Selected badge in table ── */
+.cd-td-sel-badge {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-family: var(--MONO); font-size: .5rem; font-weight: 800;
+  padding: 2px 6px; border-radius: 4px;
+  background: rgba(250,204,21,.15); color: #92400E;
+}
 
 /* ── Empty state for custom domains ── */
 .cd-empty {
@@ -1001,6 +987,7 @@
   .cdc-dns { grid-template-columns: 1fr; }
 }
 
+/* ── Selected Domains grid (multi-select) ── */
 /* ── Mobile responsive ── */
 @media (max-width: 640px) {
   .page-toolbar { flex-direction: column; align-items: stretch; }
@@ -1110,83 +1097,14 @@
       </div>
       <div style="display:flex;align-items:center;gap:4px;">
         <div style="width:6px;height:6px;background:var(--GREEN);border-radius:50%;animation:pulse-green 2s ease-in-out infinite;"></div>
-        <span style="font-family:var(--MONO);font-size:.58rem;font-weight:700;color:var(--GREEN);">ACTIVE</span>
+        <span style="font-family:var(--MONO);font-size:.58rem;font-weight:700;color:var(--GREEN);">0</span>
       </div>
     </div>
     <div class="stat-c-val" id="stat-active-domain" style="font-size:1.1rem;font-family:var(--MONO);">—</div>
-    <div class="stat-c-lbl">Current Domain</div>
+    <div class="stat-c-lbl">Custom Domains</div>
     <div class="stat-c-sub" style="color:var(--MU2);">In use right now</div>
   </div>
 
-</div>
-
-<!-- ── Current domain card ── -->
-<div class="section-hd">
-  <div class="section-hd-title">
-    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-      <path stroke-linecap="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-    </svg>
-    Current Active Domain
-  </div>
-  <span class="section-hd-meta" id="cd-meta-info">Selected since today</span>
-</div>
-
-<div class="current-domain-card">
-  <div class="cd-blob cd-blob-1"></div>
-  <div class="cd-blob cd-blob-2"></div>
-
-  <div class="cd-icon">
-    <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-      <circle cx="12" cy="12" r="10"/>
-      <path stroke-linecap="round" d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/>
-    </svg>
-  </div>
-
-  <div class="cd-body">
-    <div class="cd-label">Active Domain</div>
-    <div class="cd-name" id="current-domain-name">@<span>—</span></div>
-
-    <div class="cd-meta">
-      <span class="cd-meta-item"><strong id="cd-plan">Free</strong> plan</span>
-      <span class="cd-meta-item">Selected <strong id="cd-since">today</strong></span>
-    </div>
-
-    <div class="cd-features" id="cd-features">
-      <div class="cd-feat active">
-        <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg>
-        Temporary Email
-      </div>
-      <div class="cd-feat active">
-        <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg>
-        Alias Support
-      </div>
-      <div class="cd-feat active">
-        <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg>
-        OTP Detection
-      </div>
-      <div class="cd-feat active">
-        <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg>
-        Fast Delivery
-      </div>
-    </div>
-  </div>
-
-  <div class="cd-actions">
-    <div class="cd-status">
-      <div class="cd-pulse"></div>
-      Status: Active
-    </div>
-    <div class="cd-actions-row">
-      <button class="cd-act-btn" onclick="copyCurrentDomain()" aria-label="Copy domain">
-        <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path stroke-linecap="round" d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-        Copy
-      </button>
-      <button class="cd-act-btn" onclick="scrollToDomains()" aria-label="Change domain">
-        <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
-        Change Domain
-      </button>
-    </div>
-  </div>
 </div>
 
 <!-- ══════════════════════════════════════════
@@ -1202,13 +1120,9 @@
         </svg>
         Custom Domains
       </div>
-      <span class="cd-pro-badge">PRO</span>
+      <span class="cd-plan-limit" id="cd-plan-limit">0/1</span>
     </div>
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-      <div class="domain-search-wrap" style="min-width:140px;max-width:200px;flex:none;">
-        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="M21 21l-4.35-4.35"/></svg>
-        <input type="text" id="cd-search" placeholder="Search custom domains…" oninput="filterCustomDomains()" aria-label="Search custom domains" style="font-size:.7rem;padding:6px 8px 6px 26px;">
-      </div>
       <button class="cd-add-btn" id="cd-add-btn" onclick="openAddCustomDomain()" aria-label="Add custom domain">
         <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M12 4v16m8-8H4"/></svg>
         Add Custom Domain
@@ -1216,42 +1130,22 @@
     </div>
   </div>
 
-  <!-- ── Custom Domain Stats ── -->
-  <div class="cd-stats-row">
-    <div class="cd-stat">
-      <div class="cd-stat-val" id="cd-stat-total">0</div>
-      <div class="cd-stat-lbl">Custom Domains</div>
-    </div>
-    <div class="cd-stat">
-      <div class="cd-stat-val" id="cd-stat-verified" style="color:var(--GREEN);">0</div>
-      <div class="cd-stat-lbl">Verified</div>
-    </div>
-    <div class="cd-stat">
-      <div class="cd-stat-val" id="cd-stat-pending" style="color:#F59E0B;">0</div>
-      <div class="cd-stat-lbl">Pending</div>
-    </div>
-  </div>
 
-  <!-- ── Custom Domain filter chips ── -->
-  <div class="cd-filter-chips" id="cd-filter-chips">
-    <span class="cd-filter-chip active" data-cd-filter="all" tabindex="0" role="button" onclick="setCdChipFilter('all',this)">All</span>
-    <span class="cd-filter-chip" data-cd-filter="verified" tabindex="0" role="button" onclick="setCdChipFilter('verified',this)">
-      <span style="width:5px;height:5px;background:var(--GREEN);border-radius:50%;display:inline-block;"></span>
-      Verified
-    </span>
-    <span class="cd-filter-chip" data-cd-filter="pending" tabindex="0" role="button" onclick="setCdChipFilter('pending',this)">
-      <span style="width:5px;height:5px;background:#F59E0B;border-radius:50%;display:inline-block;"></span>
-      Pending
-    </span>
-    <span class="cd-filter-chip" data-cd-filter="failed" tabindex="0" role="button" onclick="setCdChipFilter('failed',this)">
-      <span style="width:5px;height:5px;background:#EF4444;border-radius:50%;display:inline-block;"></span>
-      Failed
-    </span>
-  </div>
-
-  <!-- ── Custom domain cards grid ── -->
-  <div class="cd-grid" id="cd-grid">
-    <!-- Cards injected by JS -->
+  <!-- ── Custom domain table ── -->
+  <div class="cd-table-wrap">
+    <table class="cd-table" id="cd-table">
+      <thead>
+        <tr>
+          <th>Domain</th>
+          <th class="cd-col-status">Status</th>
+          <th class="cd-col-dns">DNS</th>
+          <th class="cd-col-actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="cd-tbody">
+        <!-- Rows injected by JS -->
+      </tbody>
+    </table>
     <div class="cd-empty" id="cd-empty">
       <div class="cd-empty-icon">
         <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -1263,11 +1157,12 @@
     </div>
   </div>
 
-  <!-- Pro upgrade prompt for free users instead of "Add Custom Domain" -->
-  <div id="cd-pro-prompt" style="display:none;text-align:center;padding:16px 0;">
-    <button class="cd-add-btn" onclick="showUpgrade()" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);">
-      <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M12 4v16m8-8H4"/></svg>
-      Upgrade to Pro for Custom Domains
+  <!-- Upgrade prompt when limit reached -->
+  <div id="cd-limit-msg" style="display:none;text-align:center;padding:14px 0 8px;">
+    <span style="font-size:.78rem;color:var(--MU);">You've reached the maximum number of custom domains for your plan.</span>
+    <button class="cd-add-btn" onclick="showUpgrade()" style="background:linear-gradient(135deg,#7C3AED,#6D28D9);margin-top:8px;display:inline-flex;">
+      <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+      Upgrade to Pro
     </button>
   </div>
 
@@ -1584,8 +1479,9 @@ const DOMAINS_DATA = [
   },
 ];
 
-const IS_PRO = false;
-let activeDomain = 'dropit.io';
+let IS_PRO = false;
+let MAX_DOMAINS = 0;
+let selectedDomains = ['dropit.io'];
 let currentFilter = 'all';
 
 /* ── Render domain cards ── */
@@ -1625,7 +1521,7 @@ function renderDomains() {
   updateStats();
 
   grid.innerHTML = filtered.map(function(d) {
-    var isSelected = d.id === activeDomain;
+    var isSelected = selectedDomains.indexOf(d.id) !== -1;
     var isPremium = d.type === 'premium';
 
     var cardClass = 'domain-card';
@@ -1634,15 +1530,15 @@ function renderDomains() {
 
     var btnHtml;
     if (isPremium && !IS_PRO) {
-      btnHtml = '<button class="dc-btn upgrade" onclick="showUpgrade()">' +
+      btnHtml = '<button class="dc-btn upgrade" onclick="event.stopPropagation();showUpgrade()">' +
         '<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">' +
         '<path stroke-linecap="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg> Upgrade to Select</button>';
     } else if (isSelected) {
-      btnHtml = '<button class="dc-btn selected" disabled>' +
+      btnHtml = '<button class="dc-btn selected" onclick="event.stopPropagation();toggleDomain(\'' + d.id + '\')">' +
         '<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">' +
-        '<path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg> Selected</button>';
+        '<path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg> Deselect</button>';
     } else {
-      btnHtml = '<button class="dc-btn select" onclick="event.stopPropagation();selectDomain(\'' + d.id + '\')">' +
+      btnHtml = '<button class="dc-btn select" onclick="event.stopPropagation();toggleDomain(\'' + d.id + '\')">' +
         '<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">' +
         '<path stroke-linecap="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg> Select Domain</button>';
     }
@@ -1720,27 +1616,33 @@ function updateStats() {
   document.getElementById('stat-total-sub').textContent = freeCount + ' free &middot; ' + premiumCount + ' premium';
   document.getElementById('stat-free').textContent = freeCount;
   document.getElementById('stat-premium').textContent = premiumCount;
-  document.getElementById('stat-active-domain').textContent = activeDomain;
-  document.getElementById('current-domain-name').innerHTML = '@<span>' + activeDomain + '</span>';
+  document.getElementById('stat-active-domain').textContent = customDomains.length + ' custom';
 }
 
-/* ── Select domain ── */
-function selectDomain(id) {
+/* ── Toggle domain selection (multi-select) ── */
+function toggleDomain(id) {
   var d = DOMAINS_DATA.find(function(x) { return x.id === id; });
   if (!d || (d.type === 'premium' && !IS_PRO)) return;
-  activeDomain = id;
+  var idx = selectedDomains.indexOf(id);
+  if (idx !== -1) {
+    selectedDomains.splice(idx, 1);
+    showToast('Deselected @' + id);
+  } else {
+    selectedDomains.push(id);
+    showToast('Selected @' + id);
+  }
   renderDomains();
-  showToast('Domain switched to @' + id);
 }
 
-/* ── Copy current domain ── */
-function copyCurrentDomain() {
+/* ── Copy domain name helper ── */
+function copyDomainName(id) {
+  var d = DOMAINS_DATA.find(function(x) { return x.id === id; });
+  if (!d) return;
   var el = document.createElement('textarea');
-  el.value = activeDomain;
+  el.value = d.name;
   el.style.position = 'fixed'; el.style.opacity = '0';
-  document.body.appendChild(el);
-  el.select();
-  try { document.execCommand('copy'); showToast('Copied @' + activeDomain); } catch(e) { showToast('Failed to copy'); }
+  document.body.appendChild(el); el.select();
+  try { document.execCommand('copy'); showToast('Copied @' + d.name); } catch(e) {}
   document.body.removeChild(el);
 }
 
@@ -1785,36 +1687,28 @@ function openDrawer(id) {
   }
 
   var ft = document.getElementById('drawer-ft');
+  var isSel = selectedDomains.indexOf(d.id) !== -1;
+
   if (d.type === 'premium' && !IS_PRO) {
     ft.innerHTML = '<button class="dc-btn upgrade" onclick="closeDrawer();showUpgrade()">' +
       '<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">' +
       '<path stroke-linecap="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg> Upgrade to Select</button>';
-  } else if (d.id === activeDomain) {
-    ft.innerHTML = '<button class="dc-btn selected" disabled>' +
+  } else if (isSel) {
+    ft.innerHTML = '<button class="dc-btn selected" onclick="closeDrawer();toggleDomain(\'' + d.id + '\')">' +
       '<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">' +
-      '<path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg> Selected</button>' +
-      '<button class="dc-btn select" onclick="copyDomainDrawer(\'' + d.id + '\')">' +
+      '<path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg> Deselect</button>' +
+      '<button class="dc-btn select" style="background:var(--BD2);color:var(--INK);" onclick="copyDomainName(\'' + d.id + '\')">' +
       '<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path stroke-linecap="round" d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy</button>';
   } else {
-    ft.innerHTML = '<button class="dc-btn select" onclick="closeDrawer();selectDomain(\'' + d.id + '\')">' +
+    ft.innerHTML = '<button class="dc-btn select" onclick="closeDrawer();toggleDomain(\'' + d.id + '\')">' +
       '<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">' +
       '<path stroke-linecap="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg> Select Domain</button>' +
-      '<button class="dc-btn select" style="background:var(--BD2);color:var(--INK);" onclick="copyDomainDrawer(\'' + d.id + '\')">' +
+      '<button class="dc-btn select" style="background:var(--BD2);color:var(--INK);" onclick="copyDomainName(\'' + d.id + '\')">' +
       '<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path stroke-linecap="round" d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy</button>';
   }
 
   document.getElementById('drawer-overlay').classList.add('open');
   document.getElementById('drawer').classList.add('open');
-}
-
-function copyDomainDrawer(id) {
-  var el = document.createElement('textarea');
-  el.value = id;
-  el.style.position = 'fixed'; el.style.opacity = '0';
-  document.body.appendChild(el);
-  el.select();
-  try { document.execCommand('copy'); showToast('Copied @' + id); } catch(e) {}
-  document.body.removeChild(el);
 }
 
 function closeDrawer() {
@@ -1877,7 +1771,6 @@ function refreshPage() {
 
 let customDomains = [];
 let cdDomainId = null;
-let cdCurrentFilter = 'all';
 
 /* ── Load custom domains from API ── */
 function loadCustomDomains() {
@@ -1885,6 +1778,8 @@ function loadCustomDomains() {
     .then(function(r) { return r.json(); })
     .then(function(res) {
       customDomains = res.domains || [];
+      IS_PRO = res.is_pro || false;
+      MAX_DOMAINS = res.max_domains || 0;
       renderCustomDomains(customDomains);
       updateCustomDomainStats();
       checkProStatus();
@@ -1894,116 +1789,87 @@ function loadCustomDomains() {
     });
 }
 
-/* ── Check Pro status and show/hide buttons ── */
+/* ── Check plan status and show/hide buttons ── */
 function checkProStatus() {
   var addBtn = document.getElementById('cd-add-btn');
-  var proPrompt = document.getElementById('cd-pro-prompt');
-  if (IS_PRO) {
-    addBtn.style.display = '';
-    proPrompt.style.display = 'none';
-  } else {
+  var limitMsg = document.getElementById('cd-limit-msg');
+  var planLimit = document.getElementById('cd-plan-limit');
+  var count = customDomains.length;
+
+  planLimit.textContent = count + '/' + (MAX_DOMAINS === -1 ? '∞' : MAX_DOMAINS);
+
+  var atLimit = MAX_DOMAINS !== -1 && count >= MAX_DOMAINS;
+  addBtn.style.display = atLimit ? 'none' : '';
+  limitMsg.style.display = atLimit && !IS_PRO ? '' : 'none';
+
+  if (atLimit && IS_PRO) {
     addBtn.style.display = 'none';
-    proPrompt.style.display = '';
+    limitMsg.style.display = '';
+    limitMsg.querySelector('span').textContent = 'You\'ve reached the maximum of ' + MAX_DOMAINS + ' custom domains for your plan.';
   }
 }
 
-/* ── Render custom domain cards ── */
+/* ── Render custom domain table ── */
 function renderCustomDomains(list) {
-  var grid = document.getElementById('cd-grid');
+  var tbody = document.getElementById('cd-tbody');
   var empty = document.getElementById('cd-empty');
-  var searchVal = (document.getElementById('cd-search').value || '').toLowerCase();
-  var filterVal = cdCurrentFilter;
-
-  var filtered = list.filter(function(d) {
-    if (filterVal === 'verified' && d.verification_status !== 'verified') return false;
-    if (filterVal === 'pending' && d.verification_status !== 'pending') return false;
-    if (filterVal === 'failed' && d.verification_status !== 'failed') return false;
-    if (searchVal) {
-      return d.domain.toLowerCase().includes(searchVal);
-    }
-    return true;
-  });
+  var table = document.getElementById('cd-table');
 
   empty.classList.remove('show');
 
-  if (!filtered.length) {
-    grid.innerHTML = '';
-    grid.appendChild(empty);
+  if (!list.length) {
+    tbody.innerHTML = '';
+    table.style.display = 'none';
     empty.classList.add('show');
-    document.getElementById('cd-empty-msg').textContent =
-      searchVal ? 'No custom domains match "' + searchVal + '".'
-        : list.length === 0 ? 'Add your own domain to use it with InboxOro.'
-        : 'No domains match this filter.';
+    document.getElementById('cd-empty-msg').textContent = 'Add your own domain to use it with InboxOro.';
     return;
   }
 
-  grid.innerHTML = filtered.map(function(d) {
+  table.style.display = '';
+  tbody.innerHTML = list.map(function(d) {
     var isSelected = d.is_selected;
     var isVerified = d.verification_status === 'verified';
-
-    var cardClass = 'cd-card';
-    cardClass += ' ' + d.verification_status;
-    if (isSelected) cardClass += ' selected';
-
-    var statusDotClass = 'cdc-status ' + d.verification_status;
-    var statusDot = '<div class="' + statusDotClass + '">' +
-      '<div class="cdc-status-dot"></div>' +
-      d.verification_status.charAt(0).toUpperCase() + d.verification_status.slice(1) +
-      '</div>';
+    var status = d.verification_status.charAt(0).toUpperCase() + d.verification_status.slice(1);
 
     var selectedBadge = isSelected
-      ? '<span class="cdc-selected-badge"><svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg>Active</span>'
+      ? '<span class="cd-td-sel-badge"><svg width="8" height="8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg>Active</span>'
       : '';
 
-    var dnsSummary = '';
-    ['mx', 'spf', 'dkim', 'txt'].forEach(function(k) {
-      var kv = k + '_verified';
+    var statusHtml = '<span class="cd-td-status ' + d.verification_status + '">' +
+      '<span class="cd-td-status-dot"></span>' + status + '</span>';
+
+    var dnsHtml = '';
+    ['mx', 'spf', 'dkim', 'dmarc'].forEach(function(k) {
+      var kv = k === 'dmarc' ? 'txt_verified' : k + '_verified';
       var ok = d[kv];
-      dnsSummary += '<span class="cdc-dns-item ' + (ok ? 'verified' : 'pending') + '">' +
-        '<svg class="cdc-dns-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">' +
+      dnsHtml += '<span class="cd-td-dns-item ' + (ok ? 'verified' : 'pending') + '">' +
+        '<svg class="cd-td-dns-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">' +
         (ok
           ? '<path stroke-linecap="round" d="M5 13l4 4L19 7"/>'
           : '<path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/>') +
-        '</svg>' +
-        k.toUpperCase() +
+        '</svg>' + k.toUpperCase() +
         '</span>';
     });
 
-    var actions = '';
-
+    var actionsHtml = '';
     if (isVerified && !isSelected) {
-      actions += '<button class="cdc-act primary" onclick="selectCustomDomain(' + d.id + ')">' +
-        '<svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg> Select</button>';
+      actionsHtml += '<button class="cd-td-act primary" onclick="selectCustomDomain(' + d.id + ')">' +
+        '<svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg> Select</button>';
     }
+    actionsHtml += '<button class="cd-td-act" onclick="openVerifyDns(' + d.id + ')">' +
+      '<svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> DNS</button>';
+    actionsHtml += '<button class="cd-td-act danger" onclick="deleteCustomDomain(' + d.id + ')">' +
+      '<svg width="9" height="9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg> Delete</button>';
 
-    actions += '<button class="cdc-act" onclick="openVerifyDns(' + d.id + ')">' +
-      '<svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Verify</button>';
-
-    actions += '<button class="cdc-act" onclick="refreshCustomDomain(' + d.id + ')">' +
-      '<svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg> Refresh</button>';
-
-    actions += '<button class="cdc-act danger" onclick="deleteCustomDomain(' + d.id + ')">' +
-      '<svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg> Delete</button>';
-
-    var timeAgo = d.created_at || '';
-
-    return '<div class="' + cardClass + '">' +
-      '<div class="cdc-top">' +
-        '<div class="cdc-domain-icon">' +
-          '<svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>' +
-        '</div>' +
-        '<div style="flex:1;min-width:0;">' +
-          '<div class="cdc-name">' + d.domain + '</div>' +
-          '<div class="cdc-meta"><span>Added ' + timeAgo + '</span></div>' +
-        '</div>' +
-        '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">' +
-          selectedBadge +
-          statusDot +
-        '</div>' +
-      '</div>' +
-      '<div class="cdc-dns">' + dnsSummary + '</div>' +
-      '<div class="cdc-actions">' + actions + '</div>' +
-      '</div>';
+    return '<tr>' +
+      '<td>' +
+        '<div class="cd-td-domain">' + d.domain + '</div>' +
+        '<small>Added ' + (d.created_at || '') + '</small>' +
+      '</td>' +
+      '<td>' + selectedBadge + ' ' + statusHtml + '</td>' +
+      '<td><div class="cd-td-dns">' + dnsHtml + '</div></td>' +
+      '<td><div class="cd-td-actions">' + actionsHtml + '</div></td>' +
+      '</tr>';
   }).join('');
 }
 
@@ -2016,18 +1882,6 @@ function updateCustomDomainStats() {
   document.getElementById('cd-stat-total').textContent = total;
   document.getElementById('cd-stat-verified').textContent = verified;
   document.getElementById('cd-stat-pending').textContent = pending;
-}
-
-/* ── Filter custom domains ── */
-function filterCustomDomains() {
-  renderCustomDomains(customDomains);
-}
-
-function setCdChipFilter(filter, el) {
-  cdCurrentFilter = filter;
-  document.querySelectorAll('.cd-filter-chip').forEach(function(c) { c.classList.remove('active'); });
-  el.classList.add('active');
-  renderCustomDomains(customDomains);
 }
 
 /* ── Open Add Custom Domain modal ── */

@@ -886,25 +886,8 @@
   <div class="pagination" id="fw-pagination"></div>
 </div>
 
-<!-- ── Recent Emails ── -->
-<div class="panel">
-  <div class="panel-hd">
-    <span class="panel-title">
-      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-      Recent Emails
-    </span>
-    <span class="panel-badge" id="recent-count">8 emails</span>
-  </div>
-  <div class="email-list-compact" id="recent-list"></div>
-  <div class="empty-state" id="recent-empty">
-    <div class="empty-icon">
-      <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-    </div>
-    <div class="empty-title">No emails received</div>
-    <div class="empty-sub">This alias hasn't received any emails yet.</div>
-  </div>
-</div>
-
+{{-- ═══ KEPT FOR LATER USE ═══ --}}
+{{--
 <!-- ── Alias Settings ── -->
 <div class="panel">
   <div class="panel-hd">
@@ -1028,6 +1011,7 @@
     </div>
   </div>
 </div>
+--}}
 
 @endsection
 
@@ -1083,29 +1067,17 @@ const FW_HISTORY = [
   { id: 20, date: '2026-06-29 19:10:00', sender: 'Hulu <updates@hulu.com>', subject: 'New episodes available', recipient: 'john@personal.com', status: 'pending', deliveryTime: '—' },
 ];
 
-// ── Seed recent emails ──
-const RECENT_EMAILS = [
-  { id: 1, sender: 'Amazon', color: '#FF9900', subject: 'Your order #ORD-38291 has shipped', preview: 'Your package is on its way! Expected delivery: Jul 8-10.', time: '9:23 AM', hasAtt: true, isOtp: false },
-  { id: 2, sender: 'Shopify', color: '#96BF48', subject: 'New login to your store', preview: 'A new login was detected from Chrome on Windows.', time: '8:15 AM', hasAtt: false, isOtp: false },
-  { id: 3, sender: 'Netflix', color: '#E50914', subject: 'Is this your account?', preview: 'We noticed a new sign-in on your account.', time: '10:40 PM', hasAtt: false, isOtp: false },
-  { id: 4, sender: 'PayPal', color: '#003087', subject: 'You sent a payment of $49.99', preview: 'Your payment to BestBuy.com has been completed.', time: '6:12 PM', hasAtt: true, isOtp: false },
-  { id: 5, sender: 'Google', color: '#4285F4', subject: 'Security alert for your account', preview: 'A new device was used to sign in to your Google Account.', time: '9:00 PM', hasAtt: false, isOtp: false },
-  { id: 6, sender: 'Instagram', color: '#E4405F', subject: 'Your login code is 482916', preview: 'Use this code to complete your login to Instagram.', time: '12:10 PM', hasAtt: false, isOtp: true },
-  { id: 7, sender: 'GitHub', color: '#333', subject: '[org/repo] New pull request #892', preview: '@developer opened a new pull request: Fix auth bug.', time: '11:05 AM', hasAtt: false, isOtp: false },
-  { id: 8, sender: 'Notion', color: '#000', subject: 'Shared workspace has been updated', preview: '@alice added a new page: "Q3 Roadmap"', time: '10:20 AM', hasAtt: false, isOtp: false },
-];
-
-// ── Seed timeline ──
-const TIMELINE = [
-  { event: 'Alias Created', desc: 'Alias shopping@dropit.io was created', time: 'Mar 15, 2026 · 10:30 AM', dot: 'blue' },
-  { event: 'Forwarding Email Changed', desc: 'Forwarding updated to j***@gmail.com', time: 'Mar 16, 2026 · 2:15 PM', dot: 'blue' },
-  { event: 'Alias Paused', desc: 'Alias was paused for 3 days', time: 'Apr 2, 2026 · 8:00 AM', dot: 'yellow' },
-  { event: 'Alias Activated', desc: 'Alias was reactivated', time: 'Apr 5, 2026 · 9:30 AM', dot: 'green' },
-  { event: 'Email Forwarded', desc: 'Amazon order confirmation forwarded successfully', time: 'Jul 6, 2026 · 9:23 AM', dot: 'green' },
-  { event: 'Email Forwarded', desc: 'Shopify login alert forwarded successfully', time: 'Jul 6, 2026 · 8:15 AM', dot: 'green' },
-  { event: 'Spam Blocked', desc: 'Suspicious email from "win@prize.com" was blocked', time: 'Jul 5, 2026 · 3:20 AM', dot: 'red' },
-  { event: 'Forward Failure', desc: 'GitHub PR notification failed to forward (mailbox full)', time: 'Jul 5, 2026 · 11:05 AM', dot: 'red' },
-];
+// // ── KEPT FOR LATER USE ──
+// const TIMELINE = [
+//   { event: 'Alias Created', desc: 'Alias shopping@dropit.io was created', time: 'Mar 15, 2026 · 10:30 AM', dot: 'blue' },
+//   { event: 'Forwarding Email Changed', desc: 'Forwarding updated to j***@gmail.com', time: 'Mar 16, 2026 · 2:15 PM', dot: 'blue' },
+//   { event: 'Alias Paused', desc: 'Alias was paused for 3 days', time: 'Apr 2, 2026 · 8:00 AM', dot: 'yellow' },
+//   { event: 'Alias Activated', desc: 'Alias was reactivated', time: 'Apr 5, 2026 · 9:30 AM', dot: 'green' },
+//   { event: 'Email Forwarded', desc: 'Amazon order confirmation forwarded successfully', time: 'Jul 6, 2026 · 9:23 AM', dot: 'green' },
+//   { event: 'Email Forwarded', desc: 'Shopify login alert forwarded successfully', time: 'Jul 6, 2026 · 8:15 AM', dot: 'green' },
+//   { event: 'Spam Blocked', desc: 'Suspicious email from "win@prize.com" was blocked', time: 'Jul 5, 2026 · 3:20 AM', dot: 'red' },
+//   { event: 'Forward Failure', desc: 'GitHub PR notification failed to forward (mailbox full)', time: 'Jul 5, 2026 · 11:05 AM', dot: 'red' },
+// ];
 
 /* ── State ── */
 let fwPage = 1;
@@ -1263,80 +1235,43 @@ function retryForward(id) {
   showToast('Retrying forward for email #' + id + '…');
 }
 
-/* ── Recent emails ── */
-function renderRecent() {
-  var list = document.getElementById('recent-list');
-  var empty = document.getElementById('recent-empty');
-  var count = document.getElementById('recent-count');
-
-  count.textContent = RECENT_EMAILS.length + ' emails';
-
-  if (!RECENT_EMAILS.length) {
-    list.innerHTML = '';
-    empty.classList.add('show');
-    return;
-  }
-  empty.classList.remove('show');
-
-  list.innerHTML = RECENT_EMAILS.map(function(e) {
-    var att = e.hasAtt ? '<span class="att-badge"><svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg></span>' : '';
-    var otp = e.isOtp ? '<span class="otp-badge-sm">OTP</span>' : '';
-    var initials = e.sender.substring(0,2).toUpperCase();
-    return '<div class="email-item">' +
-      '<div class="email-item-avatar" style="background:' + e.color + ';">' + initials + '</div>' +
-      '<div class="email-item-body">' +
-        '<div class="email-item-top">' +
-          '<span class="email-item-sender">' + e.sender + '</span>' +
-          '<span class="email-item-time">' + e.time + '</span>' +
-        '</div>' +
-        '<div class="email-item-subject">' + e.subject + '</div>' +
-        '<div class="email-item-preview">' + e.preview + '</div>' +
-      '</div>' +
-      '<div class="email-item-meta">' + att + otp + '</div>' +
-    '</div>';
-  }).join('');
-}
-
-/* ── Timeline ── */
-function renderTimeline() {
-  var tl = document.getElementById('timeline');
-  var empty = document.getElementById('tl-empty');
-
-  if (!TIMELINE.length) {
-    tl.innerHTML = '';
-    empty.classList.add('show');
-    return;
-  }
-  empty.classList.remove('show');
-
-  tl.innerHTML = TIMELINE.map(function(t) {
-    return '<div class="timeline-item">' +
-      '<div class="timeline-dot ' + t.dot + '"></div>' +
-      '<div class="timeline-body">' +
-        '<div class="timeline-event">' + t.event + '</div>' +
-        '<div class="timeline-desc">' + t.desc + '</div>' +
-        '<div class="timeline-time">' + t.time + '</div>' +
-      '</div>' +
-    '</div>';
-  }).join('');
-}
-
-/* ── Settings ── */
-function saveSetting(id) {
-  var el = document.getElementById('setting-' + id);
-  showToast('Setting updated: ' + id + ' = ' + (el.checked ? 'ON' : 'OFF'));
-}
-
-function saveNotifEmail() {
-  var val = document.getElementById('setting-notif').value;
-  showToast('Notification email saved: ' + val);
-}
+// /* ── KEPT FOR LATER USE ── */
+// function renderTimeline() {
+//   var tl = document.getElementById('timeline');
+//   var empty = document.getElementById('tl-empty');
+//
+//   if (!TIMELINE.length) {
+//     tl.innerHTML = '';
+//     empty.classList.add('show');
+//     return;
+//   }
+//   empty.classList.remove('show');
+//
+//   tl.innerHTML = TIMELINE.map(function(t) {
+//     return '<div class="timeline-item">' +
+//       '<div class="timeline-dot ' + t.dot + '"></div>' +
+//       '<div class="timeline-body">' +
+//         '<div class="timeline-event">' + t.event + '</div>' +
+//         '<div class="timeline-desc">' + t.desc + '</div>' +
+//         '<div class="timeline-time">' + t.time + '</div>' +
+//       '</div>' +
+//     '</div>';
+//   }).join('');
+// }
+//
+// function saveSetting(id) {
+//   var el = document.getElementById('setting-' + id);
+//   showToast('Setting updated: ' + id + ' = ' + (el.checked ? 'ON' : 'OFF'));
+// }
+//
+// function saveNotifEmail() {
+//   var val = document.getElementById('setting-notif').value;
+//   showToast('Notification email saved: ' + val);
+// }
 
 /* ── Init ── */
 renderAlias();
 renderFwTable();
-renderRecent();
-renderTimeline();
 
 </script>
 @endpush

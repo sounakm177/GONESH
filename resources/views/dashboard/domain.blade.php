@@ -713,7 +713,7 @@
   color: var(--INK);
 }
 .cd-col-status { width: 90px; }
-.cd-col-dns { width: 180px; }
+.cd-col-dns-item { width: 48px; text-align: center; }
 .cd-col-actions { width: 200px; text-align: right; }
 
 .cd-td-domain {
@@ -750,9 +750,6 @@
 }
 
 /* ── DNS badges ── */
-.cd-td-dns {
-  display: flex; gap: 3px; flex-wrap: wrap;
-}
 .cd-td-dns-item {
   display: inline-flex; align-items: center; gap: 3px;
   font-family: var(--MONO); font-size: .52rem; font-weight: 700;
@@ -1138,7 +1135,10 @@
         <tr>
           <th>Domain</th>
           <th class="cd-col-status">Status</th>
-          <th class="cd-col-dns">DNS</th>
+          <th class="cd-col-dns-item">MX</th>
+          <th class="cd-col-dns-item">SPF</th>
+          <th class="cd-col-dns-item">DKIM</th>
+          <th class="cd-col-dns-item">DMARC</th>
           <th class="cd-col-actions">Actions</th>
         </tr>
       </thead>
@@ -1838,18 +1838,17 @@ function renderCustomDomains(list) {
     var statusHtml = '<span class="cd-td-status ' + d.verification_status + '">' +
       '<span class="cd-td-status-dot"></span>' + status + '</span>';
 
-    var dnsHtml = '';
-    ['mx', 'spf', 'dkim', 'dmarc'].forEach(function(k) {
+    function dnsCell(k) {
       var kv = k === 'dmarc' ? 'txt_verified' : k + '_verified';
       var ok = d[kv];
-      dnsHtml += '<span class="cd-td-dns-item ' + (ok ? 'verified' : 'pending') + '">' +
-        '<svg class="cd-td-dns-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">' +
-        (ok
-          ? '<path stroke-linecap="round" d="M5 13l4 4L19 7"/>'
-          : '<path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/>') +
-        '</svg>' + k.toUpperCase() +
+      var cls = ok ? 'verified' : 'pending';
+      var ico = ok
+        ? '<path stroke-linecap="round" d="M5 13l4 4L19 7"/>'
+        : '<path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/>';
+      return '<span class="cd-td-dns-item ' + cls + '">' +
+        '<svg class="cd-td-dns-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">' + ico + '</svg>' +
         '</span>';
-    });
+    }
 
     var actionsHtml = '';
     if (isVerified && !isSelected) {
@@ -1867,7 +1866,10 @@ function renderCustomDomains(list) {
         '<small>Added ' + (d.created_at || '') + '</small>' +
       '</td>' +
       '<td>' + selectedBadge + ' ' + statusHtml + '</td>' +
-      '<td><div class="cd-td-dns">' + dnsHtml + '</div></td>' +
+      '<td style="text-align:center;">' + dnsCell('mx') + '</td>' +
+      '<td style="text-align:center;">' + dnsCell('spf') + '</td>' +
+      '<td style="text-align:center;">' + dnsCell('dkim') + '</td>' +
+      '<td style="text-align:center;">' + dnsCell('dmarc') + '</td>' +
       '<td><div class="cd-td-actions">' + actionsHtml + '</div></td>' +
       '</tr>';
   }).join('');

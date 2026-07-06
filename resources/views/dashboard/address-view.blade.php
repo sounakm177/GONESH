@@ -706,6 +706,15 @@
   .alias-header-addr { font-size: .88rem; }
 }
 
+/* ── Modal extras ── */
+.modal-bd { padding: 20px; }
+.modal-close {
+  background: none; border: none; font-size: 1.4rem;
+  color: var(--MU); cursor: pointer; padding: 0 4px;
+  line-height: 1;
+}
+.modal-close:hover { color: var(--INK); }
+
 </style>
 @endpush
 
@@ -720,10 +729,10 @@
 <!-- ── Alias header ── -->
 <div class="alias-header" id="alias-header">
   <div class="alias-header-left">
-    <div class="alias-header-avatar" id="ah-avatar" style="background:#6366F1;">SH</div>
+    <div class="alias-header-avatar" id="ah-avatar" style="background:#6366F1;">--</div>
     <div class="alias-header-info">
-      <div class="alias-header-addr" id="ah-addr">shopping@dropit.io</div>
-      <div class="alias-header-label" id="ah-label">Shopping</div>
+      <div class="alias-header-addr" id="ah-addr">Loading…</div>
+      <div class="alias-header-label" id="ah-label"></div>
     </div>
   </div>
   <div class="alias-header-right">
@@ -766,7 +775,7 @@
     <div class="stat-body">
       <div class="stat-num" id="stat-forwarded">0</div>
       <div class="stat-lbl">Forwarded Successfully</div>
-      <div class="stat-sub">99.2% rate</div>
+      <div class="stat-sub">All time</div>
     </div>
   </div>
   <div class="stat-card">
@@ -776,7 +785,7 @@
     <div class="stat-body">
       <div class="stat-num" id="stat-failed">0</div>
       <div class="stat-lbl">Forward Failures</div>
-      <div class="stat-sub">Last 30 days</div>
+      <div class="stat-sub">All time</div>
     </div>
   </div>
   <div class="stat-card">
@@ -784,8 +793,8 @@
       <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
     </div>
     <div class="stat-body">
-      <div class="stat-num" id="stat-spam">0</div>
-      <div class="stat-lbl">Spam Blocked</div>
+      <div class="stat-num" id="stat-blocked">0</div>
+      <div class="stat-lbl">Blocked</div>
       <div class="stat-sub">Protected</div>
     </div>
   </div>
@@ -802,35 +811,35 @@
   <div class="info-grid" id="info-grid">
     <div class="info-row">
       <span class="info-label">Alias Address</span>
-      <span class="info-value mono" id="info-address">shopping@dropit.io</span>
+      <span class="info-value mono" id="info-address">—</span>
     </div>
     <div class="info-row">
       <span class="info-label">Forwarding To</span>
-      <span class="info-value mono" id="info-forward">j***@gmail.com</span>
+      <span class="info-value mono" id="info-forward">—</span>
     </div>
     <div class="info-row">
       <span class="info-label">Domain</span>
-      <span class="info-value mono" id="info-domain">dropit.io</span>
+      <span class="info-value mono" id="info-domain">—</span>
     </div>
     <div class="info-row">
-      <span class="info-label">Label</span>
-      <span class="info-value" id="info-label">Shopping</span>
+      <span class="info-label">Description</span>
+      <span class="info-value" id="info-desc">—</span>
     </div>
     <div class="info-row">
       <span class="info-label">Created</span>
-      <span class="info-value" id="info-created">Mar 15, 2026</span>
+      <span class="info-value" id="info-created">—</span>
     </div>
     <div class="info-row">
       <span class="info-label">Last Activity</span>
-      <span class="info-value" id="info-last">2 hours ago</span>
+      <span class="info-value" id="info-last">—</span>
     </div>
     <div class="info-row">
       <span class="info-label">Total Received</span>
-      <span class="info-value" id="info-total-received">47</span>
+      <span class="info-value" id="info-total-received">0</span>
     </div>
     <div class="info-row">
       <span class="info-label">Total Forwarded</span>
-      <span class="info-value" id="info-total-forwarded">45</span>
+      <span class="info-value" id="info-total-forwarded">0</span>
     </div>
   </div>
 </div>
@@ -842,7 +851,7 @@
       <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
       Forwarding History
     </span>
-    <span class="panel-badge" id="fw-count">23 events</span>
+    <span class="panel-badge" id="fw-count">0 events</span>
   </div>
 
   <div class="tbar">
@@ -852,11 +861,10 @@
     </div>
     <select class="tbar-select" id="fw-status-filter" onchange="filterFwHistory()">
       <option value="all">All Status</option>
-      <option value="delivered">Delivered</option>
-      <option value="pending">Pending</option>
-      <option value="failed">Failed</option>
+      <option value="received">Received</option>
+      <option value="forwarded">Forwarded</option>
+      <option value="blocked">Blocked</option>
     </select>
-    <input type="date" class="tbar-select" id="fw-date-filter" onchange="filterFwHistory()" style="min-width:140px;">
   </div>
 
   <div style="overflow-x:auto;" id="fw-table-wrap">
@@ -865,11 +873,7 @@
         <tr>
           <th>Date &amp; Time</th>
           <th>Sender</th>
-          <th>Subject</th>
-          <th>Recipient</th>
           <th>Status</th>
-          <th>Delivery Time</th>
-          <th style="text-align:right;">Action</th>
         </tr>
       </thead>
       <tbody id="fw-tbody"></tbody>
@@ -879,15 +883,51 @@
         <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
       </div>
       <div class="empty-title">No forwarding history</div>
-      <div class="empty-sub">No emails have been forwarded yet for this alias.</div>
+      <div class="empty-sub">No emails have been processed yet for this alias.</div>
     </div>
   </div>
 
   <div class="pagination" id="fw-pagination"></div>
 </div>
 
-{{-- ═══ KEPT FOR LATER USE ═══ --}}
-{{--
+<!-- ── Edit Alias Modal ── -->
+<div class="modal-overlay" id="edit-modal" style="display:none;">
+  <div class="modal-box" style="max-width:480px;">
+    <div class="modal-hd">
+      <span class="modal-title">Edit Alias</span>
+      <button class="modal-close" onclick="closeEditModal()">&times;</button>
+    </div>
+    <div class="modal-bd" style="padding:20px;">
+      <div style="margin-bottom:14px;">
+        <label style="font-size:.72rem;font-weight:600;color:var(--MU);display:block;margin-bottom:4px;">Forward To</label>
+        <input type="email" id="edit-forward" class="setting-input" style="width:100%;">
+      </div>
+      <div style="margin-bottom:14px;">
+        <label style="font-size:.72rem;font-weight:600;color:var(--MU);display:block;margin-bottom:4px;">Description</label>
+        <input type="text" id="edit-desc" class="setting-input" style="width:100%;">
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:20px;">
+        <button class="act-btn" onclick="closeEditModal()">Cancel</button>
+        <button class="act-btn primary" onclick="saveEditAlias()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Confirm Modal ── -->
+<div class="modal-overlay" id="confirm-modal" style="display:none;">
+  <div class="modal-box" style="max-width:400px;">
+    <div class="modal-bd" style="padding:24px;text-align:center;">
+      <div style="font-size:.9rem;font-weight:600;color:var(--INK);margin-bottom:8px;" id="confirm-title">Confirm</div>
+      <div style="font-size:.8rem;color:var(--MU);margin-bottom:20px;" id="confirm-msg">Are you sure?</div>
+      <div style="display:flex;gap:8px;justify-content:center;">
+        <button class="act-btn" onclick="closeConfirm()">Cancel</button>
+        <button class="act-btn danger" id="confirm-yes-btn" onclick="confirmYes()">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ── Alias Settings ── -->
 <div class="panel">
   <div class="panel-hd">
@@ -900,52 +940,12 @@
     <div class="setting-row">
       <div class="setting-info">
         <div class="setting-label">Forwarding Enabled</div>
-        <div class="setting-desc">Forward incoming emails to your real inbox</div>
+        <div class="setting-desc">Toggle email forwarding on/off for this alias</div>
       </div>
       <label class="toggle">
-        <input type="checkbox" id="setting-forward" checked onchange="saveSetting('forward')">
+        <input type="checkbox" id="setting-forward" onchange="saveSetting('forward')">
         <div class="toggle-slider"></div>
       </label>
-    </div>
-    <div class="setting-row">
-      <div class="setting-info">
-        <div class="setting-label">Spam Filter</div>
-        <div class="setting-desc">Automatically block known spam senders</div>
-      </div>
-      <label class="toggle">
-        <input type="checkbox" id="setting-spam" checked onchange="saveSetting('spam')">
-        <div class="toggle-slider"></div>
-      </label>
-    </div>
-    <div class="setting-row">
-      <div class="setting-info">
-        <div class="setting-label">Block Attachments</div>
-        <div class="setting-desc">Strip attachments from forwarded emails</div>
-      </div>
-      <label class="toggle">
-        <input type="checkbox" id="setting-attach" onchange="saveSetting('attach')">
-        <div class="toggle-slider"></div>
-      </label>
-    </div>
-    <div class="setting-row">
-      <div class="setting-info">
-        <div class="setting-label">Auto Delete</div>
-        <div class="setting-desc">Automatically delete emails older than 30 days</div>
-      </div>
-      <label class="toggle">
-        <input type="checkbox" id="setting-autodel" onchange="saveSetting('autodel')">
-        <div class="toggle-slider"></div>
-      </label>
-    </div>
-    <div class="setting-row" style="border-bottom:none;">
-      <div class="setting-info">
-        <div class="setting-label">Notification Email</div>
-        <div class="setting-desc">Send delivery failure notifications to this address</div>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-        <input type="email" class="setting-input" id="setting-notif" value="john@example.com">
-        <button class="setting-save" onclick="saveNotifEmail()">Save</button>
-      </div>
     </div>
   </div>
 </div>
@@ -968,121 +968,13 @@
   </div>
 </div>
 
-<!-- ── Security ── -->
-<div class="panel">
-  <div class="panel-hd">
-    <span class="panel-title">
-      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-      Security &amp; Authentication
-    </span>
-  </div>
-  <div class="security-grid" id="security-grid">
-    <div class="sec-item">
-      <span class="sec-badge pass" id="sec-spf">
-        <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg>
-        Pass
-      </span>
-      <span class="sec-label">SPF Status</span>
-      <span class="sec-value">v=spf1 include:_spf.dropit.io ~all</span>
-    </div>
-    <div class="sec-item">
-      <span class="sec-badge pass" id="sec-dkim">
-        <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg>
-        Pass
-      </span>
-      <span class="sec-label">DKIM Status</span>
-      <span class="sec-value">dkim.dropit.io</span>
-    </div>
-    <div class="sec-item">
-      <span class="sec-badge pass" id="sec-health">
-        <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg>
-        Healthy
-      </span>
-      <span class="sec-label">Forwarding Health</span>
-      <span class="sec-value">99.2% delivery rate</span>
-    </div>
-    <div class="sec-item">
-      <span class="sec-badge pass" id="sec-verified">
-        <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" d="M5 13l4 4L19 7"/></svg>
-        Verified
-      </span>
-      <span class="sec-label">Last Verification</span>
-      <span class="sec-value">Today, 09:32 AM</span>
-    </div>
-  </div>
-</div>
---}}
-
 @endsection
 
 @push('scripts')
 <script>
-
-/* ══════════════════════════════════════════════════
-   ALIAS DETAIL PAGE — CLIENT-SIDE DATA
-   ══════════════════════════════════════════════════ */
-
-// ── Seed alias data ──
-const ALIAS = {
-  id: 1,
-  prefix: 'shopping',
-  domain: 'dropit.io',
-  email: 'shopping@dropit.io',
-  label: 'Shopping',
-  forward: 'j***@gmail.com',
-  status: 'active',
-  color: '#6366F1',
-  created: 'Mar 15, 2026',
-  lastActivity: '2 hours ago',
-  totalReceived: 47,
-  totalForwarded: 45,
-  totalFailed: 2,
-  totalSpam: 5,
-  statsForwarded: 45,
-  statsFailed: 2,
-  statsSpam: 5,
-};
-
-// ── Seed forwarding history ──
-const FW_HISTORY = [
-  { id: 1, date: '2026-07-06 09:23:00', sender: 'Amazon <no-reply@amazon.com>', subject: 'Your order #ORD-38291 has shipped', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.4s' },
-  { id: 2, date: '2026-07-06 08:15:00', sender: 'Shopify <notifications@shopify.com>', subject: 'New login to your store', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.3s' },
-  { id: 3, date: '2026-07-05 22:40:00', sender: 'Netflix <info@netflix.com>', subject: 'Is this your account?', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.5s' },
-  { id: 4, date: '2026-07-05 18:12:00', sender: 'PayPal <service@paypal.com>', subject: 'You sent a payment of $49.99', recipient: 'john@personal.com', status: 'pending', deliveryTime: '—' },
-  { id: 5, date: '2026-07-05 14:30:00', sender: 'Spotify <no-reply@spotify.com>', subject: 'Your playlist is ready', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.3s' },
-  { id: 6, date: '2026-07-05 11:05:00', sender: 'GitHub <noreply@github.com>', subject: '[org/repo] New pull request #892', recipient: 'john@personal.com', status: 'failed', deliveryTime: '—' },
-  { id: 7, date: '2026-07-04 21:00:00', sender: 'Google <no-reply@google.com>', subject: 'Security alert for your account', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.2s' },
-  { id: 8, date: '2026-07-04 16:45:00', sender: 'Etsy <feedback@etsy.com>', subject: 'How was your shopping experience?', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.4s' },
-  { id: 9, date: '2026-07-04 10:20:00', sender: 'Notion <noreply@notion.so>', subject: 'Shared workspace has been updated', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.3s' },
-  { id: 10, date: '2026-07-03 19:55:00', sender: 'Twitter <info@twitter.com>', subject: '@someone liked your tweet', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.5s' },
-  { id: 11, date: '2026-07-03 15:30:00', sender: 'LinkedIn <jobs@linkedin.com>', subject: 'New job recommendations for you', recipient: 'john@personal.com', status: 'pending', deliveryTime: '—' },
-  { id: 12, date: '2026-07-03 12:10:00', sender: 'Instagram <mail@instagram.com>', subject: 'Your login code is 482916', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.2s' },
-  { id: 13, date: '2026-07-02 20:00:00', sender: 'Figma <updates@figma.com>', subject: 'New comment on your design', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.4s' },
-  { id: 14, date: '2026-07-02 14:25:00', sender: 'Uber <receipts@uber.com>', subject: 'Your trip receipt', recipient: 'john@personal.com', status: 'failed', deliveryTime: '—' },
-  { id: 15, date: '2026-07-02 09:00:00', sender: 'Discord <no-reply@discord.com>', subject: 'New message in #general', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.3s' },
-  { id: 16, date: '2026-07-01 22:30:00', sender: 'Zoom <no-reply@zoom.us>', subject: 'Your meeting recording is ready', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.5s' },
-  { id: 17, date: '2026-07-01 17:45:00', sender: 'Stripe <receipts@stripe.com>', subject: 'Payment receipt for $29.00', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.3s' },
-  { id: 18, date: '2026-06-30 13:00:00', sender: 'Medium <digest@medium.com>', subject: 'Your weekly reading digest', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.4s' },
-  { id: 19, date: '2026-06-30 08:20:00', sender: 'Dropbox <no-reply@dropbox.com>', subject: 'File shared with you', recipient: 'john@personal.com', status: 'delivered', deliveryTime: '0.2s' },
-  { id: 20, date: '2026-06-29 19:10:00', sender: 'Hulu <updates@hulu.com>', subject: 'New episodes available', recipient: 'john@personal.com', status: 'pending', deliveryTime: '—' },
-];
-
-// // ── KEPT FOR LATER USE ──
-// const TIMELINE = [
-//   { event: 'Alias Created', desc: 'Alias shopping@dropit.io was created', time: 'Mar 15, 2026 · 10:30 AM', dot: 'blue' },
-//   { event: 'Forwarding Email Changed', desc: 'Forwarding updated to j***@gmail.com', time: 'Mar 16, 2026 · 2:15 PM', dot: 'blue' },
-//   { event: 'Alias Paused', desc: 'Alias was paused for 3 days', time: 'Apr 2, 2026 · 8:00 AM', dot: 'yellow' },
-//   { event: 'Alias Activated', desc: 'Alias was reactivated', time: 'Apr 5, 2026 · 9:30 AM', dot: 'green' },
-//   { event: 'Email Forwarded', desc: 'Amazon order confirmation forwarded successfully', time: 'Jul 6, 2026 · 9:23 AM', dot: 'green' },
-//   { event: 'Email Forwarded', desc: 'Shopify login alert forwarded successfully', time: 'Jul 6, 2026 · 8:15 AM', dot: 'green' },
-//   { event: 'Spam Blocked', desc: 'Suspicious email from "win@prize.com" was blocked', time: 'Jul 5, 2026 · 3:20 AM', dot: 'red' },
-//   { event: 'Forward Failure', desc: 'GitHub PR notification failed to forward (mailbox full)', time: 'Jul 5, 2026 · 11:05 AM', dot: 'red' },
-// ];
-
-/* ── State ── */
-let fwPage = 1;
-const FW_PER_PAGE = 8;
-let fwFiltered = [...FW_HISTORY];
+var CSRF = '{{ csrf_token() }}';
+var ALIAS_ID = {{ $id }};
+var ALIAS_DATA = null;
 
 /* ── Helpers ── */
 function showToast(msg) {
@@ -1094,93 +986,167 @@ function showToast(msg) {
   el._t = setTimeout(function() { el.classList.remove('show'); }, 2800);
 }
 
-function formatDate(d) {
-  var parts = d.split(' ');
-  var dateParts = parts[0].split('-');
-  var timeParts = parts[1].split(':');
-  var dObj = new Date(dateParts[0], dateParts[1]-1, dateParts[2], timeParts[0], timeParts[1]);
-  return dObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+function api(path, opts) {
+  opts = opts || {};
+  return fetch('/aliases/' + path, {
+    method: opts.method || 'GET',
+    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' },
+    body: opts.body ? JSON.stringify(opts.body) : undefined,
+  }).then(function(r) { return r.json(); });
 }
 
-/* ── Render alias info ── */
+/* ── Confirm modal ── */
+var _confirmCb = null;
+function showConfirm(msg, cb) {
+  document.getElementById('confirm-msg').textContent = msg;
+  document.getElementById('confirm-modal').style.display = 'flex';
+  _confirmCb = cb;
+}
+function closeConfirm() {
+  document.getElementById('confirm-modal').style.display = 'none';
+  _confirmCb = null;
+}
+function confirmYes() {
+  var cb = _confirmCb;
+  closeConfirm();
+  if (cb) cb();
+}
+
+/* ── Edit modal ── */
+function editAlias() {
+  if (!ALIAS_DATA) return;
+  document.getElementById('edit-forward').value = ALIAS_DATA.forward_to || '';
+  document.getElementById('edit-desc').value = ALIAS_DATA.description || '';
+  document.getElementById('edit-modal').style.display = 'flex';
+}
+function closeEditModal() {
+  document.getElementById('edit-modal').style.display = 'none';
+}
+function saveEditAlias() {
+  var forward = document.getElementById('edit-forward').value;
+  var desc = document.getElementById('edit-desc').value;
+  api(ALIAS_ID, { method: 'PATCH', body: { forward_to: forward, description: desc } }).then(function(data) {
+    if (data.success) {
+      showToast('Alias updated');
+      closeEditModal();
+      loadAlias();
+    } else {
+      showToast('Error: ' + (data.error || 'Unknown error'));
+    }
+  });
+}
+
+/* ── Load alias data ── */
+function loadAlias() {
+  api(ALIAS_ID).then(function(data) {
+    if (data.error) { showToast(data.error); return; }
+    ALIAS_DATA = data.alias;
+    renderAlias();
+    document.title = 'InboxOro — ' + data.alias.email;
+  });
+}
+
 function renderAlias() {
-  var a = ALIAS;
+  var a = ALIAS_DATA;
   document.getElementById('ah-addr').textContent = a.email;
-  document.getElementById('ah-label').textContent = a.label;
-  document.getElementById('ah-avatar').textContent = a.prefix.substring(0,2).toUpperCase();
+  document.getElementById('ah-label').textContent = a.description || a.email;
+  document.getElementById('ah-avatar').textContent = a.avatar;
   document.getElementById('ah-avatar').style.background = a.color;
 
   var st = document.getElementById('ah-status');
-  st.className = 'status-badge ' + a.status;
-  st.innerHTML = '<span class="sb-dot"></span> ' + (a.status === 'active' ? 'Active' : a.status === 'paused' ? 'Paused' : 'Disabled');
+  var isActive = a.is_enabled;
+  st.className = 'status-badge ' + (isActive ? 'active' : 'disabled');
+  st.innerHTML = '<span class="sb-dot"></span> ' + (isActive ? 'Active' : 'Disabled');
 
-  document.getElementById('ah-pause-btn').textContent = a.status === 'active' ? '⏸ Pause' : '▶ Resume';
+  document.getElementById('ah-pause-btn').textContent = isActive ? '⏸ Pause' : '▶ Resume';
 
-  // Stats
-  document.getElementById('stat-received').textContent = a.totalReceived;
-  document.getElementById('stat-forwarded').textContent = a.statsForwarded;
-  document.getElementById('stat-failed').textContent = a.statsFailed;
-  document.getElementById('stat-spam').textContent = a.statsSpam;
+  document.getElementById('stat-received').textContent = a.total_received;
+  document.getElementById('stat-forwarded').textContent = a.total_forwarded;
+  document.getElementById('stat-failed').textContent = 0;
+  document.getElementById('stat-blocked').textContent = 0;
 
-  // Info
   document.getElementById('info-address').textContent = a.email;
-  document.getElementById('info-forward').textContent = a.forward;
+  document.getElementById('info-forward').textContent = a.forward_to || '(none)';
   document.getElementById('info-domain').textContent = a.domain;
-  document.getElementById('info-label').textContent = a.label;
-  document.getElementById('info-created').textContent = a.created;
-  document.getElementById('info-last').textContent = a.lastActivity;
-  document.getElementById('info-total-received').textContent = a.totalReceived;
-  document.getElementById('info-total-forwarded').textContent = a.totalForwarded;
+  document.getElementById('info-desc').textContent = a.description || '(none)';
+  document.getElementById('info-created').textContent = a.created_at;
+  document.getElementById('info-last').textContent = a.last_received_at || '—';
+  document.getElementById('info-total-received').textContent = a.total_received;
+  document.getElementById('info-total-forwarded').textContent = a.total_forwarded;
+
+  document.getElementById('setting-forward').checked = a.is_enabled;
 }
 
 /* ── Header actions ── */
 function copyAliasAddr() {
-  navigator.clipboard.writeText(ALIAS.email).catch(function(){});
+  if (!ALIAS_DATA) return;
+  navigator.clipboard.writeText(ALIAS_DATA.email).catch(function(){});
   showToast('Alias address copied!');
 }
 
-function editAlias() {
-  showToast('Edit mode opened');
-}
-
 function toggleAliasPause() {
-  ALIAS.status = ALIAS.status === 'active' ? 'paused' : 'active';
-  renderAlias();
-  showToast(ALIAS.status === 'active' ? 'Alias activated' : 'Alias paused');
+  if (!ALIAS_DATA) return;
+  api(ALIAS_ID + '/status', { method: 'PATCH' }).then(function(data) {
+    if (data.success) {
+      ALIAS_DATA.is_enabled = data.is_enabled;
+      renderAlias();
+      showToast(data.is_enabled ? 'Alias activated' : 'Alias paused');
+    } else {
+      showToast('Error: ' + (data.error || 'Unknown error'));
+    }
+  });
 }
 
 function deleteAlias() {
-  if (!confirm('Delete this alias? This cannot be undone.')) return;
-  showToast('Alias deleted');
-  setTimeout(function() { window.location = '/addresses'; }, 800);
+  showConfirm('Delete this alias? This cannot be undone.', function() {
+    api(ALIAS_ID, { method: 'DELETE' }).then(function(data) {
+      if (data.success) {
+        showToast('Alias deleted');
+        setTimeout(function() { window.location = '/addresses'; }, 800);
+      } else {
+        showToast('Error: ' + (data.error || 'Unknown error'));
+      }
+    });
+  });
 }
 
-/* ── Forwarding History ── */
+/* ── Forwarding History (from logs) ── */
+var FW_LOGS = [];
+var fwPage = 1;
+var FW_PER_PAGE = 10;
+
+function loadLogs() {
+  api(ALIAS_ID + '/logs').then(function(data) {
+    if (data.logs) {
+      FW_LOGS = data.logs;
+      filterFwHistory();
+    }
+  });
+}
+
 function filterFwHistory() {
   var search = document.getElementById('fw-search').value.toLowerCase();
   var status = document.getElementById('fw-status-filter').value;
-  var date = document.getElementById('fw-date-filter').value;
 
-  fwFiltered = FW_HISTORY.filter(function(e) {
-    if (search && !e.sender.toLowerCase().includes(search) && !e.subject.toLowerCase().includes(search)) return false;
+  var filtered = FW_LOGS.filter(function(e) {
+    if (search && !e.sender_email.toLowerCase().includes(search)) return false;
     if (status !== 'all' && e.status !== status) return false;
-    if (date && !e.date.startsWith(date)) return false;
     return true;
   });
 
   fwPage = 1;
-  renderFwTable();
+  renderFwTable(filtered);
 }
 
-function renderFwTable() {
+function renderFwTable(items) {
   var tbody = document.getElementById('fw-tbody');
   var empty = document.getElementById('fw-empty');
   var pag = document.getElementById('fw-pagination');
   var count = document.getElementById('fw-count');
 
-  count.textContent = fwFiltered.length + ' events';
+  count.textContent = items.length + ' events';
 
-  if (!fwFiltered.length) {
+  if (!items.length) {
     tbody.innerHTML = '';
     empty.classList.add('show');
     pag.innerHTML = '';
@@ -1188,90 +1154,74 @@ function renderFwTable() {
   }
   empty.classList.remove('show');
 
-  var totalPages = Math.ceil(fwFiltered.length / FW_PER_PAGE);
+  var totalPages = Math.ceil(items.length / FW_PER_PAGE);
   var start = (fwPage - 1) * FW_PER_PAGE;
-  var pageItems = fwFiltered.slice(start, start + FW_PER_PAGE);
+  var pageItems = items.slice(start, start + FW_PER_PAGE);
 
   tbody.innerHTML = pageItems.map(function(e) {
-    var statusDot = e.status === 'delivered' ? 'delivered' : e.status === 'pending' ? 'pending' : 'failed';
-    var statusLbl = e.status.charAt(0).toUpperCase() + e.status.slice(1);
-    var retryBtn = e.status === 'failed' ? '<button class="tbl-act retry" onclick="retryForward(' + e.id + ')">Retry</button>' : '';
+    var badgeClass = e.status === 'forwarded' ? 'delivered' : e.status === 'blocked' ? 'failed' : 'pending';
+    var badgeLbl = e.status.charAt(0).toUpperCase() + e.status.slice(1);
     return '<tr>' +
-      '<td style="white-space:nowrap;font-family:var(--MONO);font-size:.68rem;color:var(--MU);">' + formatDate(e.date) + '</td>' +
-      '<td><div class="fw-cell-sender">' + e.sender + '</div></td>' +
-      '<td><div class="fw-cell-subject">' + e.subject + '</div></td>' +
-      '<td style="font-family:var(--MONO);font-size:.72rem;">' + e.recipient + '</td>' +
-      '<td><span class="del-badge ' + statusDot + '"><span class="db-dot"></span>' + statusLbl + '</span></td>' +
-      '<td style="font-family:var(--MONO);font-size:.68rem;color:var(--MU);">' + e.deliveryTime + '</td>' +
-      '<td style="text-align:right;white-space:nowrap;">' +
-        '<button class="tbl-act" onclick="viewEmail(' + e.id + ')">View</button>' +
-        retryBtn +
-      '</td>' +
+      '<td style="white-space:nowrap;font-family:var(--MONO);font-size:.68rem;color:var(--MU);">' + (e.created_at || '—') + '</td>' +
+      '<td><div class="fw-cell-sender">' + (e.sender_email || '—') + '</div></td>' +
+      '<td><span class="del-badge ' + badgeClass + '"><span class="db-dot"></span>' + badgeLbl + '</span></td>' +
     '</tr>';
   }).join('');
 
-  // Pagination
-  var pagHtml = '';
-  pagHtml += '<button class="page-btn" onclick="fwGoPage(' + (fwPage - 1) + ')" ' + (fwPage <= 1 ? 'disabled' : '') + '>‹</button>';
+  var pagHtml = '<button class="page-btn" onclick="fwGoPage(' + (fwPage - 1) + ',items)" ' + (fwPage <= 1 ? 'disabled' : '') + '>‹</button>';
   for (var i = 1; i <= totalPages; i++) {
-    pagHtml += '<button class="page-btn' + (i === fwPage ? ' active' : '') + '" onclick="fwGoPage(' + i + ')">' + i + '</button>';
+    pagHtml += '<button class="page-btn' + (i === fwPage ? ' active' : '') + '" onclick="fwGoPage(' + i + ',items)">' + i + '</button>';
   }
-  pagHtml += '<button class="page-btn" onclick="fwGoPage(' + (fwPage + 1) + ')" ' + (fwPage >= totalPages ? 'disabled' : '') + '>›</button>';
+  pagHtml += '<button class="page-btn" onclick="fwGoPage(' + (fwPage + 1) + ',items)" ' + (fwPage >= totalPages ? 'disabled' : '') + '>›</button>';
   pag.innerHTML = pagHtml;
 }
 
-function fwGoPage(p) {
-  var totalPages = Math.ceil(fwFiltered.length / FW_PER_PAGE);
+function fwGoPage(p, items) {
+  var totalPages = Math.ceil(items.length / FW_PER_PAGE);
   if (p < 1 || p > totalPages) return;
   fwPage = p;
-  renderFwTable();
+  renderFwTable(items);
 }
 
-function viewEmail(id) {
-  showToast('Opening email #' + id + '…');
+/* ── Activity Timeline ── */
+function renderTimeline() {
+  var tl = document.getElementById('timeline');
+  var empty = document.getElementById('tl-empty');
+  if (!FW_LOGS.length) {
+    tl.innerHTML = '';
+    empty.classList.add('show');
+    return;
+  }
+  empty.classList.remove('show');
+  tl.innerHTML = FW_LOGS.slice(0, 20).map(function(e) {
+    var dot = e.status === 'forwarded' ? 'green' : e.status === 'blocked' ? 'red' : 'yellow';
+    return '<div class="timeline-item">' +
+      '<div class="timeline-dot ' + dot + '"></div>' +
+      '<div class="timeline-body">' +
+        '<div class="timeline-event">' + e.status.charAt(0).toUpperCase() + e.status.slice(1) + '</div>' +
+        '<div class="timeline-desc">From: ' + (e.sender_email || '—') + '</div>' +
+        '<div class="timeline-time">' + (e.created_at || '') + '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
 }
 
-function retryForward(id) {
-  showToast('Retrying forward for email #' + id + '…');
+/* ── Settings ── */
+function saveSetting(id) {
+  if (id === 'forward') {
+    api(ALIAS_ID + '/status', { method: 'PATCH' }).then(function(data) {
+      if (data.success) {
+        ALIAS_DATA.is_enabled = data.is_enabled;
+        showToast(data.is_enabled ? 'Forwarding enabled' : 'Forwarding disabled');
+      }
+    });
+  }
 }
-
-// /* ── KEPT FOR LATER USE ── */
-// function renderTimeline() {
-//   var tl = document.getElementById('timeline');
-//   var empty = document.getElementById('tl-empty');
-//
-//   if (!TIMELINE.length) {
-//     tl.innerHTML = '';
-//     empty.classList.add('show');
-//     return;
-//   }
-//   empty.classList.remove('show');
-//
-//   tl.innerHTML = TIMELINE.map(function(t) {
-//     return '<div class="timeline-item">' +
-//       '<div class="timeline-dot ' + t.dot + '"></div>' +
-//       '<div class="timeline-body">' +
-//         '<div class="timeline-event">' + t.event + '</div>' +
-//         '<div class="timeline-desc">' + t.desc + '</div>' +
-//         '<div class="timeline-time">' + t.time + '</div>' +
-//       '</div>' +
-//     '</div>';
-//   }).join('');
-// }
-//
-// function saveSetting(id) {
-//   var el = document.getElementById('setting-' + id);
-//   showToast('Setting updated: ' + id + ' = ' + (el.checked ? 'ON' : 'OFF'));
-// }
-//
-// function saveNotifEmail() {
-//   var val = document.getElementById('setting-notif').value;
-//   showToast('Notification email saved: ' + val);
-// }
 
 /* ── Init ── */
-renderAlias();
-renderFwTable();
+loadAlias();
+loadLogs();
+setTimeout(renderTimeline, 500);
 
 </script>
 @endpush

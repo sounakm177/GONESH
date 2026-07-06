@@ -9,6 +9,7 @@ use App\Http\Controllers\Public\BlogController;
 use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Public\PageController;
 
+use App\Http\Controllers\Dashboard\AliasController;
 use App\Http\Controllers\MailboxController;
 use App\Events\NewEmailReceived;
 use App\Models\PublicEmail;
@@ -23,7 +24,7 @@ Route::middleware('auth')->name('dashboard.')->group(function () {
     Route::get('/dashboard',         fn() => view('dashboard.dash'))->name('overview');
     Route::get('/inbox',             fn() => view('dashboard.inbox'))->name('inbox');
     Route::get('/addresses',         fn() => view('dashboard.address'))->name('address');
-    Route::get('/addresses/{id}',    fn() => view('dashboard.address-view'))->name('address.view');
+    Route::get('/addresses/{id}',    fn($id) => view('dashboard.address-view', ['id' => $id]))->name('address.view');
     Route::get('/domains',           fn() => view('dashboard.domain'))->name('domain');
     Route::get('/api-keys',          fn() => view('dashboard.api'))->name('api');
     Route::get('/smtp',              fn() => view('dashboard.smtp'))->name('smtp');
@@ -50,6 +51,18 @@ Route::middleware('auth')->name('dashboard.')->group(function () {
             Route::delete('{email}',                    [\App\Http\Controllers\Dashboard\EmailController::class, 'destroy'])->name('destroy');
             Route::post('mark-all-read',                [\App\Http\Controllers\Dashboard\EmailController::class, 'markAllRead'])->name('markAllRead');
         });
+    });
+
+    Route::prefix('aliases')->name('aliases.')->group(function () {
+        Route::get('/',                 [AliasController::class, 'index'])->name('index');
+        Route::post('/',                [AliasController::class, 'store'])->name('store');
+        Route::get('domains',           [AliasController::class, 'domains'])->name('domains');
+        Route::get('{alias}',           [AliasController::class, 'show'])->name('show');
+        Route::patch('{alias}',         [AliasController::class, 'update'])->name('update');
+        Route::delete('{alias}',        [AliasController::class, 'destroy'])->name('destroy');
+        Route::patch('{alias}/status',  [AliasController::class, 'toggleStatus'])->name('status');
+        Route::patch('{alias}/favorite',[AliasController::class, 'toggleFavorite'])->name('favorite');
+        Route::get('{alias}/logs',      [AliasController::class, 'logs'])->name('logs');
     });
 });
 

@@ -623,107 +623,111 @@
 
 @endsection
 
+@php
+    $_sub = auth()->user()?->subscriptions()->active()->first();
+    $_plan = $_sub?->plan;
+    $isProAlias = $_plan && $_plan->slug === 'pro';
+@endphp
+
 @push('scripts')
 <script>
 
 /* ══════════════════════════════════════════════════
-   ADDRESSES PAGE DATA & LOGIC
+   ALIASES PAGE — API-DRIVEN
 ══════════════════════════════════════════════════ */
 
-const FREE_LIMIT = 5;
-const DOMAINS    = ['dropit.io','burnbox.dev','zaptmp.net','voidmail.cc','mailsink.app'];
-const ADJ        = ['silent','ghost','turbo','vapor','swift','lunar','neon','flux','rogue','stealth'];
-const NOU        = ['fox','wolf','tide','bolt','hawk','mint','storm','byte','nova','apex'];
-const AVATARS    = ['#4285F4','#7C3AED','#10B981','#1DA1F2','#F59E0B','#EF4444','#6366F1','#14B8A6'];
+const CSRF_TOKEN   = @json(csrf_token());
+let IS_PRO         = @json($isProAlias);
+let MAX_ALIASES    = 0;
+let aliases        = [];
+let editingId      = null;
+let storedDomains  = [];
 
-function rndEl(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-function autoPrefix() { return rndEl(ADJ) + '.' + rndEl(NOU) + (Math.floor(Math.random()*9000)+1000); }
-function timeAgo(minsAgo) {
-  if (!minsAgo) return 'Just now';
-  if (minsAgo < 60)   return minsAgo + 'm ago';
-  if (minsAgo < 1440) return Math.floor(minsAgo/60) + 'h ago';
-  return Math.floor(minsAgo/1440) + 'd ago';
-}
-
-/* ── Seed data ── */
-let ALIASES = [
-  {
-    id: 1,
-    prefix: 'ghost.wolf2847',
-    domain: 'dropit.io',
-    label: 'Google sign-ups',
-    forward: 'john@gmail.com',
-    status: 'active',
-    received: 14,
-    last_used: 2,
-    color: '#4285F4',
-  },
-  {
-    id: 2,
-    prefix: 'shopping-alias',
-    domain: 'burnbox.dev',
-    label: 'Online shopping',
-    forward: 'john@gmail.com',
-    status: 'active',
-    received: 38,
-    last_used: 60,
-    color: '#7C3AED',
-  },
-  {
-    id: 3,
-    prefix: 'news.reader991',
-    domain: 'zaptmp.net',
-    label: 'Newsletters',
-    forward: '',
-    status: 'paused',
-    received: 7,
-    last_used: 2880,
-    color: '#F59E0B',
-  },
-];
-let nextId   = 4;
-let editingId = null;
-
-/* ── UI helpers ── */
+/* ── Toast ── */
 function showToast(msg, type) {
   const t = document.getElementById('toast');
+  if (!t) return;
   const dot = t.querySelector('.toast-dot');
-  dot.style.background = type === 'err' ? 'var(--RED)' : 'var(--GREEN)';
-  t.querySelector('span').textContent = msg;
+  if (dot) dot.style.background = type === 'err' ? 'var(--RED)' : 'var(--GREEN)';
+  const span = t.querySelector('span');
+  if (span) span.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2600);
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 2600);
 }
 
+/* ── Confirm Modal ── */
+let confirmCallback = null;
+
+function showConfirm(msg, cb) {
+  document.getElementById('confirm-msg').textContent = msg;
+  confirmCallback = cb;
+  document.getElementById('confirm-modal').classList.add('open');
+}
+
+function closeConfirm() {
+  document.getElementById('confirm-modal').classList.remove('open');
+  confirmCallback = null;
+}
+
+function confirmYes() {
+  document.getElementById('confirm-modal').classList.remove('open');
+  if (confirmCallback) { confirmCallback(); confirmCallback = null; }
+}
+
+/* ── Load aliases ── */
+function loadAliases() {
+  fetch('/aliases').then(function(r){ return r.json(); }).then(function(data) {
+    aliases = data.aliases || [];
+    MAX_ALIASES = data.max_aliases || 0;
+    IS_PRO = data.is_pro || false;
+    updateStats();
+    renderTable();
+  }).catch(function() {
+    showToast('Failed to load aliases', 'err');
+  });
+}
+
+/* ── Load domains for create/edit modal ── */
+function loadDomains(callback) {
+  if (storedDomains.length) { if (callback) callback(storedDomains); return; }
+  fetch('/aliases/domains').then(function(r){ return r.json(); }).then(function(data) {
+    storedDomains = data.domains || [];
+    if (callback) callback(storedDomains);
+  }).catch(function() {
+    showToast('Failed to load domains', 'err');
+  });
+}
+
+/* ── Stats ── */
 function updateStats() {
-  const used   = ALIASES.length;
-  const active = ALIASES.filter(a => a.status === 'active').length;
-  const paused = ALIASES.filter(a => a.status === 'paused').length;
-  const total  = ALIASES.reduce((s, a) => s + a.received, 0);
-  const pct    = Math.round((used / FREE_LIMIT) * 100);
+  const used   = aliases.length;
+  const active = aliases.filter(function(a){ return a.is_enabled; }).length;
+  const paused = aliases.filter(function(a){ return !a.is_enabled; }).length;
+  const total  = aliases.reduce(function(s, a){ return s + (a.total_received || 0); }, 0);
+  const limit  = MAX_ALIASES > 0 ? MAX_ALIASES : (IS_PRO ? '∞' : MAX_ALIASES);
+  const pct    = MAX_ALIASES > 0 ? Math.round((used / MAX_ALIASES) * 100) : Math.min(used * 10, 100);
 
-  document.getElementById('used-count').textContent    = used;
-  document.getElementById('active-count').textContent  = active;
-  document.getElementById('paused-count').textContent  = paused;
-  document.getElementById('total-received').textContent = total;
-  document.getElementById('page-sub').textContent      = used + ' alias' + (used !== 1 ? 'es' : '') + ' · ' + FREE_LIMIT + ' max (Free)';
-  document.getElementById('panel-meta').textContent    = used + ' alias' + (used !== 1 ? 'es' : '');
+  document.getElementById('used-count').textContent     = used;
+  document.getElementById('active-count').textContent   = active;
+  document.getElementById('paused-count').textContent   = paused;
+  document.getElementById('total-received').textContent  = total;
+  document.getElementById('total-limit').textContent     = limit;
+  document.getElementById('page-sub').textContent        = used + ' alias' + (used !== 1 ? 'es' : '') + ' · ' + (IS_PRO ? 'Unlimited' : (MAX_ALIASES + ' max'));
+  document.getElementById('panel-meta').textContent      = used + ' alias' + (used !== 1 ? 'es' : '');
 
-  const fill = document.getElementById('usage-bar-fill');
+  const fill   = document.getElementById('usage-bar-fill');
   const pctLbl = document.getElementById('usage-pct-lbl');
   fill.style.width = pct + '%';
   fill.className = 'usage-bar-fill ' + (pct >= 100 ? 'full' : pct >= 80 ? 'warning' : 'ok');
   pctLbl.style.color = pct >= 100 ? 'var(--RED)' : pct >= 80 ? '#92400E' : 'var(--GREEN)';
   pctLbl.textContent = pct + '% used';
 
-  // Upgrade banner
-  const banner = document.getElementById('upgrade-banner');
-  banner.style.display = used >= FREE_LIMIT ? 'flex' : 'none';
-  document.getElementById('banner-limit').textContent = FREE_LIMIT;
-
-  // Disable create button when at limit
-  const btn = document.getElementById('create-btn');
-  btn.disabled = used >= FREE_LIMIT;
-  btn.title    = used >= FREE_LIMIT ? 'Upgrade to create more aliases' : '';
+  const atLimit = !IS_PRO && MAX_ALIASES > 0 && used >= MAX_ALIASES;
+  document.getElementById('upgrade-banner').style.display = atLimit ? 'flex' : 'none';
+  document.getElementById('banner-limit').textContent = MAX_ALIASES;
+  document.getElementById('create-btn').disabled = atLimit;
+  document.getElementById('create-btn').title     = atLimit ? 'Upgrade to create more aliases' : '';
 }
 
 /* ── Table rendering ── */
@@ -731,20 +735,28 @@ function getVisible() {
   const search = document.getElementById('search-input').value.toLowerCase();
   const status = document.getElementById('status-filter').value;
   const domain = document.getElementById('domain-filter').value;
-  return ALIASES.filter(a => {
-    const matchSearch = !search || a.prefix.includes(search) || a.domain.includes(search) || (a.label||'').toLowerCase().includes(search);
-    const matchStatus = status === 'all' || a.status === status;
+  return aliases.filter(function(a) {
+    const matchSearch = !search || a.email.toLowerCase().includes(search) || a.description.toLowerCase().includes(search) || (a.forward_to || '').toLowerCase().includes(search);
+    const matchStatus = status === 'all' || (status === 'active' && a.is_enabled) || (status === 'paused' && !a.is_enabled);
     const matchDomain = domain === 'all' || a.domain === domain;
     return matchSearch && matchStatus && matchDomain;
   });
 }
 
 function renderTable() {
-  const list  = getVisible();
-  const tbody = document.getElementById('alias-tbody');
-  const empty = document.getElementById('empty-state');
-
   updateStats();
+  var list  = getVisible();
+  var tbody = document.getElementById('alias-tbody');
+  var empty = document.getElementById('empty-state');
+  var domainFilter = document.getElementById('domain-filter');
+
+  var currentDomains = {};
+  aliases.forEach(function(a){ currentDomains[a.domain] = true; });
+  var domainOpts = '<option value="all">All Domains</option>';
+  Object.keys(currentDomains).sort().forEach(function(d){
+    domainOpts += '<option value="' + d + '">' + d + '</option>';
+  });
+  domainFilter.innerHTML = domainOpts;
 
   if (!list.length) {
     tbody.innerHTML = '';
@@ -753,157 +765,149 @@ function renderTable() {
   }
   empty.classList.remove('show');
 
-  tbody.innerHTML = list.map(a => {
-    const email  = a.prefix + '@' + a.domain;
-    const initials = a.domain.substring(0,2).toUpperCase();
-    const stCls  = a.status === 'active' ? 'active' : 'paused';
-    const stLbl  = a.status === 'active' ? '● Active' : '⏸ Paused';
-    return `
-      <tr data-id="${a.id}">
-        <td>
-          <div class="alias-cell">
-            <div class="alias-avatar" style="background:${a.color};">${initials}</div>
-            <div style="min-width:0;">
-              <div class="alias-email" title="${email}">${email}</div>
-              ${a.label
-                ? `<div class="alias-label">
-                     <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle;color:var(--MU2);">
-                       <path stroke-linecap="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z"/>
-                     </svg>
-                     ${a.label}
-                   </div>`
-                : '<div class="alias-label" style="color:var(--MU2);">No label</div>'
-              }
-            </div>
-          </div>
-        </td>
-        <td class="col-forward">
-          ${a.forward
-            ? `<span class="forward-pill">
-                 <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-                 ${a.forward}
-               </span>`
-            : `<span style="font-size:.76rem;color:var(--MU2);">No forwarding</span>`
-          }
-        </td>
-        <td>
-          <button class="status-toggle ${stCls}" onclick="toggleAliasStatus(${a.id})">
-            <span class="st-dot"></span>
-            ${stLbl}
-          </button>
-        </td>
-        <td class="col-received">
-          <span style="font-family:var(--MONO);font-size:.8rem;font-weight:600;color:var(--INK);">${a.received}</span>
-        </td>
-        <td class="col-last-used">
-          <span style="font-size:.78rem;color:var(--MU);">${timeAgo(a.last_used)}</span>
-        </td>
-        <td>
-          <div class="row-acts">
-            <button class="act-btn view" title="View details" onclick="window.location='/addresses/${a.id}'">
-              <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-            </button>
-            <button class="act-btn copy" title="Copy alias" onclick="copyAlias(${a.id})">
-              <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <rect x="9" y="9" width="13" height="13" rx="2"/>
-                <path stroke-linecap="round" d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
-              </svg>
-            </button>
-            <button class="act-btn edit" title="Edit alias" onclick="openEditModal(${a.id})">
-              <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-              </svg>
-            </button>
-            <button class="act-btn del" title="Delete alias" onclick="deleteAlias(${a.id})">
-              <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <polyline points="3 6 5 6 21 6"/>
-                <path stroke-linecap="round" d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6m5 0V4a1 1 0 011-1h2a1 1 0 011 1v2"/>
-              </svg>
-            </button>
-          </div>
-        </td>
-      </tr>`;
+  tbody.innerHTML = list.map(function(a) {
+    var stCls  = a.is_enabled ? 'active' : 'paused';
+    var stLbl  = a.is_enabled ? '● Active' : '⏸ Paused';
+    var desc   = a.description || '';
+    var forward = a.forward_to || '';
+    return '<tr data-id="' + a.id + '">' +
+      '<td>' +
+        '<div class="alias-cell">' +
+          '<div class="alias-avatar" style="background:' + a.color + ';">' + a.avatar + '</div>' +
+          '<div style="min-width:0;">' +
+            '<div class="alias-email" title="' + a.email + '">' + a.email + '</div>' +
+            (desc
+              ? '<div class="alias-label"><svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle;color:var(--MU2);"><path stroke-linecap="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z"/></svg> ' + desc + '</div>'
+              : '<div class="alias-label" style="color:var(--MU2);">No label</div>'
+            ) +
+          '</div>' +
+        '</div>' +
+      '</td>' +
+      '<td class="col-forward">' +
+        (forward
+          ? '<span class="forward-pill"><svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg> ' + forward + '</span>'
+          : '<span style="font-size:.76rem;color:var(--MU2);">No forwarding</span>'
+        ) +
+      '</td>' +
+      '<td><button class="status-toggle ' + stCls + '" onclick="toggleAliasStatus(' + a.id + ')"><span class="st-dot"></span> ' + stLbl + '</button></td>' +
+      '<td class="col-received"><span style="font-family:var(--MONO);font-size:.8rem;font-weight:600;color:var(--INK);">' + (a.total_received || 0) + '</span></td>' +
+      '<td class="col-last-used"><span style="font-size:.78rem;color:var(--MU);">' + (a.last_received_at || 'Never') + '</span></td>' +
+      '<td>' +
+        '<div class="row-acts">' +
+          '<button class="act-btn view" title="View details" onclick="window.location=\'/addresses/' + a.id + '\'">' +
+            '<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>' +
+          '</button>' +
+          '<button class="act-btn copy" title="Copy alias" onclick="copyAlias(\'' + a.email + '\')">' +
+            '<svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path stroke-linecap="round" d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>' +
+          '</button>' +
+          '<button class="act-btn edit" title="Edit alias" onclick="openEditModal(' + a.id + ')">' +
+            '<svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>' +
+          '</button>' +
+          '<button class="act-btn del" title="Delete alias" onclick="deleteAlias(' + a.id + ')">' +
+            '<svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path stroke-linecap="round" d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6m5 0V4a1 1 0 011-1h2a1 1 0 011 1v2"/></svg>' +
+          '</button>' +
+        '</div>' +
+      '</td>' +
+    '</tr>';
   }).join('');
 }
 
 function filterAliases() { renderTable(); }
 
 /* ── Row actions ── */
-function copyAlias(id) {
-  const a = ALIASES.find(x => x.id === id);
-  if (!a) return;
-  const email = a.prefix + '@' + a.domain;
-  navigator.clipboard.writeText(email).catch(() => {});
+function copyAlias(email) {
+  navigator.clipboard.writeText(email).catch(function(){});
   showToast('Copied: ' + email);
 }
 
 function toggleAliasStatus(id) {
-  const a = ALIASES.find(x => x.id === id);
-  if (!a) return;
-  a.status = a.status === 'active' ? 'paused' : 'active';
-  renderTable();
-  showToast(a.status === 'active' ? 'Alias activated' : 'Alias paused');
+  fetch('/aliases/' + id + '/status', {
+    method: 'PATCH',
+    headers: { 'X-CSRF-TOKEN': CSRF_TOKEN }
+  }).then(function(r){ return r.json(); }).then(function(data) {
+    if (data.error) { showToast(data.error, 'err'); return; }
+    var a = aliases.find(function(x){ return x.id === id; });
+    if (a) a.is_enabled = data.is_enabled;
+    renderTable();
+    showToast(data.is_enabled ? 'Alias activated' : 'Alias paused');
+  }).catch(function() { showToast('Failed to toggle status', 'err'); });
 }
 
 function deleteAlias(id) {
-  if (!confirm('Delete this alias? This cannot be undone.')) return;
-  const row = document.querySelector(`tr[data-id="${id}"]`);
-  if (row) {
-    row.style.opacity = '0'; row.style.transform = 'translateX(8px)';
-    row.style.transition = 'all .22s';
-    setTimeout(() => {
-      ALIASES = ALIASES.filter(a => a.id !== id);
+  showConfirm('Delete this alias? This cannot be undone.', function() {
+    fetch('/aliases/' + id, {
+      method: 'DELETE',
+      headers: { 'X-CSRF-TOKEN': CSRF_TOKEN }
+    }).then(function(r){ return r.json(); }).then(function(data) {
+      if (data.error) { showToast(data.error, 'err'); return; }
+      aliases = aliases.filter(function(a){ return a.id !== id; });
       renderTable();
-    }, 220);
-  } else {
-    ALIASES = ALIASES.filter(a => a.id !== id);
-    renderTable();
-  }
-  showToast('Alias deleted');
+      showToast('Alias deleted');
+    }).catch(function() { showToast('Failed to delete alias', 'err'); });
+  });
 }
 
 /* ── Modal ── */
 function resetModal() {
   document.getElementById('alias-prefix').value      = '';
+  document.getElementById('alias-domain').innerHTML  = '';
   document.getElementById('alias-label-inp').value   = '';
   document.getElementById('alias-forward').value     = '';
-  document.getElementById('alias-domain').value      = 'dropit.io';
   document.getElementById('alias-input-wrap').classList.remove('err');
   document.getElementById('prefix-err').classList.remove('show');
   document.getElementById('forward-err').classList.remove('show');
-  const sw = document.getElementById('status-toggle');
+  var sw = document.getElementById('status-toggle');
   sw.classList.add('on'); sw._active = true;
 }
 
 function openCreateModal() {
-  if (ALIASES.length >= FREE_LIMIT) {
-    showToast('Alias limit reached — upgrade to Pro', 'err');
-    return;
-  }
+  var atLimit = !IS_PRO && MAX_ALIASES > 0 && aliases.length >= MAX_ALIASES;
+  if (atLimit) { showToast('Alias limit reached — upgrade to Pro', 'err'); return; }
   editingId = null;
   resetModal();
   document.getElementById('modal-title').textContent    = 'Create Alias';
   document.getElementById('modal-save-lbl').textContent = 'Create Alias';
+  document.getElementById('alias-domain').disabled      = false;
+
+  loadDomains(function(domains) {
+    var sel = document.getElementById('alias-domain');
+    sel.innerHTML = domains.map(function(d) {
+      return '<option value="' + d.id + '" data-name="' + d.name + '">' + d.name + '</option>';
+    }).join('');
+  });
+
   document.getElementById('alias-modal').classList.add('open');
 }
 
 function openEditModal(id) {
-  const a = ALIASES.find(x => x.id === id);
-  if (!a) return;
-  editingId = id;
-  resetModal();
-  document.getElementById('alias-prefix').value    = a.prefix;
-  document.getElementById('alias-label-inp').value = a.label || '';
-  document.getElementById('alias-forward').value   = a.forward || '';
-  document.getElementById('alias-domain').value    = a.domain;
+  fetch('/aliases/' + id).then(function(r){ return r.json(); }).then(function(data) {
+    var a = data.alias;
+    if (!a) return;
+    editingId = id;
+    resetModal();
+    document.getElementById('alias-prefix').value  = a.local_part;
+    document.getElementById('alias-prefix').disabled = true;
+    document.getElementById('alias-label-inp').value = a.description || '';
+    document.getElementById('alias-forward').value   = a.forward_to || '';
 
-  const sw = document.getElementById('status-toggle');
-  sw._active = a.status === 'active';
-  sw.classList.toggle('on', a.status === 'active');
+    document.getElementById('modal-title').textContent    = 'Edit Alias';
+    document.getElementById('modal-save-lbl').textContent = 'Save Changes';
+    document.getElementById('alias-domain').disabled      = true;
 
-  document.getElementById('modal-title').textContent    = 'Edit Alias';
-  document.getElementById('modal-save-lbl').textContent = 'Save Changes';
-  document.getElementById('alias-modal').classList.add('open');
+    loadDomains(function(domains) {
+      var sel = document.getElementById('alias-domain');
+      sel.innerHTML = domains.map(function(d) {
+        var selected = d.name === a.domain ? ' selected' : '';
+        return '<option value="' + d.id + '" data-name="' + d.name + '"' + selected + '>' + d.name + '</option>';
+      }).join('');
+    });
+
+    var sw = document.getElementById('status-toggle');
+    sw._active = a.is_enabled;
+    sw.classList.toggle('on', a.is_enabled);
+
+    document.getElementById('alias-modal').classList.add('open');
+  }).catch(function() { showToast('Failed to load alias', 'err'); });
 }
 
 function closeModal() {
@@ -917,96 +921,105 @@ function toggleStatus(btn) {
 }
 
 function validatePrefix(inp) {
-  const v = inp.value;
-  const ok = !v || /^[a-z0-9][a-z0-9._-]{1,38}$/.test(v);
+  var v = inp.value;
+  var ok = !v || /^[a-z0-9][a-z0-9._-]{1,38}$/.test(v);
   document.getElementById('alias-input-wrap').classList.toggle('err', !ok && v.length > 0);
   document.getElementById('prefix-err').classList.toggle('show', !ok && v.length > 0);
   return ok || !v;
 }
 
 function validateForward(inp) {
-  const v = inp.value;
-  const ok = !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+  var v = inp.value;
+  var ok = !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
   inp.classList.toggle('err', !ok && v.length > 0);
   document.getElementById('forward-err').classList.toggle('show', !ok && v.length > 0);
   return ok || !v;
 }
 
 function saveAlias() {
-  const prefix  = document.getElementById('alias-prefix').value.trim();
-  const domain  = document.getElementById('alias-domain').value;
-  const label   = document.getElementById('alias-label-inp').value.trim();
-  const forward = document.getElementById('alias-forward').value.trim();
-  const sw      = document.getElementById('status-toggle');
-  const active  = sw._active !== false;
+  var prefix  = document.getElementById('alias-prefix').value.trim();
+  var domain  = document.getElementById('alias-domain');
+  var domainId = domain.value;
+  var domainName = domain.options[domain.selectedIndex].getAttribute('data-name');
+  var label   = document.getElementById('alias-label-inp').value.trim();
+  var forward = document.getElementById('alias-forward').value.trim();
+  var sw      = document.getElementById('status-toggle');
+  var active  = sw._active !== false;
 
-  // Validate prefix
-  const pfx = prefix || autoPrefix();
-  if (prefix && !/^[a-z0-9][a-z0-9._-]{1,38}$/.test(prefix)) {
+  if (!prefix) { showToast('Please enter a prefix', 'err'); return; }
+  if (!/^[a-z0-9][a-z0-9._-]{1,38}$/.test(prefix)) {
     document.getElementById('alias-input-wrap').classList.add('err');
     document.getElementById('prefix-err').classList.add('show');
     return;
   }
-  if (!validateForward(document.getElementById('alias-forward'))) return;
-
-  // Check duplicate
-  const email = pfx + '@' + domain;
-  const dup   = ALIASES.find(a => a.prefix === pfx && a.domain === domain && a.id !== editingId);
-  if (dup) { showToast('That alias already exists', 'err'); return; }
-
-  if (editingId) {
-    // Edit
-    const a = ALIASES.find(x => x.id === editingId);
-    if (a) { a.prefix = pfx; a.domain = domain; a.label = label; a.forward = forward; a.status = active ? 'active' : 'paused'; }
-    showToast('Alias updated: ' + email);
-  } else {
-    // Create
-    if (ALIASES.length >= FREE_LIMIT) { showToast('Alias limit reached', 'err'); return; }
-    ALIASES.push({
-      id: nextId++,
-      prefix: pfx, domain, label, forward,
-      status: active ? 'active' : 'paused',
-      received: 0, last_used: 0,
-      color: rndEl(AVATARS),
-    });
-    showToast('Alias created: ' + email);
+  if (forward && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(forward)) {
+    document.getElementById('forward-err').classList.add('show');
+    return;
   }
 
-  closeModal();
-  renderTable();
+  if (editingId) {
+    fetch('/aliases/' + editingId, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF_TOKEN },
+      body: JSON.stringify({ forward_to: forward, description: label, is_enabled: active })
+    }).then(function(r){ return r.json(); }).then(function(data) {
+      if (data.error) { showToast(data.error, 'err'); return; }
+      var a = aliases.find(function(x){ return x.id === editingId; });
+      if (a) { a.forward_to = forward; a.description = label; a.is_enabled = active; }
+      closeModal();
+      renderTable();
+      showToast('Alias updated');
+    }).catch(function() { showToast('Failed to update alias', 'err'); });
+  } else {
+    fetch('/aliases', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF_TOKEN },
+      body: JSON.stringify({
+        email_domain_id: domainId,
+        local_part: prefix,
+        forward_to: forward,
+        description: label,
+      })
+    }).then(function(r){ return r.json(); }).then(function(data) {
+      if (data.error) { showToast(data.error, 'err'); return; }
+      aliases.push(data.alias);
+      closeModal();
+      renderTable();
+      showToast('Alias created: ' + prefix + '@' + domainName);
+    }).catch(function() { showToast('Failed to create alias', 'err'); });
+  }
 }
 
 /* ── Export ── */
 function exportCSV() {
-  const rows = [['Alias','Domain','Label','Forward To','Status','Emails Received','Last Used']];
-  ALIASES.forEach(a => rows.push([
-    a.prefix + '@' + a.domain, a.domain, a.label || '', a.forward || '',
-    a.status, a.received, timeAgo(a.last_used)
-  ]));
-  const csv  = rows.map(r => r.map(c => '"' + String(c).replace(/"/g,'""') + '"').join(',')).join('\\n');
-  const blob = new Blob([csv], {type:'text/csv'});
-  const url  = URL.createObjectURL(blob);
-  const el   = document.createElement('a'); el.href = url; el.download = 'aliases.csv'; el.click();
+  var rows = [['Alias','Description','Forward To','Status','Emails Received','Last Used']];
+  aliases.forEach(function(a) {
+    rows.push([a.email, a.description || '', a.forward_to || '', a.is_enabled ? 'Active' : 'Paused', a.total_received || 0, a.last_received_at || 'Never']);
+  });
+  var csv  = rows.map(function(r) { return r.map(function(c) { return '"' + String(c).replace(/"/g,'""') + '"'; }).join(','); }).join('\n');
+  var blob = new Blob([csv], {type:'text/csv'});
+  var url  = URL.createObjectURL(blob);
+  var el   = document.createElement('a'); el.href = url; el.download = 'aliases.csv'; el.click();
   URL.revokeObjectURL(url);
   showToast('CSV exported');
 }
 
 /* ── Refresh ── */
 function refreshPage() {
-  const ic = document.getElementById('refresh-ic');
+  var ic = document.getElementById('refresh-ic');
   ic.style.transition = 'transform .5s'; ic.style.transform = 'rotate(360deg)';
-  setTimeout(() => { ic.style.transition = 'none'; ic.style.transform = ''; }, 520);
-  renderTable();
+  setTimeout(function() { ic.style.transition = 'none'; ic.style.transform = ''; }, 520);
+  loadAliases();
   showToast('Refreshed!');
 }
 
 /* ── Keyboard ── */
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeModal();
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') { closeModal(); closeConfirm(); }
   if (e.key === 'n' && !e.ctrlKey && !e.metaKey && document.activeElement.tagName !== 'INPUT') openCreateModal();
 });
 
 /* ── Boot ── */
-renderTable();
+loadAliases();
 </script>
 @endpush

@@ -1393,14 +1393,15 @@ function populateExtendOptions() {
     { label: '+1 Hour',     value: 3600 },
     { label: '+6 Hours',    value: 21600 },
   ];
-  var proOpts = freeOpts.concat([
-    { label: '+12 Hours',   value: 43200 },
-    { label: '+1 Day',      value: 86400 },
-    { label: '+7 Days',     value: 604800 },
-    { label: '+30 Days',    value: 2592000 },
-  ]);
+  var proOpts = [
+    { label: '+12 Hours',   value: 43200, pro: true },
+    { label: '+1 Day',      value: 86400, pro: true },
+    { label: '+7 Days',     value: 604800, pro: true },
+    { label: '+30 Days',    value: 2592000, pro: true },
+    { label: 'Unlimited',   value: -1, pro: true },
+  ];
+  var allOpts = freeOpts.concat(proOpts);
 
-  var opts = IS_PRO ? proOpts : freeOpts;
   var msgEl = document.getElementById('extend-pop-msg');
   var btn = document.getElementById('extend-action-btn');
   msgEl.classList.remove('show');
@@ -1410,10 +1411,16 @@ function populateExtendOptions() {
   var atMaxMsg = '';
   var now = Math.floor(Date.now() / 1000);
 
-  opts.forEach(function(o) {
+  allOpts.forEach(function(o) {
     var opt = document.createElement('option');
     opt.value = o.value;
-    opt.textContent = o.label;
+    var isProLocked = o.pro && !IS_PRO;
+    if (isProLocked) {
+      opt.disabled = true;
+      opt.textContent = o.label + '  —  Pro';
+    } else {
+      opt.textContent = o.label;
+    }
     select.appendChild(opt);
   });
 

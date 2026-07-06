@@ -225,12 +225,25 @@ class InboxController extends Controller
         $isPro = $plan && $plan->slug === 'pro';
 
         $freeDurations = [600, 1800, 3600, 21600];
-        $proDurations = [600, 1800, 3600, 21600, 43200, 86400, 604800, 2592000];
+        $proDurations = [600, 1800, 3600, 21600, 43200, 86400, 604800, 2592000, -1];
 
         $allowed = $isPro ? $proDurations : $freeDurations;
 
         if (!in_array($duration, $allowed, true)) {
             return response()->json(['error' => 'Invalid duration selected.'], 422);
+        }
+
+        if ($duration === -1) {
+            $address->expires_at = null;
+            $address->save();
+
+            return response()->json([
+                'success' => true,
+                'expires_at' => null,
+                'timerSecs' => 999999,
+                'timerMaxSecs' => 999999,
+                'formatted_expires' => 'Never',
+            ]);
         }
 
         $createdAt = $address->created_at;

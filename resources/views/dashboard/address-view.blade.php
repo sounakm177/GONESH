@@ -965,46 +965,6 @@
   </div>
 </div>
 
-<!-- ── Alias Settings ── -->
-<div class="panel">
-  <div class="panel-hd">
-    <span class="panel-title">
-      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-      Alias Settings
-    </span>
-  </div>
-  <div class="settings-list">
-    <div class="setting-row">
-      <div class="setting-info">
-        <div class="setting-label">Forwarding Enabled</div>
-        <div class="setting-desc">Toggle email forwarding on/off for this alias</div>
-      </div>
-      <label class="toggle">
-        <input type="checkbox" id="setting-forward" onchange="saveSetting('forward')">
-        <div class="toggle-slider"></div>
-      </label>
-    </div>
-  </div>
-</div>
-
-<!-- ── Activity Timeline ── -->
-<div class="panel">
-  <div class="panel-hd">
-    <span class="panel-title">
-      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-      Activity Timeline
-    </span>
-  </div>
-  <div class="timeline" id="timeline"></div>
-  <div class="empty-state" id="tl-empty">
-    <div class="empty-icon">
-      <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-    </div>
-    <div class="empty-title">No activity yet</div>
-    <div class="empty-sub">Activity for this alias will appear here.</div>
-  </div>
-</div>
-
 @endsection
 
 @push('scripts')
@@ -1258,46 +1218,9 @@ function retryForward(id) {
   });
 }
 
-/* ── Activity Timeline ── */
-function renderTimeline() {
-  var tl = document.getElementById('timeline');
-  var empty = document.getElementById('tl-empty');
-  if (!FW_LOGS.length) {
-    tl.innerHTML = '';
-    empty.classList.add('show');
-    return;
-  }
-  empty.classList.remove('show');
-  tl.innerHTML = FW_LOGS.slice(0, 20).map(function(e) {
-    var dot = e.status === 'forwarded' ? 'green' : e.status === 'blocked' ? 'red' : 'yellow';
-    return '<div class="timeline-item">' +
-      '<div class="timeline-dot ' + dot + '"></div>' +
-      '<div class="timeline-body">' +
-        '<div class="timeline-event">' + e.status.charAt(0).toUpperCase() + e.status.slice(1) + '</div>' +
-        '<div class="timeline-desc">From: ' + (e.sender_email || '—') + '</div>' +
-        '<div class="timeline-desc" style="font-size:.68rem;color:var(--MU2);">' + (e.subject || '') + '</div>' +
-        '<div class="timeline-time">' + (e.created_at || '') + '</div>' +
-      '</div>' +
-    '</div>';
-  }).join('');
-}
-
-/* ── Settings ── */
-function saveSetting(id) {
-  if (id === 'forward') {
-    api(ALIAS_ID + '/status', { method: 'PATCH' }).then(function(data) {
-      if (data.success) {
-        ALIAS_DATA.is_enabled = data.is_enabled;
-        showToast(data.is_enabled ? 'Forwarding enabled' : 'Forwarding disabled');
-      }
-    });
-  }
-}
-
 /* ── Init ── */
 loadAlias();
 loadLogs();
-setTimeout(renderTimeline, 500);
 
 </script>
 @endpush

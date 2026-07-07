@@ -889,7 +889,7 @@ function openCreateModal() {
   loadDomains(function(domains) {
     var sel = document.getElementById('alias-domain');
     sel.innerHTML = domains.map(function(d) {
-      return '<option value="' + d.id + '" data-name="' + d.name + '">' + d.name + '</option>';
+      return '<option value="' + d.id + '" data-name="' + d.name + '">' + d.name + (d.type === 'custom' ? ' (Private)' : '') + '</option>';
     }).join('');
   });
 

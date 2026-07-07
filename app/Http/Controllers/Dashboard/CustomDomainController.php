@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\CustomDomain;
+use App\Models\EmailDomain;
+use App\Models\UserDomain;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -132,6 +134,8 @@ class CustomDomainController extends Controller
             if ($exists) {
                 return response()->json(['error' => 'This domain has already been added.'], 422);
             }
+
+            $oldDomain = $customDomain->domain;
             $customDomain->domain = $newDomain;
             $customDomain->verification_status = 'pending';
             $records = $this->generateDnsRecords($newDomain);
@@ -139,6 +143,18 @@ class CustomDomainController extends Controller
             $customDomain->spf_value = $records['spf'];
             $customDomain->dkim_value = $records['dkim'];
             $customDomain->txt_value = $records['txt'];
+
+            if ($oldDomain !== $newDomain) {
+                $oldEmailDomain = EmailDomain::where('name', $oldDomain)
+                    ->where('created_by_user_id', $user->id)
+                    ->first();
+                if ($oldEmailDomain) {
+                    UserDomain::where('user_id', $user->id)
+                        ->where('email_domain_id', $oldEmailDomain->id)
+                        ->delete();
+                    $oldEmailDomain->delete();
+                }
+            }
         }
 
         $customDomain->save();
@@ -156,7 +172,20 @@ class CustomDomainController extends Controller
             return response()->json(['error' => 'Unauthorized.'], 403);
         }
 
-        $customDomain->delete();
+        DB::transaction(function () use ($customDomain, $user) {
+            $emailDomain = EmailDomain::where('name', $customDomain->domain)
+                ->where('created_by_user_id', $user->id)
+                ->first();
+
+            if ($emailDomain) {
+                UserDomain::where('user_id', $user->id)
+                    ->where('email_domain_id', $emailDomain->id)
+                    ->delete();
+                $emailDomain->delete();
+            }
+
+            $customDomain->delete();
+        });
 
         return response()->json(['success' => true]);
     }
@@ -178,11 +207,16 @@ class CustomDomainController extends Controller
         $customDomain->spf_verified = $results['spf'];
         $customDomain->dkim_verified = $results['dkim'];
         $customDomain->txt_verified = $results['txt'];
+        $wasAlreadyVerified = $customDomain->verification_status === 'verified';
         $customDomain->verification_status = $allVerified ? 'verified' : ($anyVerified ? 'pending' : 'failed');
         if ($allVerified) {
             $customDomain->verified_at = now();
         }
         $customDomain->save();
+
+        if ($allVerified && !$wasAlreadyVerified) {
+            $this->syncToEmailDomain($customDomain, $user);
+        }
 
         return response()->json([
             'domain' => $this->formatDomain($customDomain),
@@ -216,6 +250,46 @@ class CustomDomainController extends Controller
         return response()->json([
             'domain' => $this->formatDomain($customDomain),
         ]);
+    }
+
+    private function syncToEmailDomain(CustomDomain $customDomain, $user): void
+    {
+        if (!$customDomain->domain) return;
+
+        $emailDomain = EmailDomain::firstOrCreate(
+            ['name' => $customDomain->domain],
+            [
+                'display_name' => $customDomain->domain,
+                'type' => 'custom',
+                'status' => 'active',
+                'created_by_user_id' => $user->id,
+                'is_system' => false,
+                'mx_verified' => true,
+                'priority' => 999,
+                'features' => [
+                    'email' => true,
+                    'alias' => true,
+                    'otp' => true,
+                    'attachments' => true,
+                    'autoDelete' => true,
+                    'fastDelivery' => true,
+                ],
+                'acceptance' => 5,
+                'popular' => false,
+                'exclusive' => false,
+            ]
+        );
+
+        UserDomain::firstOrCreate(
+            [
+                'user_id' => $user->id,
+                'email_domain_id' => $emailDomain->id,
+            ],
+            [
+                'status' => 'active',
+                'is_default' => !UserDomain::where('user_id', $user->id)->where('status', 'active')->exists(),
+            ]
+        );
     }
 
     private function formatDomain(CustomDomain $d): array

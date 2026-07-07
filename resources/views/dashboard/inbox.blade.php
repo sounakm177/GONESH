@@ -1772,7 +1772,7 @@ function showDomainModal(callback) {
   fetch('/inboxes/domains').then(function(r){ return r.json(); }).then(function(data) {
     list.innerHTML = (data.domains || []).map(function(d) {
       return '<div class="domain-option" onclick="pickDomainOpt(this,' + d.id + ')" data-domain-id="' + d.id + '" data-domain-name="' + d.name + '">' +
-        '<span class="domain-option-name" style="font-size:.82rem;">@' + d.name + '</span>' +
+        '<span class="domain-option-name" style="font-size:.82rem;">@' + d.name + (d.type === 'custom' ? ' <span style="font-size:.6rem;color:var(--MU);font-weight:500;">Private</span>' : '') + '</span>' +
         '<div class="domain-check"></div>' +
       '</div>';
     }).join('');

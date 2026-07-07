@@ -34,6 +34,10 @@ Route::middleware('auth')->name('dashboard.')->group(function () {
         ->name('domains.available');
     Route::post('/domains/default', [\App\Http\Controllers\Dashboard\DomainSelectionController::class, 'store'])
         ->name('domains.default');
+    Route::get('/domains/list', [\App\Http\Controllers\Dashboard\DomainController::class, 'index'])
+        ->name('domains.list');
+    Route::post('/domains/toggle', [\App\Http\Controllers\Dashboard\DomainController::class, 'toggle'])
+        ->name('domains.toggle');
 
     Route::prefix('inboxes')->name('inboxes.')->group(function () {
         Route::get('/',                 [\App\Http\Controllers\Dashboard\InboxController::class, 'index'])->name('index');

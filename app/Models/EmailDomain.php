@@ -27,6 +27,12 @@ class EmailDomain extends Model
         'blocked_score',
         'daily_received',
         'last_used_at',
+        'features',
+        'acceptance',
+        'best_for',
+        'restrictions',
+        'popular',
+        'exclusive',
     ];
 
     protected $casts = [
@@ -37,6 +43,11 @@ class EmailDomain extends Model
         'daily_received' => 'integer',
         'priority' => 'integer',
         'last_used_at' => 'datetime',
+        'features' => 'array',
+        'best_for' => 'array',
+        'acceptance' => 'integer',
+        'popular' => 'boolean',
+        'exclusive' => 'boolean',
     ];
 
     public function creator(): BelongsTo

@@ -1039,7 +1039,6 @@
   <span class="filter-chip" data-filter="otp" tabindex="0" role="button" onclick="setChipFilter('otp',this)">OTP</span>
   <span class="filter-chip" data-filter="attachments" tabindex="0" role="button" onclick="setChipFilter('attachments',this)">Attachments</span>
   <span class="filter-chip" data-filter="popular" tabindex="0" role="button" onclick="setChipFilter('popular',this)">Recommended</span>
-  <span class="filter-chip" data-filter="new" tabindex="0" role="button" onclick="setChipFilter('new',this)">New</span>
 </div>
 
 <!-- ── Stat cards ── -->
@@ -1402,87 +1401,28 @@
    DOMAINS PAGE
 ══════════════════════════════════════════════ */
 
-const DOMAINS_DATA = [
-  /* ── FREE ── */
-  {
-    id: 'dropit.io', name: 'dropit.io', type: 'free',
-    desc: 'Reliable domain accepted by most websites.',
-    features: { email: true, alias: true, otp: true, attachments: true, autoDelete: true, fastDelivery: true },
-    bestFor: ['Social Media', 'Newsletters', 'Verification'],
-    acceptance: 5, restrictions: '',
-    selected: true, popular: true,
-  },
-  {
-    id: 'burnbox.dev', name: 'burnbox.dev', type: 'free',
-    desc: 'Developer-friendly domain. Great for testing workflows and CI/CD.',
-    features: { email: true, alias: true, otp: true, attachments: true, autoDelete: true, fastDelivery: true },
-    bestFor: ['Testing', 'Development', 'CI/CD'],
-    acceptance: 4, restrictions: '',
-    selected: false,
-  },
-  {
-    id: 'zaptmp.net', name: 'zaptmp.net', type: 'free',
-    desc: 'Lightweight domain with fast delivery speeds and broad acceptance.',
-    features: { email: true, alias: false, otp: true, attachments: false, autoDelete: true, fastDelivery: true },
-    bestFor: ['Quick Signups', 'OTP Codes', 'Social Media'],
-    acceptance: 4, restrictions: '',
-    selected: false,
-  },
-  {
-    id: 'voidmail.cc', name: 'voidmail.cc', type: 'free',
-    desc: 'Privacy-focused domain with minimal logging.',
-    features: { email: true, alias: true, otp: false, attachments: false, autoDelete: true, fastDelivery: true },
-    bestFor: ['Privacy', 'One-off Use', 'Aliases'],
-    acceptance: 3, restrictions: 'Some banking websites may reject this domain.',
-    selected: false,
-  },
-  {
-    id: 'mailsink.app', name: 'mailsink.app', type: 'free', popular: true,
-    desc: 'Popular all-purpose inbox. Accepted by most services.',
-    features: { email: true, alias: true, otp: true, attachments: true, autoDelete: true, fastDelivery: true },
-    bestFor: ['Social Media', 'Shopping', 'AI Tools'],
-    acceptance: 5, restrictions: '',
-    selected: false,
-  },
-  /* ── PREMIUM ── */
-  {
-    id: 'secureinbox.io', name: 'secureinbox.io', type: 'premium',
-    desc: 'High-reputation secure domain that bypasses strict filters.',
-    features: { email: true, alias: true, otp: true, attachments: true, autoDelete: true, fastDelivery: true },
-    bestFor: ['Banking', 'Finance', 'Business'],
-    acceptance: 5, restrictions: '',
-    selected: false,
-  },
-  {
-    id: 'privmail.net', name: 'privmail.net', type: 'premium',
-    desc: 'Zero-log privacy domain with encrypted email delivery.',
-    features: { email: true, alias: true, otp: true, attachments: true, autoDelete: true, fastDelivery: true },
-    bestFor: ['Privacy', 'Legal', 'Sensitive Accounts'],
-    acceptance: 5, restrictions: '',
-    selected: false,
-  },
-  {
-    id: 'flashbox.dev', name: 'flashbox.dev', type: 'premium', exclusive: true,
-    desc: 'Exclusive domain with sub-second delivery and rare prefix.',
-    features: { email: true, alias: true, otp: true, attachments: true, autoDelete: true, fastDelivery: true },
-    bestFor: ['Development', 'APIs', 'Automation'],
-    acceptance: 5, restrictions: '',
-    selected: false,
-  },
-  {
-    id: 'shieldmail.org', name: 'shieldmail.org', type: 'premium',
-    desc: 'Trusted .org domain accepted everywhere with high deliverability.',
-    features: { email: true, alias: true, otp: true, attachments: true, autoDelete: true, fastDelivery: true },
-    bestFor: ['Enterprise', 'Government', 'Professional Use'],
-    acceptance: 5, restrictions: '',
-    selected: false,
-  },
-];
-
+let DOMAINS_DATA = [];
+let SELECTED_IDS = [];
+let customDomains = [];
 let IS_PRO = false;
 let MAX_DOMAINS = 0;
-let selectedDomains = ['dropit.io'];
+let MAX_ADDRESSES = 0;
 let currentFilter = 'all';
+
+/* ── Load all domains from API ── */
+function loadDomains() {
+  fetch('/domains/list')
+    .then(function(r) { return r.json(); })
+    .then(function(res) {
+      DOMAINS_DATA = res.domains || [];
+      SELECTED_IDS = res.selected_ids || [];
+      MAX_ADDRESSES = res.max_addresses || 0;
+      IS_PRO = res.is_pro || false;
+      renderDomains();
+      updateStats();
+    })
+    .catch(function(err) { console.error('Failed to load domains:', err); });
+}
 
 /* ── Render domain cards ── */
 function renderDomains() {
@@ -1498,9 +1438,11 @@ function renderDomains() {
     if (filterVal === 'alias' && !d.features.alias) return false;
     if (filterVal === 'popular' && !d.popular) return false;
     if (filterVal === 'attachments' && !d.features.attachments) return false;
+    if (filterVal === 'new') return false;
     if (searchVal) {
-      var match = d.name.includes(searchVal) || d.desc.toLowerCase().includes(searchVal);
-      d.bestFor.forEach(function(b) { if (b.toLowerCase().includes(searchVal)) match = true; });
+      var match = (d.name || '').toLowerCase().includes(searchVal) || (d.desc || '').toLowerCase().includes(searchVal);
+      (d.best_for || []).forEach(function(b) { if (b.toLowerCase().includes(searchVal)) match = true; });
+      (d.display_name || '').toLowerCase().includes(searchVal) && (match = true);
       return match;
     }
     return true;
@@ -1521,7 +1463,7 @@ function renderDomains() {
   updateStats();
 
   grid.innerHTML = filtered.map(function(d) {
-    var isSelected = selectedDomains.indexOf(d.id) !== -1;
+    var isSelected = d.is_selected;
     var isPremium = d.type === 'premium';
 
     var cardClass = 'domain-card';
@@ -1534,11 +1476,11 @@ function renderDomains() {
         '<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">' +
         '<path stroke-linecap="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg> Upgrade to Select</button>';
     } else if (isSelected) {
-      btnHtml = '<button class="dc-btn selected" onclick="event.stopPropagation();toggleDomain(\'' + d.id + '\')">' +
+      btnHtml = '<button class="dc-btn selected" onclick="event.stopPropagation();toggleDomain(' + d.id + ')">' +
         '<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">' +
         '<path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg> Deselect</button>';
     } else {
-      btnHtml = '<button class="dc-btn select" onclick="event.stopPropagation();toggleDomain(\'' + d.id + '\')">' +
+      btnHtml = '<button class="dc-btn select" onclick="event.stopPropagation();toggleDomain(' + d.id + ')">' +
         '<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">' +
         '<path stroke-linecap="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg> Select Domain</button>';
     }
@@ -1571,7 +1513,7 @@ function renderDomains() {
     }
     var accLbl = d.acceptance === 5 ? 'Excellent' : d.acceptance === 4 ? 'Good' : 'Average';
 
-    var bestForHtml = d.bestFor.map(function(b) {
+    var bestForHtml = (d.best_for || []).map(function(b) {
       return '<span class="dc-bestfor-tag">' + b + '</span>';
     }).join('');
 
@@ -1581,7 +1523,7 @@ function renderDomains() {
 
     var onClick = isPremium && !IS_PRO
       ? 'showUpgrade()'
-      : 'openDrawer(\'' + d.id + '\')';
+      : 'openDrawer(' + d.id + ')';
 
     return '<div class="' + cardClass + '" onclick="' + onClick + '">' +
       lockHtml +
@@ -1593,7 +1535,7 @@ function renderDomains() {
         '</div>' +
         typeBadge +
       '</div>' +
-      '<div><div class="dc-name">@' + d.name + '</div><div class="dc-desc">' + d.desc + '</div></div>' +
+      '<div><div class="dc-name">@' + d.name + '</div><div class="dc-desc">' + (d.desc || '') + '</div></div>' +
       '<div class="dc-features">' + featHtml + '</div>' +
       '<div class="dc-acceptance">' + starHtml + '<span class="dc-acceptance-lbl">' + accLbl + '</span></div>' +
       (bestForHtml ? '<div class="dc-bestfor">' + bestForHtml + '</div>' : '') +
@@ -1616,22 +1558,39 @@ function updateStats() {
   document.getElementById('stat-total-sub').textContent = freeCount + ' free &middot; ' + premiumCount + ' premium';
   document.getElementById('stat-free').textContent = freeCount;
   document.getElementById('stat-premium').textContent = premiumCount;
-  document.getElementById('stat-active-domain').textContent = customDomains.length + ' custom';
 }
 
-/* ── Toggle domain selection (multi-select) ── */
+/* ── Toggle domain selection (API-persisted) ── */
 function toggleDomain(id) {
   var d = DOMAINS_DATA.find(function(x) { return x.id === id; });
   if (!d || (d.type === 'premium' && !IS_PRO)) return;
-  var idx = selectedDomains.indexOf(id);
-  if (idx !== -1) {
-    selectedDomains.splice(idx, 1);
-    showToast('Deselected @' + id);
-  } else {
-    selectedDomains.push(id);
-    showToast('Selected @' + id);
-  }
-  renderDomains();
+
+  fetch('/domains/toggle', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF_TOKEN },
+    body: JSON.stringify({ domain_id: id }),
+  })
+    .then(function(r) { return r.json().then(function(data) { return { status: r.status, data: data }; }); })
+    .then(function(res) {
+      if (res.status >= 400) {
+        showToast(res.data.error || 'Action failed.');
+        return;
+      }
+      var sel = res.data.selected;
+      d.is_selected = sel;
+      if (sel) {
+        SELECTED_IDS.push(id);
+      } else {
+        var idx = SELECTED_IDS.indexOf(id);
+        if (idx !== -1) SELECTED_IDS.splice(idx, 1);
+      }
+      renderDomains();
+      showToast(res.data.message || (sel ? 'Selected' : 'Deselected') + ' @' + d.name);
+    })
+    .catch(function(err) {
+      showToast('Network error. Please try again.');
+      console.error(err);
+    });
 }
 
 /* ── Copy domain name helper ── */
@@ -1667,7 +1626,7 @@ function openDrawer(id) {
   });
   document.getElementById('dr-features').innerHTML = featHtml;
 
-  document.getElementById('dr-bestfor').innerHTML = d.bestFor.map(function(b) {
+  document.getElementById('dr-bestfor').innerHTML = (d.best_for || []).map(function(b) {
     return '<span class="dr-bestfor-tag">' + b + '</span>';
   }).join('');
 
@@ -1687,23 +1646,23 @@ function openDrawer(id) {
   }
 
   var ft = document.getElementById('drawer-ft');
-  var isSel = selectedDomains.indexOf(d.id) !== -1;
+  var isSel = d.is_selected;
 
   if (d.type === 'premium' && !IS_PRO) {
     ft.innerHTML = '<button class="dc-btn upgrade" onclick="closeDrawer();showUpgrade()">' +
       '<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">' +
       '<path stroke-linecap="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg> Upgrade to Select</button>';
   } else if (isSel) {
-    ft.innerHTML = '<button class="dc-btn selected" onclick="closeDrawer();toggleDomain(\'' + d.id + '\')">' +
+    ft.innerHTML = '<button class="dc-btn selected" onclick="closeDrawer();toggleDomain(' + d.id + ')">' +
       '<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">' +
       '<path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg> Deselect</button>' +
-      '<button class="dc-btn select" style="background:var(--BD2);color:var(--INK);" onclick="copyDomainName(\'' + d.id + '\')">' +
+      '<button class="dc-btn select" style="background:var(--BD2);color:var(--INK);" onclick="copyDomainName(' + d.id + ')">' +
       '<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path stroke-linecap="round" d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy</button>';
   } else {
-    ft.innerHTML = '<button class="dc-btn select" onclick="closeDrawer();toggleDomain(\'' + d.id + '\')">' +
+    ft.innerHTML = '<button class="dc-btn select" onclick="closeDrawer();toggleDomain(' + d.id + ')">' +
       '<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">' +
       '<path stroke-linecap="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg> Select Domain</button>' +
-      '<button class="dc-btn select" style="background:var(--BD2);color:var(--INK);" onclick="copyDomainName(\'' + d.id + '\')">' +
+      '<button class="dc-btn select" style="background:var(--BD2);color:var(--INK);" onclick="copyDomainName(' + d.id + ')">' +
       '<svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path stroke-linecap="round" d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy</button>';
   }
 
@@ -1769,7 +1728,6 @@ function refreshPage() {
    CUSTOM DOMAINS (PRO FEATURE)
 ══════════════════════════════════════════════ */
 
-let customDomains = [];
 let cdDomainId = null;
 
 /* ── Load custom domains from API ── */
@@ -1780,6 +1738,7 @@ function loadCustomDomains() {
       customDomains = res.domains || [];
       IS_PRO = res.is_pro || false;
       MAX_DOMAINS = res.max_domains || 0;
+      window.MAX_CD_LIMIT = MAX_DOMAINS === -1 ? 999 : MAX_DOMAINS;
       renderCustomDomains(customDomains);
       updateCustomDomainStats();
       checkProStatus();
@@ -1879,11 +1838,12 @@ function renderCustomDomains(list) {
 function updateCustomDomainStats() {
   var total = customDomains.length;
   var verified = customDomains.filter(function(d) { return d.verification_status === 'verified'; }).length;
-  var pending = customDomains.filter(function(d) { return d.verification_status === 'pending'; }).length;
+  var active = customDomains.filter(function(d) { return d.is_selected; }).length;
 
-  document.getElementById('cd-stat-total').textContent = total;
-  document.getElementById('cd-stat-verified').textContent = verified;
-  document.getElementById('cd-stat-pending').textContent = pending;
+  document.getElementById('cd-plan-limit').textContent = active + '/' + (window.MAX_CD_LIMIT || 1);
+  document.getElementById('stat-active-domain').textContent = active;
+  var cdDot = document.querySelector('#active-stat-card .stat-c-top [style*="background"]');
+  if (cdDot) cdDot.style.background = active > 0 ? 'var(--GREEN)' : 'var(--MU)';
 }
 
 /* ── Open Add Custom Domain modal ── */
@@ -2251,7 +2211,7 @@ document.addEventListener('keydown', function(e) {
 });
 
 /* ── Boot ── */
-renderDomains();
+loadDomains();
 loadCustomDomains();
 </script>
 @endpush

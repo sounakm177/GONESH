@@ -35,7 +35,7 @@ class PlanSeeder extends Seeder
                 'billing_cycle' => 'monthly',
                 'max_addresses' => -1,
                 'max_aliases' => -1,
-                'max_domains' => 5,
+                'max_domains' => 10,
                 'max_api_requests_per_day' => 10000,
                 'max_smtp_sandboxes' => 10,
                 'email_history_days' => 365,
